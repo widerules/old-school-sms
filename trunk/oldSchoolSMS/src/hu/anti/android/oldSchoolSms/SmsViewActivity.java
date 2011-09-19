@@ -1,6 +1,7 @@
 package hu.anti.android.oldSchoolSms;
 
 import android.app.NotificationManager;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -42,21 +43,15 @@ public class SmsViewActivity extends AbstractSmsActivity {
     @Override
     protected void onResume() {
 	super.onResume();
-
-	// ////////////////////////////////////////////////////////////
-	// clear notifications
-	NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-	mNotificationManager.cancelAll();
-
-	// ////////////////////////////////////////////////////////////
 	Intent intent = getIntent();
 	String action = intent.getAction();
+	Uri uri = intent.getData();
 
-	Log.d("OldSchoolSMS", "Received " + action + " with content: " + intent.getData());
+	Log.d("OldSchoolSMS", "Received " + action + " with content: " + uri);
 
 	if (Intent.ACTION_VIEW.equals(action)) {
 	    // display SMS
-	    Sms sms = Sms.getSms(getContentResolver(), intent.getData());
+	    Sms sms = Sms.getSms(getContentResolver(), uri);
 
 	    setText(R.id.textViewNumber, sms.getDisplayName(getContentResolver()));
 	    setText(R.id.textViewDate, sms.date.toLocaleString());
@@ -67,6 +62,15 @@ public class SmsViewActivity extends AbstractSmsActivity {
 		setText(R.id.statusText, Sms.decodeSmsDeliveryStatus(getResources(), sms.status));
 	    else
 		setText(R.id.statusText, "");
+
+	    // clear notifications
+	    NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+	    mNotificationManager.cancel(sms._id.intValue());
+
+	    // update read flag
+	    ContentValues values = new ContentValues();
+	    values.put(Sms.Fields.READ, Sms.Other.MESSAGE_IS_READ);
+	    getContentResolver().update(uri, values, null, null);
 	} else {
 	    Toast.makeText(getApplicationContext(), "Received not supported action: " + action, Toast.LENGTH_LONG).show();
 	}
