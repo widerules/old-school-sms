@@ -40,12 +40,13 @@ public class DeliveredStatusReceiver extends AbstractSmsBroadcastReceiver {
 	context.getContentResolver().update(intent.getData(), values, null, null);
 
 	// notify the user
-	showNotification(context, intent.getData(), context.getResources().getString(R.string.SMS_DELIVERED_TITLE), message);
+	showStatusNotification(context, intent.getData(), context.getResources().getString(R.string.SMS_DELIVERED_TITLE), message);
     }
 
-    public static Intent getIntent(Uri uri) {
+    public static Intent getIntent(Context packageContext, Uri uri) {
 	Intent intent = new Intent(DeliveredStatusReceiver.DELIVERED_ACTION);
-	intent.setDataAndType(uri, "sms/*");
+	intent.setData(uri);
+	intent.setClass(packageContext, DeliveredStatusReceiver.class);
 
 	return intent;
     }

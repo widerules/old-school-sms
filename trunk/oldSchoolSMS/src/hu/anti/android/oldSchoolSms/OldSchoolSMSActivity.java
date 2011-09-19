@@ -1,8 +1,12 @@
 package hu.anti.android.oldSchoolSms;
 
+import hu.anti.android.oldSchoolSms.observer.AllSmsObserver;
+import hu.anti.android.oldSchoolSms.observer.InboxObserver;
+import hu.anti.android.oldSchoolSms.observer.SmsObserver;
+import hu.anti.android.oldSchoolSms.receiver.SmsNotificationReceiver;
+
 import java.util.ArrayList;
 
-import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -175,27 +179,53 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 
 	// ////////////////////////////////////////////////////////////
 	// create observer
-	SMSObserver smsObserver = new SMSObserver(getContentResolver(), new Handler() {
+	SmsObserver smsObserver = new AllSmsObserver(getContentResolver(), new Handler() {
 	    @Override
 	    public void handleMessage(Message msg) {
 		super.handleMessage(msg);
 
 		// update list
 		updateSmsList();
+
+		// ContentResolver contentResolver = getContentResolver();
+		// Cursor cursor =
+		// contentResolver.query(Uri.parse(Sms.Uris.SMS_URI_BASE), null,
+		// null, null, Sms.Fields.DATE + " desc");
+		// if (cursor.moveToFirst())
+		// for (int i = 0; i < cursor.getColumnCount(); i++) {
+		// Log.d("OldSchoolSMS", "sms: " + cursor.getColumnName(i) +
+		// ": " + cursor.getString(i));
+		// }
 	    }
 	});
 	// register observer
-	getContentResolver().registerContentObserver(Uri.parse(Sms.Uris.SMS_URI_BASE), true, smsObserver);
+	getContentResolver().registerContentObserver(smsObserver.getBaseUri(), true, smsObserver);
+
+	// ////////////////////////////////////////////////////////////
+	// create observer
+	SmsObserver newSmsObserver = new InboxObserver(getContentResolver(), new Handler() {
+	    @Override
+	    public void handleMessage(Message msg) {
+		super.handleMessage(msg);
+
+		// update count
+		Intent intent = new Intent(getApplicationContext(), SmsNotificationReceiver.class);
+		sendBroadcast(intent);
+		Log.d("OldSchoolSMS", "Update cout... " + intent);
+	    }
+	});
+	// register observer
+	getContentResolver().registerContentObserver(newSmsObserver.getBaseUri(), true, newSmsObserver);
     }
 
     @Override
     protected void onResume() {
 	super.onResume();
 
-	// ////////////////////////////////////////////////////////////
-	// clear notifications
-	NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-	mNotificationManager.cancelAll();
+	Intent intent = getIntent();
+	String action = intent.getAction();
+	Uri uri = intent.getData();
+	Log.d("OldSchoolSMS", "Received " + action + " with content: " + uri);
 
 	// ////////////////////////////////////////////////////////////
 	// get preferences
@@ -233,7 +263,7 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 
 	SpinnerAdapter spinnerAdapter = spinner.getAdapter();
 	for (int position = 0; position < spinnerAdapter.getCount(); position++) {
-	    if (smsBox.equals(spinnerAdapter.getItem(position))) {
+	    if (smsBox.equals(spinnerAdapter.getItem(position)) || (Intent.ACTION_VIEW.equals(action)) && "INBOX".equals(spinnerAdapter.getItem(position))) {
 		spinner.setSelection(position);
 
 		boxAdapter.notifyDataSetChanged();
@@ -290,6 +320,14 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 	// Handle item selection
 	switch (item.getItemId()) {
+	case R.id.newSms:
+	    openSms(null, Intent.ACTION_SEND);
+	    return true;
+
+	case R.id.multiDelete:
+	    Toast.makeText(getApplicationContext(), "TODO", Toast.LENGTH_SHORT).show();
+	    return true;
+
 	case R.id.preferences:
 	    startActivity(new Intent(this, SmsPreferences.class));
 	    return true;
