@@ -142,7 +142,7 @@ public class Sms {
 	sms.status = getColumnString(cursor, Sms.Fields.STATUS);
 	sms.type = getColumnString(cursor, Sms.Fields.TYPE);
 	sms.body = getColumnString(cursor, Sms.Fields.BODY);
-	sms.read = getColumnBoolean(cursor, Sms.Fields.READ);
+	sms.seen = getColumnBoolean(cursor, Sms.Fields.SEEN);
 	sms.protocol = getColumnString(cursor, Sms.Fields.PROTOCOL);
 	sms.reply_path_present = getColumnBoolean(cursor, Sms.Fields.REPLY_PATH_PRESENT);
 	sms.subject = getColumnString(cursor, Sms.Fields.SUBJECT);
