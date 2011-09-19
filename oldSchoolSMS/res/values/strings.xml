@@ -8,6 +8,8 @@
 	<string name="next">&gt;</string>
 	<string name="close">close</string>
 
+	<string name="newSms">new sms</string>
+	<string name="multiDelete">delete multiple sms</string>
 	<string name="preferences">preferences</string>
 
 	<string name="view">view</string>
@@ -46,16 +48,19 @@
 
 	<!-- SMS delivery status -->
 	<string name="SMS_DELIVERED_TITLE">SMS delivery</string>
-	<string name="SMS_DELIVERED_RESULT_OK">SMS successfully delivered to %s</string>
-	<string name="SMS_DELIVERED_RESULT_FAILED">SMS failed to deliver to %s</string>
+	<string name="SMS_DELIVERED_RESULT_OK">successful to %s</string>
+	<string name="SMS_DELIVERED_RESULT_FAILED">failed to %s</string>
 
 	<!-- SMS send status -->
 	<string name="SMS_SENT_TITLE">SMS sending</string>
-	<string name="SMS_SENT_RESULT_OK">SMS sent to %s</string>
+	<string name="SMS_SENT_RESULT_OK">sent to %s</string>
 	<string name="SMS_SENT_RESULT_ERROR_GENERIC_FAILUREK">Generic failure</string>
 	<string name="SMS_SENT_RESULT_ERROR_NO_SERVICE">No service</string>
 	<string name="SMS_SENT_RESULT_ERROR_NULL_PDU">Null PDU</string>
 	<string name="SMS_SENT_RESULT_ERROR_RADIO_OFF">Radio is off</string>
-	<string name="smsDataType">sms/*</string>
+
+	<!-- SMS recived -->
+	<string name="SMS_RECIVED_TITLE">New SMS recived</string>
+	<string name="SMS_RECIVED_COUNT">Count of unread SMS: %d</string>
 
 </resources>

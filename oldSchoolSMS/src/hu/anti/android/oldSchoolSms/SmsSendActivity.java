@@ -89,8 +89,9 @@ public class SmsSendActivity extends AbstractSmsActivity {
 
 	Intent intent = getIntent();
 	String action = intent.getAction();
+	Uri data = intent.getData();
 
-	Log.d("OldSchoolSMS", "Received " + action + " with content: " + intent.getData());
+	Log.d("OldSchoolSMS", "Received " + action + " with content: " + data);
 
 	if (Intent.ACTION_SENDTO.equals(action)) {
 	    // send to/replay
@@ -100,10 +101,12 @@ public class SmsSendActivity extends AbstractSmsActivity {
 
 	    setText(R.id.toNumber, number);
 	} else if (Intent.ACTION_SEND.equals(action)) {
-	    // send/forward
-	    Sms sms = Sms.getSms(getContentResolver(), intent.getData());
+	    if (data != null) {
+		// send/forward
+		Sms sms = Sms.getSms(getContentResolver(), data);
 
-	    setText(R.id.messageText, sms.body);
+		setText(R.id.messageText, sms.body);
+	    }
 	} else {
 	    Toast.makeText(getApplicationContext(), "Received not supported action: " + action, Toast.LENGTH_LONG).show();
 	}
@@ -131,10 +134,11 @@ public class SmsSendActivity extends AbstractSmsActivity {
 	    Log.d("OldSchoolSMS", "doSend SMS uri: " + uri + " getScheme: [" + uri.getScheme() + "]");
 
 	    // create sent listener
-	    PendingIntent sentPI = PendingIntent.getBroadcast(getApplicationContext(), 0, SentStatusReceiver.getIntent(uri), 0);
+	    PendingIntent sentPI = PendingIntent.getBroadcast(getApplicationContext(), 0, SentStatusReceiver.getIntent(getApplicationContext(), uri), 0);
 
 	    // create delivery listener
-	    PendingIntent deliveredPI = PendingIntent.getBroadcast(getApplicationContext(), 0, DeliveredStatusReceiver.getIntent(uri), 0);
+	    PendingIntent deliveredPI = PendingIntent.getBroadcast(getApplicationContext(), 0, DeliveredStatusReceiver.getIntent(getApplicationContext(), uri),
+		    0);
 
 	    // split message
 	    ArrayList<String> dividedMessage = smsManager.divideMessage(body);

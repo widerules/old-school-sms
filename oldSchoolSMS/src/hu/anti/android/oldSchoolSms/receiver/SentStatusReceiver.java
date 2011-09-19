@@ -29,12 +29,13 @@ public class SentStatusReceiver extends AbstractSmsBroadcastReceiver {
 
 	// notify the user
 	String message = Sms.decodeSmsSendStatus(context.getResources(), getResultCode());
-	showNotification(context, intent.getData(), context.getResources().getString(R.string.SMS_SENT_TITLE), message);
+	showStatusNotification(context, intent.getData(), context.getResources().getString(R.string.SMS_SENT_TITLE), message);
     }
 
-    public static Intent getIntent(Uri uri) {
+    public static Intent getIntent(Context packageContext, Uri uri) {
 	Intent intent = new Intent(SentStatusReceiver.SENT_ACTION);
-	intent.setDataAndType(uri, "sms/*");
+	intent.setData(uri);
+	intent.setClass(packageContext, SentStatusReceiver.class);
 
 	return intent;
     }

@@ -30,33 +30,44 @@ public abstract class AbstractSmsBroadcastReceiver extends BroadcastReceiver {
 	}
     }
 
-    protected void showNotification(Context context, Uri uri, String title, String message) {
+    protected void showStatusNotification(Context context, Uri uri, String title, String message) {
+	// search for sms data
 	Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
-	if (cursor != null && cursor.moveToFirst()) {
-	    String phoneNumber = cursor.getString(cursor.getColumnIndex(Sms.Fields.ADDRESS));
-	    String displayName = Sms.getDisplayName(context.getContentResolver(), phoneNumber);
+	if (cursor == null || !cursor.moveToFirst()) {
+	    Log.e("OldSchoolSMS", "Recived notification for non existing SMS object: [" + uri + "]");
 
-	    // format message if required...
-	    message = String.format(message, displayName);
+	    return;
 	}
 
-	// application Context
-	Context applicationContext = context.getApplicationContext();
+	// read the sms
+	Sms sms = Sms.parseSms(cursor);
+	int notificationId = sms._id.intValue();
 
+	// format message with name if required...
+	String displayName = Sms.getDisplayName(context.getContentResolver(), sms.address);
+	message = String.format(message, displayName);
+
+	// display it
+	showNotification(context, uri, title, message, notificationId, 0, SmsViewActivity.class);
+    }
+
+    protected void showNotification(Context context, Uri uri, String title, String message, int notificationId, int number, Class<?> targetClass) {
 	// intent on click
 	Intent intent = new Intent(Intent.ACTION_VIEW);
 	intent.setData(uri);
-	intent.setClass(context, SmsViewActivity.class);
+	intent.setClass(context, targetClass);
 
 	PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
 	// initialize the Notification, using the configurations above
 	Notification notification = new Notification(R.drawable.icon, message, System.currentTimeMillis());
-	notification.setLatestEventInfo(applicationContext, title, message, contentIntent);
+	notification.setLatestEventInfo(context.getApplicationContext(), title, message, contentIntent);
 	// number of information
-	// notification.number = 1;
+	notification.number = number;
 
 	NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-	mNotificationManager.notify(1, notification);
+	mNotificationManager.notify(notificationId, notification);
+
+	Log.d("OldSchoolSMS", "Notification [" + notificationId + "] changed: " + message);
     }
 }
