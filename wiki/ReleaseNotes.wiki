@@ -1,0 +1,10 @@
+#summary release notes for latest build
+#labels Featured
+
+= ReleaseNotes =
+== 2011.09.20. ==
+  * bekapcsoláskor ellenőrzi az olvasatlan üzeneteket
+
+
+== start ==
+  * működés :) TODO kifejteni
