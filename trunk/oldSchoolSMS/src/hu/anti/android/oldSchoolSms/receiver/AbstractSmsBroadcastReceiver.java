@@ -15,7 +15,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 public abstract class AbstractSmsBroadcastReceiver extends BroadcastReceiver {
-    protected void logIntent(String object, Intent intent) {
+    public static void logIntent(String object, Intent intent) {
 	Bundle extras = intent.getExtras();
 
 	Log.d("OldSchoolSMS", object + "/intent: " + intent);
@@ -51,7 +51,7 @@ public abstract class AbstractSmsBroadcastReceiver extends BroadcastReceiver {
 	showNotification(context, uri, title, message, notificationId, 0, SmsViewActivity.class);
     }
 
-    protected void showNotification(Context context, Uri uri, String title, String message, int notificationId, int number, Class<?> targetClass) {
+    protected void showNotification(Context context, Uri uri, String title, String message, int notificationId, int count, Class<?> targetClass) {
 	// intent on click
 	Intent intent = new Intent(Intent.ACTION_VIEW);
 	intent.setData(uri);
@@ -60,10 +60,10 @@ public abstract class AbstractSmsBroadcastReceiver extends BroadcastReceiver {
 	PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
 	// initialize the Notification, using the configurations above
-	Notification notification = new Notification(R.drawable.icon, message, System.currentTimeMillis());
+	Notification notification = new Notification(R.drawable.icon, title + ": " + message, System.currentTimeMillis());
 	notification.setLatestEventInfo(context.getApplicationContext(), title, message, contentIntent);
 	// number of information
-	notification.number = number;
+	notification.number = count;
 
 	NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 	mNotificationManager.notify(notificationId, notification);
