@@ -1,5 +1,6 @@
 package hu.anti.android.oldSchoolSms;
 
+import hu.anti.android.oldSchoolSms.receiver.AbstractSmsBroadcastReceiver;
 import hu.anti.android.oldSchoolSms.receiver.DeliveredStatusReceiver;
 import hu.anti.android.oldSchoolSms.receiver.SentStatusReceiver;
 
@@ -34,17 +35,29 @@ public class SmsSendActivity extends AbstractSmsActivity {
 	sendButton.setOnClickListener(new OnClickListener() {
 	    @Override
 	    public void onClick(View paramView) {
-		doSend();
+		// get message
+		TextView messageText = (TextView) findViewById(R.id.messageText);
+		String body = messageText.getText().toString();
+
+		// get address
+		TextView toNumber = (TextView) findViewById(R.id.toNumber);
+		String address = toNumber.getText().toString();
+
+		// send it
+		sendSms(address, body);
+
+		// close activity
 		finish();
 	    }
 	});
 
 	// ////////////////////////////////////////////////////////////
-	// send button
+	// select button
 	Button personSelectButton = (Button) findViewById(R.id.personSelectButton);
 	personSelectButton.setOnClickListener(new OnClickListener() {
 	    @Override
 	    public void onClick(View paramView) {
+		// ask for number
 		Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
 		startActivityForResult(intent, 1);
 	    }
@@ -57,12 +70,13 @@ public class SmsSendActivity extends AbstractSmsActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+	AbstractSmsBroadcastReceiver.logIntent("sms send activity", intent);
 
 	switch (requestCode) {
 	case 1:
 	    if (resultCode == Activity.RESULT_OK) {
-		Uri contactData = data.getData();
+		Uri contactData = intent.getData();
 		Cursor cursor = managedQuery(contactData, null, null, null, null);
 
 		if (cursor.moveToFirst()) {
@@ -78,7 +92,7 @@ public class SmsSendActivity extends AbstractSmsActivity {
 	    break;
 
 	default:
-	    super.onActivityResult(requestCode, resultCode, data);
+	    super.onActivityResult(requestCode, resultCode, intent);
 	    break;
 	}
     }
@@ -116,45 +130,32 @@ public class SmsSendActivity extends AbstractSmsActivity {
      * functions
      ************************************************/
 
-    protected void doSend() {
-	try {
-	    SmsManager smsManager = SmsManager.getDefault();
+    protected void sendSms(String address, String body) {
+	// put to database
+	Uri uri = putNewSmsToDatabase(getContentResolver(), address, body, Sms.Type.MESSAGE_TYPE_OUTBOX, Sms.Status.NONE);
 
-	    // get message
-	    TextView messageText = (TextView) findViewById(R.id.messageText);
-	    String body = messageText.getText().toString();
+	Log.d("OldSchoolSMS", "doSend SMS uri: " + uri + " getScheme: [" + uri.getScheme() + "]");
 
-	    // get address
-	    TextView toNumber = (TextView) findViewById(R.id.toNumber);
-	    String address = toNumber.getText().toString();
+	// create sent listener
+	PendingIntent sentPI = PendingIntent.getBroadcast(getApplicationContext(), 0, SentStatusReceiver.getIntent(getApplicationContext(), uri), 0);
 
-	    // put to database
-	    Uri uri = putNewSmsToDatabase(getContentResolver(), address, body, Sms.Type.MESSAGE_TYPE_OUTBOX, Sms.Status.NONE);
+	// create delivery listener
+	PendingIntent deliveredPI = PendingIntent.getBroadcast(getApplicationContext(), 0, DeliveredStatusReceiver.getIntent(getApplicationContext(), uri), 0);
 
-	    Log.d("OldSchoolSMS", "doSend SMS uri: " + uri + " getScheme: [" + uri.getScheme() + "]");
+	SmsManager smsManager = SmsManager.getDefault();
 
-	    // create sent listener
-	    PendingIntent sentPI = PendingIntent.getBroadcast(getApplicationContext(), 0, SentStatusReceiver.getIntent(getApplicationContext(), uri), 0);
+	// split message
+	ArrayList<String> dividedMessage = smsManager.divideMessage(body);
 
-	    // create delivery listener
-	    PendingIntent deliveredPI = PendingIntent.getBroadcast(getApplicationContext(), 0, DeliveredStatusReceiver.getIntent(getApplicationContext(), uri),
-		    0);
-
-	    // split message
-	    ArrayList<String> dividedMessage = smsManager.divideMessage(body);
-
-	    // fill listener arrays
-	    ArrayList<PendingIntent> sentIntents = new ArrayList<PendingIntent>();
-	    ArrayList<PendingIntent> deliveryIntents = new ArrayList<PendingIntent>();
-	    for (int i = 0; i < dividedMessage.size(); i++) {
-		sentIntents.add(sentPI);
-		deliveryIntents.add(deliveredPI);
-	    }
-
-	    // execute send
-	    smsManager.sendMultipartTextMessage(address, null, dividedMessage, sentIntents, deliveryIntents);
-	} catch (Exception e) {
-	    showError(e);
+	// fill listener arrays
+	ArrayList<PendingIntent> sentIntents = new ArrayList<PendingIntent>();
+	ArrayList<PendingIntent> deliveryIntents = new ArrayList<PendingIntent>();
+	for (int i = 0; i < dividedMessage.size(); i++) {
+	    sentIntents.add(sentPI);
+	    deliveryIntents.add(deliveredPI);
 	}
+
+	// execute send
+	smsManager.sendMultipartTextMessage(address, null, dividedMessage, sentIntents, deliveryIntents);
     }
 }
