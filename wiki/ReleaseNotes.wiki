@@ -2,11 +2,12 @@
 #labels Featured
 
 = ReleaseNotes =
+== 2011.10.04. ==
+  * SMS lista betöltésekor progress dialog
+  * olvasatlan notifikáció működés javítása
 == 2011.09.29. ==
   * NullPointer hiba elhárítva, ha más alkalmazás küld sms-t
-
 == 2011.09.20. ==
   * bekapcsoláskor ellenőrzi az olvasatlan üzeneteket
-
 == start ==
   * működés :) TODO kifejteni
