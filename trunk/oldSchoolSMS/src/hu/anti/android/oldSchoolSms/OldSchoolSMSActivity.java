@@ -1,12 +1,13 @@
 package hu.anti.android.oldSchoolSms;
 
 import hu.anti.android.oldSchoolSms.observer.AllSmsObserver;
-import hu.anti.android.oldSchoolSms.observer.InboxObserver;
 import hu.anti.android.oldSchoolSms.observer.SmsObserver;
 import hu.anti.android.oldSchoolSms.receiver.SmsNotificationReceiver;
 
 import java.util.ArrayList;
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -42,6 +43,9 @@ import android.widget.AdapterView.OnItemSelectedListener;
 
 public class OldSchoolSMSActivity extends AbstractSmsActivity {
 
+    public static final String ACTION_UPDATE = "UPDATE";
+    public static final String ACTION_UPDATE_FINISHED = "UPDATE_FINISHED";
+
     // the displayed list's content
     protected ArrayList<Sms> smsList = new ArrayList<Sms>();
 
@@ -61,7 +65,9 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
     // the max number of elements
     private int pageIndexMax = 0;
 
-    private BroadcastReceiver smsReceiver;
+    private ProgressDialog dialog = null;
+    private SmsObserver smsObserver;
+    private BroadcastReceiver listUpdatedReceiver;
 
     /************************************************
      * Activity
@@ -108,7 +114,7 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 	// SMS list
 	ListView smsListView = (ListView) findViewById(R.id.SMSList);
 	// sms list adapter
-	SmsAdapter smsAdapter = new SmsAdapter(this, smsList);
+	SmsAdapter smsAdapter = new SmsAdapter(this, new ArrayList<Sms>());
 
 	// sms list
 	smsListView.setAdapter(smsAdapter);
@@ -153,7 +159,7 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 	spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 	    @Override
 	    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-		String selected = parent.getItemAtPosition(pos).toString();
+		// String selected = parent.getItemAtPosition(pos).toString();
 		// Toast.makeText(parent.getContext(), selected +
 		// " is selected.", Toast.LENGTH_SHORT).show();
 
@@ -169,58 +175,48 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 	});
 
 	// ////////////////////////////////////////////////////////////
-	// create sms receiver
-	smsReceiver = new BroadcastReceiver() {
-	    @Override
-	    public void onReceive(Context context, Intent intent) {
-		updateSmsList();
-	    }
-	};
-
-	// ////////////////////////////////////////////////////////////
-	// create observer
-	SmsObserver smsObserver = new AllSmsObserver(getContentResolver(), new Handler() {
+	// create SMS list observer
+	smsObserver = new AllSmsObserver(getContentResolver(), new Handler() {
 	    @Override
 	    public void handleMessage(Message msg) {
 		super.handleMessage(msg);
 
 		// update list
 		updateSmsList();
-
-		// ContentResolver contentResolver = getContentResolver();
-		// Cursor cursor =
-		// contentResolver.query(Uri.parse(Sms.Uris.SMS_URI_BASE), null,
-		// null, null, Sms.Fields.DATE + " desc");
-		// if (cursor.moveToFirst())
-		// for (int i = 0; i < cursor.getColumnCount(); i++) {
-		// Log.d("OldSchoolSMS", "sms: " + cursor.getColumnName(i) +
-		// ": " + cursor.getString(i));
-		// }
 	    }
 	});
-	// register observer
-	getContentResolver().registerContentObserver(smsObserver.getBaseUri(), true, smsObserver);
 
 	// ////////////////////////////////////////////////////////////
-	// create observer
-	SmsObserver newSmsObserver = new InboxObserver(getContentResolver(), new Handler() {
+	// SMS list updated receiver
+	listUpdatedReceiver = new BroadcastReceiver() {
 	    @Override
-	    public void handleMessage(Message msg) {
-		super.handleMessage(msg);
+	    public void onReceive(Context paramContext, Intent paramIntent) {
+		Log.d("OldSchoolSMS", "Received " + paramIntent);
 
-		// update count
-		Intent intent = new Intent(getApplicationContext(), SmsNotificationReceiver.class);
-		sendBroadcast(intent);
-		Log.d("OldSchoolSMS", "Update cout... " + intent);
+		// notify...
+		ListView smsListView = (ListView) findViewById(R.id.SMSList);
+		@SuppressWarnings("unchecked")
+		ArrayAdapter<Sms> arrayAdapter = ((ArrayAdapter<Sms>) smsListView.getAdapter());
+
+		arrayAdapter.clear();
+
+		for (int i = 0; i < smsList.size(); i++) {
+		    arrayAdapter.add(smsList.get(i));
+		}
+
+		// arrayAdapter.notifyDataSetChanged();
+
+		if (dialog != null)
+		    dialog.dismiss();
 	    }
-	});
-	// register observer
-	getContentResolver().registerContentObserver(newSmsObserver.getBaseUri(), true, newSmsObserver);
+	};
     }
 
     @Override
     protected void onResume() {
 	super.onResume();
+
+	SmsNotificationReceiver.updateNotification(getBaseContext());
 
 	Intent intent = getIntent();
 	String action = intent.getAction();
@@ -276,12 +272,12 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 	preferences.pageSize = Integer.parseInt(sharedPrefs.getString("pageSize", "50"));
 
 	// ////////////////////////////////////////////////////////////
-	// new SMS receiver
-	registerReceiver(smsReceiver, new IntentFilter("android.provider.Telephony.SMS_RECEIVED"));
+	// SMS list updated receiver
+	registerReceiver(listUpdatedReceiver, new IntentFilter(ACTION_UPDATE_FINISHED));
 
 	// ////////////////////////////////////////////////////////////
-	// update list
-	updateSmsList();
+	// register sms list observer
+	getContentResolver().registerContentObserver(smsObserver.getBaseUri(), true, smsObserver);
     }
 
     @Override
@@ -289,8 +285,12 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 	super.onPause();
 
 	// ////////////////////////////////////////////////////////////
-	// unregeister new SMS receiver
-	unregisterReceiver(smsReceiver);
+	// SMS list updated receiver
+	unregisterReceiver(listUpdatedReceiver);
+
+	// ////////////////////////////////////////////////////////////
+	// unregeister SMS list observer
+	getContentResolver().unregisterContentObserver(smsObserver);
 
 	// ////////////////////////////////////////////////////////////
 	// store preferences
@@ -380,59 +380,83 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
     }
 
     /************************************************
+     * Activity - dialog
+     ************************************************/
+
+    @Override
+    protected Dialog onCreateDialog(int id) {
+	switch (id) {
+	case 0:
+	    dialog = new ProgressDialog(this);
+	    return dialog;
+
+	default:
+	    return super.onCreateDialog(id);
+	}
+    }
+
+    /************************************************
      * ...
      ************************************************/
 
     /************************************************
      * functions
      ************************************************/
-
     public void updateSmsList() {
-	try {
-	    // remove existing data
-	    smsList.clear();
+	showDialog(0);
 
-	    // get box uri
-	    Spinner spinner = (Spinner) findViewById(R.id.boxSpinner);
-	    Uri uri = Uri.parse(Sms.Uris.URIS.get(spinner.getSelectedItemPosition()));
+	new Thread() {
+	    @Override
+	    synchronized public void run() {
 
-	    // create cursor
-	    ContentResolver contentResolver = getContentResolver();
-	    Cursor cursor = contentResolver.query(uri, null, null, null, Sms.Fields.DATE + " desc");
+		try {
+		    Log.d("OldSchoolSMS", "Thread started");
 
-	    // set max size
-	    int count = cursor == null ? 0 : cursor.getCount();
+		    // remove existing data
+		    smsList.clear();
 
-	    pageIndexMax = (count - 1) / preferences.pageSize;
+		    // get box uri
+		    Spinner spinner = (Spinner) findViewById(R.id.boxSpinner);
+		    Uri uri = Uri.parse(Sms.Uris.URIS.get(spinner.getSelectedItemPosition()));
 
-	    // update page index if too large
-	    if (pageIndex > pageIndexMax)
-		pageIndex = pageIndexMax;
+		    // create cursor
+		    ContentResolver contentResolver = getContentResolver();
+		    Cursor cursor = contentResolver.query(uri, null, null, null, Sms.Fields.DATE + " desc");
 
-	    Log.d("OldSchoolSMS", "Updateing SMS list: " + count);
+		    // set max size
+		    int count = cursor == null ? 0 : cursor.getCount();
 
-	    // check result
-	    if (cursor != null && cursor.moveToFirst()) {
+		    pageIndexMax = (count - 1) / preferences.pageSize;
 
-		// move to page
-		cursor.moveToPosition(preferences.pageSize * pageIndex);
+		    // update page index if too large
+		    if (pageIndex > pageIndexMax)
+			pageIndex = pageIndexMax;
 
-		// read data
-		do {
-		    // get the SMS
-		    Sms sms = Sms.parseSms(cursor);
-		    // store
-		    smsList.add(sms);
-		} while (smsList.size() < preferences.pageSize && cursor.moveToNext());
+		    Log.d("OldSchoolSMS", "Updateing SMS list: " + count);
+
+		    // check result
+		    if (cursor != null && cursor.moveToFirst()) {
+
+			// move to page
+			cursor.moveToPosition(preferences.pageSize * pageIndex);
+
+			// read data
+			do {
+			    // get the SMS
+			    Sms sms = Sms.parseSms(cursor);
+			    // store
+			    smsList.add(sms);
+			} while (smsList.size() < preferences.pageSize && cursor.moveToNext());
+		    }
+		} catch (Exception e) {
+		    showError(e);
+		}
+
+		Intent intent = new Intent(ACTION_UPDATE_FINISHED);
+		sendBroadcast(intent);
+
+		Log.d("OldSchoolSMS", "Thread finished");
 	    }
-
-	    // notify...
-	    ListView smsListView = (ListView) findViewById(R.id.SMSList);
-	    @SuppressWarnings("unchecked")
-	    ArrayAdapter arrayAdapter = ((ArrayAdapter) smsListView.getAdapter());
-	    arrayAdapter.notifyDataSetChanged();
-	} catch (Exception e) {
-	    showError(e);
-	}
+	}.start();
     }
 }
