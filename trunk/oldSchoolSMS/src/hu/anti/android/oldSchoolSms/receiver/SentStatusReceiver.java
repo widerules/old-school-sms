@@ -7,6 +7,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 
 public class SentStatusReceiver extends AbstractSmsBroadcastReceiver {
     public static final String SENT_ACTION = "SMS_SENT";
@@ -14,6 +15,13 @@ public class SentStatusReceiver extends AbstractSmsBroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 	logIntent("sent", intent);
+
+	Uri uri = intent.getData();
+
+	if (uri == null) {
+	    Log.d("OldSchoolSMS", "Received empty intent, skipping");
+	    return;
+	}
 
 	ContentValues values = new ContentValues();
 	if (Activity.RESULT_OK == getResultCode()) {
@@ -25,11 +33,11 @@ public class SentStatusReceiver extends AbstractSmsBroadcastReceiver {
 	}
 
 	// update status
-	context.getContentResolver().update(intent.getData(), values, null, null);
+	context.getContentResolver().update(uri, values, null, null);
 
 	// notify the user
 	String message = Sms.decodeSmsSendStatus(context.getResources(), getResultCode());
-	showStatusNotification(context, intent.getData(), context.getResources().getString(R.string.SMS_SENT_TITLE), message);
+	showStatusNotification(context, uri, context.getResources().getString(R.string.SMS_SENT_TITLE), message);
     }
 
     public static Intent getIntent(Context packageContext, Uri uri) {
