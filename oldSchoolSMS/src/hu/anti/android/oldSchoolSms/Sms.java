@@ -176,6 +176,7 @@ public class Sms {
 	return cursor.getLong(index);
     }
 
+    @SuppressWarnings("unused")
     private static Integer getColumnInt(Cursor cursor, String column) {
 	int index = cursor.getColumnIndex(column);
 
