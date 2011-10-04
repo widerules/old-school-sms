@@ -1,4 +1,4 @@
-#summary release notes for latest build
+#summary az utolsó stabil (letölthető) verzió módosulásai
 #labels Featured
 
 = ReleaseNotes =
