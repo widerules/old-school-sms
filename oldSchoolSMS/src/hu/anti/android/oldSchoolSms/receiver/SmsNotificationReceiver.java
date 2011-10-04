@@ -3,36 +3,63 @@ package hu.anti.android.oldSchoolSms.receiver;
 import hu.anti.android.oldSchoolSms.OldSchoolSMSActivity;
 import hu.anti.android.oldSchoolSms.R;
 import hu.anti.android.oldSchoolSms.Sms;
+import hu.anti.android.oldSchoolSms.observer.AllSmsObserver;
+import hu.anti.android.oldSchoolSms.observer.SmsObserver;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class SmsNotificationReceiver extends AbstractSmsBroadcastReceiver {
     public static final String SMS_EXTRA_NAME = "pdus";
 
+    private static SmsObserver smsObserver;
+
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, Intent intent) {
 	Log.d("OldSchoolSMS", "Received SMS count change: " + intent);
 
 	// get preferences
 	SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
 	boolean notifyOnNewSms = sharedPrefs.getBoolean("notifyOnNewSms", false);
 
-	if (!notifyOnNewSms)
+	if (!notifyOnNewSms) {
+	    // remove notification
+	    removeNotification(context);
 	    return;
+	}
+
+	if (smsObserver == null) {
+	    Log.d("OldSchoolSMS", "Created new sms observer");
+
+	    // create observer
+	    smsObserver = new AllSmsObserver(context.getContentResolver(), new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+		    super.handleMessage(msg);
+
+		    Log.d("OldSchoolSMS", "Received Message: " + msg);
+
+		    updateNotification(context);
+		}
+	    });
+
+	    // register observer
+	    context.getContentResolver().registerContentObserver(smsObserver.getBaseUri(), true, smsObserver);
+	    return;
+	}
 
 	int count = getCount(context);
 
 	if (count == 0) {
 	    // remove notification
-	    NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-	    mNotificationManager.cancel(1);
-
+	    removeNotification(context);
 	    return;
 	}
 
@@ -45,7 +72,12 @@ public class SmsNotificationReceiver extends AbstractSmsBroadcastReceiver {
 	// display it
 	showNotification(context, uri, title, message, 1, count, OldSchoolSMSActivity.class);
 
-	Log.d("OldSchoolSMS", "Updated cout to: " + count);
+	Log.d("OldSchoolSMS", "Updated unread count to: " + count);
+    }
+
+    private void removeNotification(final Context context) {
+	NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+	mNotificationManager.cancel(1);
     }
 
     private int getCount(Context context) {
@@ -59,5 +91,12 @@ public class SmsNotificationReceiver extends AbstractSmsBroadcastReceiver {
 	    count = cursor.getCount();
 
 	return count;
+    }
+
+    public static void updateNotification(final Context context) {
+	Intent intent = new Intent();
+	intent.setClassName(context, SmsNotificationReceiver.class.getCanonicalName());
+
+	context.sendBroadcast(intent);
     }
 }
