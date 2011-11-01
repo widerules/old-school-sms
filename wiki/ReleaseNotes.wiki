@@ -2,6 +2,13 @@
 #labels Featured
 
 = ReleaseNotes =
+== 2011.11.01. ==
+  * új progress bar
+  * delete funkció
+  * draft auto mentése visszalépéskor (ha volt üzenetszöveg beírva)
+  * draft autó írásra nyitása, és megjelenítésben középreigazítva mutatása
+  * nyers telefonszám helyett a telefonkönyvi név jelenik meg küldésnél
+  * beérkező sms felugrik popup ablakban (még bugzik: nem mindig jelenik meg a teljes szöveg)
 == 2011.10.04. ==
   * SMS lista betöltésekor progress dialog
   * olvasatlan notifikáció működés javítása
