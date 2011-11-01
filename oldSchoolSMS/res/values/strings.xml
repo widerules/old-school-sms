@@ -62,5 +62,6 @@
 	<!-- SMS recived -->
 	<string name="SMS_RECIVED_TITLE">New SMS</string>
 	<string name="SMS_RECIVED_COUNT">Count of unread SMS: %d</string>
+	<string name="enterNumber">Tap here to enter number</string>
 
 </resources>

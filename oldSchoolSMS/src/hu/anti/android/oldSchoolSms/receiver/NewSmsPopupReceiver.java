@@ -1,5 +1,6 @@
 package hu.anti.android.oldSchoolSms.receiver;
 
+import hu.anti.android.oldSchoolSms.popup.ReceivedSmsActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,22 +8,22 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
-import android.widget.Toast;
 
-public class NewSmsReceiver extends AbstractSmsBroadcastReceiver {
+public class NewSmsPopupReceiver extends AbstractSmsBroadcastReceiver {
 
     public static final String SMS_EXTRA_NAME = "pdus";
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, Intent intent) {
 	Log.d("OldSchoolSMS", "Received new SMS broadcast: " + intent);
 
 	// get preferences
 	SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-	boolean notifyOnNewSms = sharedPrefs.getBoolean("notifyOnNewSms", false);
+	boolean notifyOnNewSms = sharedPrefs.getBoolean("notifyOnNewSms", true);
 
-	if (!notifyOnNewSms)
+	if (!notifyOnNewSms) {
 	    return;
+	}
 
 	if ("android.provider.Telephony.SMS_RECEIVED".equals(intent.getAction())) {
 
@@ -35,21 +36,28 @@ public class NewSmsReceiver extends AbstractSmsBroadcastReceiver {
 		Object[] smsExtra = (Object[]) extras.get(SMS_EXTRA_NAME);
 
 		for (int i = 0; i < smsExtra.length; ++i) {
-		    String messages = "";
-
 		    SmsMessage sms = SmsMessage.createFromPdu((byte[]) smsExtra[i]);
 
 		    String body = sms.getMessageBody().toString();
 		    String address = sms.getOriginatingAddress();
 
-		    messages += "SMS: " + address + " :\n";
-		    messages += body + "\n";
+		    Log.d("OldSchoolSMS", "Received new SMS broadcast from (" + address + ") content: " + body);
 
-		    Log.d("OldSchoolSMS", "Received new SMS broadcast content: " + messages);
+		    boolean popupOnNewSms = sharedPrefs.getBoolean("popupOnNewSms", true);
 
 		    // display it
-		    Toast.makeText(context, messages, Toast.LENGTH_LONG);
-		    // TODO
+		    if (popupOnNewSms) {
+			Intent newIntent = new Intent(ReceivedSmsActivity.NEW_SMS_ACTION);
+			newIntent.setClassName(context, ReceivedSmsActivity.class.getCanonicalName());
+			newIntent.putExtra(ReceivedSmsActivity.INTENT_SMS_BODY, body);
+			newIntent.putExtra(ReceivedSmsActivity.INTENT_SMS_ADDRESS, address);
+
+			newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+			context.startActivity(newIntent);
+
+			Log.d("OldSchoolSMS", "Started new popup: " + newIntent);
+		    }
 		}
 	    }
 	}

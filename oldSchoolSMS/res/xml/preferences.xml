@@ -20,6 +20,9 @@
 		<CheckBoxPreference android:key="notifyOnNewSms"
 			android:title="Notify on new SMS" android:summary="Notify if new SMS arrives"
 			android:defaultValue="true" />
+		<CheckBoxPreference android:key="popupOnNewSms"
+			android:title="Popup on new SMS" android:summary="Display popup window if new SMS arrives"
+			android:defaultValue="true" android:dependency="notifyOnNewSms" />
 
 	</PreferenceCategory>
 
