@@ -28,6 +28,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -50,7 +51,7 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
     protected ArrayList<Sms> smsList = new ArrayList<Sms>();
 
     // the displayed pages index
-    private int pageIndex = 0;
+    private int pageIndexCurrent = 0;
 
     private class Preferences {
 
@@ -67,6 +68,7 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 
     private ProgressDialog dialog = null;
     private SmsObserver smsObserver;
+
     private BroadcastReceiver listUpdatedReceiver;
 
     /************************************************
@@ -77,6 +79,8 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
+	requestWindowFeature(Window.FEATURE_PROGRESS);
+
 	setContentView(R.layout.main);
 
 	// ////////////////////////////////////////////////////////////
@@ -90,8 +94,8 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 	mainPreviouse.setOnClickListener(new OnClickListener() {
 	    @Override
 	    public void onClick(View paramView) {
-		if (pageIndex > 0)
-		    pageIndex--;
+		if (pageIndexCurrent > 0)
+		    pageIndexCurrent--;
 
 		updateSmsList();
 	    }
@@ -103,8 +107,8 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 	mainNext.setOnClickListener(new OnClickListener() {
 	    @Override
 	    public void onClick(View paramView) {
-		if (pageIndex < pageIndexMax)
-		    pageIndex++;
+		if (pageIndexCurrent < pageIndexMax)
+		    pageIndexCurrent++;
 
 		updateSmsList();
 	    }
@@ -123,7 +127,7 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 	((ListView) this.findViewById(R.id.SMSList)).setOnItemClickListener(new OnItemClickListener() {
 	    @Override
 	    public void onItemClick(AdapterView<?> paramAdapterView, View view, int pos, long id) {
-		Uri uri = ContentUris.withAppendedId(Uri.parse(Sms.Uris.SMS_URI_BASE), smsList.get(pos)._id);
+		Sms sms = smsList.get(pos);
 
 		if (preferences.debugModeSmsList) {
 		    String content = "";
@@ -133,7 +137,7 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 		    // .get(pos)._id);
 		    // content = sms.toString();
 
-		    Cursor cursor = getContentResolver().query(Uri.parse("content://sms/" + smsList.get(pos)._id), null, null, null, null);
+		    Cursor cursor = getContentResolver().query(Uri.parse("content://sms/" + sms._id), null, null, null, null);
 
 		    if (cursor.moveToFirst()) {
 			for (int i = 0; i < cursor.getColumnCount(); i++) {
@@ -148,7 +152,9 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 		    Toast.makeText(OldSchoolSMSActivity.this, content, Toast.LENGTH_LONG).show();
 
 		} else {
-		    openSms(uri, Intent.ACTION_VIEW);
+		    Uri uri = ContentUris.withAppendedId(Uri.parse(Sms.Uris.SMS_URI_BASE), sms._id);
+
+		    openSms(uri, Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type) ? Intent.ACTION_SEND : Intent.ACTION_VIEW);
 		}
 	    }
 	});
@@ -163,7 +169,7 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 		// Toast.makeText(parent.getContext(), selected +
 		// " is selected.", Toast.LENGTH_SHORT).show();
 
-		pageIndex = 0;
+		pageIndexCurrent = 0;
 
 		updateSmsList();
 	    }
@@ -206,8 +212,9 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 
 		// arrayAdapter.notifyDataSetChanged();
 
-		if (dialog != null)
-		    dialog.dismiss();
+		setProgressBarVisibility(false);
+		// if (dialog != null)
+		// dialog.dismiss();
 	    }
 	};
     }
@@ -360,7 +367,7 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 	    return true;
 
 	case R.id.delete:
-	    // TODO
+	    getContentResolver().delete(uri, null, null);
 	    return true;
 
 	case R.id.forward:
@@ -387,7 +394,9 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
     protected Dialog onCreateDialog(int id) {
 	switch (id) {
 	case 0:
-	    dialog = new ProgressDialog(this);
+	    dialog = new ProgressDialog(this, ProgressDialog.STYLE_HORIZONTAL);
+	    dialog.setIndeterminate(false);
+
 	    return dialog;
 
 	default:
@@ -403,7 +412,9 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
      * functions
      ************************************************/
     public void updateSmsList() {
-	showDialog(0);
+	// showDialog(0);
+	setProgressBarVisibility(true);
+	setProgress(0);
 
 	new Thread() {
 	    @Override
@@ -429,16 +440,18 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 		    pageIndexMax = (count - 1) / preferences.pageSize;
 
 		    // update page index if too large
-		    if (pageIndex > pageIndexMax)
-			pageIndex = pageIndexMax;
+		    if (pageIndexCurrent > pageIndexMax)
+			pageIndexCurrent = pageIndexMax;
 
 		    Log.d("OldSchoolSMS", "Updateing SMS list: " + count);
 
 		    // check result
 		    if (cursor != null && cursor.moveToFirst()) {
+			int startPosition = preferences.pageSize * pageIndexCurrent;
+			int maxPosition = count - startPosition < preferences.pageSize ? count - startPosition : preferences.pageSize;
 
 			// move to page
-			cursor.moveToPosition(preferences.pageSize * pageIndex);
+			cursor.moveToPosition(startPosition);
 
 			// read data
 			do {
@@ -446,6 +459,8 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 			    Sms sms = Sms.parseSms(cursor);
 			    // store
 			    smsList.add(sms);
+
+			    setProgress(smsList.size() * 10000 / (maxPosition + 1));
 			} while (smsList.size() < preferences.pageSize && cursor.moveToNext());
 		    }
 		} catch (Exception e) {
