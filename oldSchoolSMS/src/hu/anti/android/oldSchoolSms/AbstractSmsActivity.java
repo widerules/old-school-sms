@@ -58,7 +58,7 @@ public abstract class AbstractSmsActivity extends Activity {
 
 	values.put(Sms.Fields.ADDRESS, address);
 	values.put(Sms.Fields.DATE, "" + new Date().getTime());
-	values.put(Sms.Fields.READ, Sms.Other.MESSAGE_IS_NOT_READ);
+	values.put(Sms.Fields.READ, Sms.Other.MESSAGE_IS_READ);
 	values.put(Sms.Fields.STATUS, status);
 	values.put(Sms.Fields.TYPE, type);
 	values.put(Sms.Fields.BODY, body);
