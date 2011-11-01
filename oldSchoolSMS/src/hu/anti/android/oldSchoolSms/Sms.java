@@ -70,7 +70,7 @@ public class Sms {
 	public static final String MESSAGE_TYPE_SENT = "2";
 	public static final String MESSAGE_TYPE_DRAFT = "3";
 	public static final String MESSAGE_TYPE_UNDELIVERED = "4";
-	public static final String MESSAGE_TYPE_FAILED = "5";
+	public static final String MESSAGE_TYPE_FAILED = "5";// ?unde
 	public static final String MESSAGE_TYPE_OUTBOX = "6";
 
 	// failed 4-5-6
@@ -212,6 +212,9 @@ public class Sms {
     }
 
     private static String getPersonName(ContentResolver contentResolver, String phoneNumber) {
+	if (phoneNumber == null || phoneNumber.length() == 0)
+	    return null;
+
 	Uri uri = Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
 
 	Cursor personCursor = contentResolver.query(uri, new String[] { PhoneLookup.DISPLAY_NAME }, null, null, null);
