@@ -7,7 +7,10 @@ import hu.anti.android.oldSchoolSms.receiver.SentStatusReceiver;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -18,11 +21,18 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class SmsSendActivity extends AbstractSmsActivity {
+
+    private boolean dataFilled = false;
+    private boolean smsSent = false;
+
+    private String toNumber = null;
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,12 +49,36 @@ public class SmsSendActivity extends AbstractSmsActivity {
 		TextView messageText = (TextView) findViewById(R.id.messageText);
 		String body = messageText.getText().toString();
 
+		if (body == null || body.length() == 0) {
+		    Toast.makeText(SmsSendActivity.this.getApplicationContext(), "Empty SMS body!", Toast.LENGTH_SHORT).show();
+		    return;
+		}
+
 		// get address
-		TextView toNumber = (TextView) findViewById(R.id.toNumber);
-		String address = toNumber.getText().toString();
+		// TextView toNumber = (TextView) findViewById(R.id.toNumber);
+		// String address = toNumber.getText().toString();
+
+		if (toNumber == null || toNumber.length() == 0) {
+		    Toast.makeText(SmsSendActivity.this.getApplicationContext(), "Empty SMS address!", Toast.LENGTH_SHORT).show();
+		    return;
+		}
+
+		Intent intent = getIntent();
+		String action = intent.getAction();
+		Uri data = intent.getData();
+
+		if (Intent.ACTION_SEND.equals(action) && data != null) {
+		    Sms sms = Sms.getSms(getContentResolver(), data);
+
+		    if (Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type)) {
+			// if from a draft, first delete it
+			getContentResolver().delete(data, null, null);
+		    }
+		}
 
 		// send it
-		sendSms(address, body);
+		sendSms(toNumber, body);
+		smsSent = true;
 
 		// close activity
 		finish();
@@ -60,6 +94,43 @@ public class SmsSendActivity extends AbstractSmsActivity {
 		// ask for number
 		Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
 		startActivityForResult(intent, 1);
+	    }
+	});
+
+	// ////////////////////////////////////////////////////////////
+	// toNumber
+	final TextView toNumberView = (TextView) findViewById(R.id.toNumber);
+	toNumberView.setOnClickListener(new OnClickListener() {
+	    @Override
+	    public void onClick(View v) {
+		AlertDialog.Builder dialog = new AlertDialog.Builder(SmsSendActivity.this);
+
+		// Set an EditText view to get user input
+		final EditText input = new EditText(SmsSendActivity.this);
+		input.setSingleLine();
+		input.setText(toNumber);
+
+		dialog.setView(input);
+
+		dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int whichButton) {
+			String value = input.getText().toString();
+
+			// store the number
+			toNumber = value;
+
+			// set text to display
+			toNumberView.setText(Sms.getDisplayName(getContentResolver(), value));
+		    }
+		});
+
+		dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int whichButton) {
+			dialog.dismiss();
+		    }
+		});
+
+		dialog.show();
 	    }
 	});
 
@@ -84,8 +155,9 @@ public class SmsSendActivity extends AbstractSmsActivity {
 
 		    if (columnIndex > -1) {
 			String number = cursor.getString(columnIndex);
+			toNumber = number;
 
-			setText(R.id.toNumber, number);
+			setText(R.id.toNumber, Sms.getDisplayName(getContentResolver(), number));
 		    }
 		}
 	    }
@@ -101,28 +173,79 @@ public class SmsSendActivity extends AbstractSmsActivity {
     protected void onResume() {
 	super.onResume();
 
+	if (dataFilled)
+	    return;
+
+	dataFilled = true;
+
 	Intent intent = getIntent();
 	String action = intent.getAction();
 	Uri data = intent.getData();
 
 	Log.d("OldSchoolSMS", "Received " + action + " with content: " + data);
+	AbstractSmsBroadcastReceiver.logIntent(this.getClass().getCanonicalName(), intent);
 
 	if (Intent.ACTION_SENDTO.equals(action)) {
 	    // send to/replay
 	    String scheme = intent.getScheme();
 	    // "smsto:" form
 	    String number = intent.getDataString().substring(scheme.length() + 1);
+	    toNumber = number;
 
-	    setText(R.id.toNumber, number);
+	    setText(R.id.toNumber, Sms.getDisplayName(getContentResolver(), number));
 	} else if (Intent.ACTION_SEND.equals(action)) {
 	    if (data != null) {
 		// send/forward
 		Sms sms = Sms.getSms(getContentResolver(), data);
 
+		if (Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type)) {
+		    toNumber = sms.address;
+		    setText(R.id.toNumber, Sms.getDisplayName(getContentResolver(), sms.address));
+		}
+
 		setText(R.id.messageText, sms.body);
 	    }
 	} else {
 	    Toast.makeText(getApplicationContext(), "Received not supported action: " + action, Toast.LENGTH_LONG).show();
+	}
+    }
+
+    @Override
+    protected void onPause() {
+	super.onPause();
+
+	if (!smsSent) {
+	    // get message
+	    TextView messageText = (TextView) findViewById(R.id.messageText);
+	    String body = messageText.getText().toString();
+
+	    if (body != null && body.length() != 0) {
+
+		Intent intent = getIntent();
+		String action = intent.getAction();
+		Uri data = intent.getData();
+
+		if (Intent.ACTION_SEND.equals(action) && data != null) {
+		    Sms sms = Sms.getSms(getContentResolver(), data);
+
+		    if (Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type)) {
+			// update existing draft
+
+			ContentValues values = new ContentValues();
+			values.put(Sms.Fields.ADDRESS, toNumber);
+			values.put(Sms.Fields.BODY, body);
+
+			getContentResolver().update(data, values, null, null);
+
+			Log.d("OldSchoolSMS", "onPause updated SMS uri: " + data + " getScheme: [" + data.getScheme() + "]");
+			return;
+		    }
+		}
+
+		// put to database the new draft sms
+		Uri uri = putNewSmsToDatabase(getContentResolver(), toNumber, body, Sms.Type.MESSAGE_TYPE_DRAFT, Sms.Status.NONE);
+		Log.d("OldSchoolSMS", "onPause SMS uri: " + uri + " getScheme: [" + uri.getScheme() + "]");
+	    }
 	}
     }
 
