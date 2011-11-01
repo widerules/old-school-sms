@@ -106,10 +106,15 @@ public class SmsViewActivity extends AbstractSmsActivity {
 	    openSms(smsToUri, Intent.ACTION_SENDTO);
 	    return true;
 
+	case R.id.delete:
+	    getContentResolver().delete(uri, null, null);
+	    finish();
+	    return true;
+
 	case R.id.close:
 	    finish();
-
 	    return true;
+
 	default:
 	    return super.onOptionsItemSelected(item);
 	}
