@@ -52,15 +52,17 @@ public class SmsAdapter extends ArrayAdapter<Sms> {
 	listItem.getText2().setText(text2);
 
 	// sent-received
-	if (Sms.Type.MESSAGE_TYPE_SENT.equals(sms.type) || Sms.Type.MESSAGE_TYPE_OUTBOX.equals(sms.type) || Sms.Type.MESSAGE_TYPE_UNDELIVERED.equals(sms.type)
-		|| Sms.Type.MESSAGE_TYPE_FAILED.equals(sms.type))
+	if (Sms.Type.MESSAGE_TYPE_INBOX.equals(sms.type))
+	    listItem.getText1().setGravity(Gravity.LEFT);
+	else if (Sms.Type.MESSAGE_TYPE_OUTBOX.equals(sms.type) || Sms.Type.MESSAGE_TYPE_FAILED.equals(sms.type) || Sms.Type.MESSAGE_TYPE_SENT.equals(sms.type)
+		|| Sms.Type.MESSAGE_TYPE_UNDELIVERED.equals(sms.type))
 	    listItem.getText1().setGravity(Gravity.RIGHT);
 	else
-	    listItem.getText1().setGravity(Gravity.LEFT);
+	    listItem.getText1().setGravity(Gravity.CENTER);
 
 	// read-unread
 	int textStyle = R.style.normalSms;
-	if (sms.read != null && !sms.read)
+	if (Sms.Type.MESSAGE_TYPE_INBOX.equals(sms.type) && sms.read != null && !sms.read)
 	    textStyle = R.style.unreadSms;
 	else
 	    textStyle = R.style.normalSms;
