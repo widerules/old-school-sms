@@ -60,6 +60,8 @@ public class SmsNotificationReceiver extends AbstractSmsBroadcastReceiver {
 	if (count == 0) {
 	    // remove notification
 	    removeNotification(context);
+
+	    Log.d("OldSchoolSMS", "Removed SMS notification becasu no unread SMS");
 	    return;
 	}
 
