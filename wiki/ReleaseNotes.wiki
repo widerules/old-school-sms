@@ -2,6 +2,11 @@
 #labels Featured
 
 = ReleaseNotes =
+== 2011.11.03. ==
+  * AdMob áthelyezése, hogy újat kérjen minden megjelenítésnél
+  * beérkező popup értesítőn nevet ír ki a szám helyett
+  * beérkező nagy SMS-ek összefűzése
+  * nagy SMS-ek görgetővel jelennek meg megtekintéskor (sima SMS nézegető és beérkező ablak)
 == 2011.11.01. ==
   * új progress bar
   * delete funkció
