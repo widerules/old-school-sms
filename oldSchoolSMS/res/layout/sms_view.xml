@@ -9,7 +9,11 @@
     <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:orientation="vertical" android:id="@+id/viewLayout" android:layout_weight="1">
         <TextView android:textAppearance="?android:attr/textAppearanceLarge" android:id="@+id/textViewNumber" android:text="TextView" android:layout_height="wrap_content" android:layout_width="fill_parent"></TextView>
         <TextView android:textAppearance="?android:attr/textAppearanceSmall" android:id="@+id/textViewDate" android:text="TextView" android:layout_height="wrap_content" android:layout_width="wrap_content"></TextView>
-        <TextView android:textAppearance="?android:attr/textAppearanceMedium" android:id="@+id/textViewSms" android:text="TextView" android:layout_weight="1" android:layout_width="match_parent" android:layout_height="wrap_content"></TextView>
+        <ScrollView android:layout_width="match_parent" android:id="@+id/scrollView1" android:layout_height="wrap_content" android:layout_weight="1">
+            <LinearLayout android:layout_height="match_parent" android:id="@+id/linearLayout1" android:layout_width="match_parent">
+                <TextView android:layout_width="match_parent" android:scrollbars="vertical" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:text="TextView" android:id="@+id/textViewSms"></TextView>
+            </LinearLayout>
+        </ScrollView>
         <TextView android:textAppearance="?android:attr/textAppearanceSmall" android:text="TextView" android:layout_height="wrap_content" android:layout_width="match_parent" android:gravity="center" android:id="@+id/statusText"></TextView>
     </LinearLayout>
 	<Button android:text="@string/close" android:layout_height="wrap_content"
