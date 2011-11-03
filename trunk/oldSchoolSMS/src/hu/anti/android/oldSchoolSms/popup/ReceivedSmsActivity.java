@@ -1,6 +1,7 @@
 package hu.anti.android.oldSchoolSms.popup;
 
 import hu.anti.android.oldSchoolSms.R;
+import hu.anti.android.oldSchoolSms.Sms;
 import hu.anti.android.oldSchoolSms.SmsSendActivity;
 import android.app.Activity;
 import android.content.Intent;
@@ -87,7 +88,7 @@ public class ReceivedSmsActivity extends Activity {
 	if (NEW_SMS_ACTION.equals(intent.getAction())) {
 	    // set sender
 	    TextView senderView = (TextView) findViewById(R.id.newSmsDialogSenderView);
-	    senderView.setText(intent.getStringExtra(INTENT_SMS_ADDRESS));
+	    senderView.setText(Sms.getDisplayName(getContentResolver(), intent.getStringExtra(INTENT_SMS_ADDRESS)));
 
 	    // set message
 	    TextView messageView = (TextView) findViewById(R.id.newSmsDialogTextView);
