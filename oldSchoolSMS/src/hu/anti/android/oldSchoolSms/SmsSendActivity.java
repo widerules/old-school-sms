@@ -133,11 +133,6 @@ public class SmsSendActivity extends AbstractSmsActivity {
 		dialog.show();
 	    }
 	});
-
-	// ////////////////////////////////////////////////////////////
-	// ad mob
-	LinearLayout layout = (LinearLayout) findViewById(R.id.AdMob);
-	AdMob.addView(this, layout);
     }
 
     @Override
@@ -172,6 +167,11 @@ public class SmsSendActivity extends AbstractSmsActivity {
     @Override
     protected void onResume() {
 	super.onResume();
+
+	// ////////////////////////////////////////////////////////////
+	// ad mob
+	LinearLayout layout = (LinearLayout) findViewById(R.id.AdMob);
+	AdMob.addView(this, layout);
 
 	if (dataFilled)
 	    return;
@@ -213,6 +213,11 @@ public class SmsSendActivity extends AbstractSmsActivity {
     @Override
     protected void onPause() {
 	super.onPause();
+
+	// ////////////////////////////////////////////////////////////
+	// ad mob
+	LinearLayout layout = (LinearLayout) findViewById(R.id.AdMob);
+	AdMob.removeView(this, layout);
 
 	if (!smsSent) {
 	    // get message

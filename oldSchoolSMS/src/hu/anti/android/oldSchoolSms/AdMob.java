@@ -1,6 +1,7 @@
 package hu.anti.android.oldSchoolSms;
 
 import android.app.Activity;
+import android.util.Log;
 import android.widget.LinearLayout;
 
 import com.google.ads.AdRequest;
@@ -13,11 +14,20 @@ public class AdMob {
     public static void addView(Activity activity, LinearLayout layout) {
 
 	// Create the adView
-	AdView adView = new AdView(activity, AdSize.BANNER, MY_BANNER_UNIT_ID);
+	final AdView adView = new AdView(activity, AdSize.BANNER, MY_BANNER_UNIT_ID);
 
 	// Add the adView to it
 	layout.addView(adView);
 
+	// load
+	adView.loadAd(getAdRequest());
+    }
+
+    public static void removeView(Activity activity, LinearLayout layout) {
+	layout.removeAllViews();
+    }
+
+    private static AdRequest getAdRequest() {
 	// Initiate a generic request to load it with an ad
 	AdRequest request = new AdRequest();
 
@@ -25,7 +35,8 @@ public class AdMob {
 	request.addTestDevice(AdRequest.TEST_EMULATOR);
 	request.addTestDevice("CF95DC53F383F9A836FD749F3EF439CD");
 
-	// load
-	adView.loadAd(request);
+	Log.d("OldSchoolSMS", "New AdRequest: " + request);
+
+	return request;
     }
 }

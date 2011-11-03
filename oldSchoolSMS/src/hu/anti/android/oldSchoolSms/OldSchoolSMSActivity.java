@@ -84,11 +84,6 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 	setContentView(R.layout.main);
 
 	// ////////////////////////////////////////////////////////////
-	// ad mob
-	LinearLayout layout = (LinearLayout) findViewById(R.id.AdMob);
-	AdMob.addView(this, layout);
-
-	// ////////////////////////////////////////////////////////////
 	// previouse button
 	View mainPreviouse = this.findViewById(R.id.mainPreviouse);
 	mainPreviouse.setOnClickListener(new OnClickListener() {
@@ -223,6 +218,11 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
     protected void onResume() {
 	super.onResume();
 
+	// ////////////////////////////////////////////////////////////
+	// ad mob
+	LinearLayout layout = (LinearLayout) findViewById(R.id.AdMob);
+	AdMob.addView(this, layout);
+
 	SmsNotificationReceiver.updateNotification(getBaseContext());
 
 	Intent intent = getIntent();
@@ -290,6 +290,11 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
     @Override
     protected void onPause() {
 	super.onPause();
+
+	// ////////////////////////////////////////////////////////////
+	// ad mob
+	LinearLayout layout = (LinearLayout) findViewById(R.id.AdMob);
+	AdMob.removeView(this, layout);
 
 	// ////////////////////////////////////////////////////////////
 	// SMS list updated receiver
