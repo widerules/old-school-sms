@@ -30,7 +30,7 @@ public abstract class AbstractSmsBroadcastReceiver extends BroadcastReceiver {
 	}
     }
 
-    protected void showStatusNotification(Context context, Uri uri, String title, String message) {
+    protected void showStatusNotification(Context context, Uri uri, String title, String message, long[] vibratorPattern, Uri soundUri) {
 	// search for sms data
 	Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
 	if (cursor == null || !cursor.moveToFirst()) {
@@ -48,10 +48,17 @@ public abstract class AbstractSmsBroadcastReceiver extends BroadcastReceiver {
 	message = String.format(message, displayName);
 
 	// display it
-	showNotification(context, uri, title, message, notificationId, 0, SmsViewActivity.class);
+	showNotification(context, uri, title, message, notificationId, 0, SmsViewActivity.class, vibratorPattern, soundUri);
     }
 
-    protected void showNotification(Context context, Uri uri, String title, String message, int notificationId, int count, Class<?> targetClass) {
+    protected void showNotification(Context context, Uri uri, String title, String message, int notificationId, int count, Class<?> targetClass,
+	    long[] vibratorPattern, Uri soundUri) {
+	int iconId = R.drawable.icon;
+	showNotification(context, uri, iconId, title, message, notificationId, count, targetClass, vibratorPattern, soundUri);
+    }
+
+    protected void showNotification(Context context, Uri uri, int iconId, String title, String message, int notificationId, int count, Class<?> targetClass,
+	    long[] vibratorPattern, Uri soundUri) {
 	// intent on click
 	Intent intent = new Intent(Intent.ACTION_VIEW);
 	intent.setData(uri);
@@ -60,10 +67,17 @@ public abstract class AbstractSmsBroadcastReceiver extends BroadcastReceiver {
 	PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
 	// initialize the Notification, using the configurations above
-	Notification notification = new Notification(R.drawable.icon, title + ": " + message, System.currentTimeMillis());
+	Notification notification = new Notification(iconId, title + ": " + message, System.currentTimeMillis());
 	notification.setLatestEventInfo(context.getApplicationContext(), title, message, contentIntent);
+
 	// number of information
 	notification.number = count;
+
+	// vibration
+	notification.vibrate = vibratorPattern;
+
+	// sound
+	notification.sound = soundUri;
 
 	NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 	mNotificationManager.notify(notificationId, notification);
