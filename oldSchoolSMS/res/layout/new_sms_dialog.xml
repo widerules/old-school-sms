@@ -6,7 +6,7 @@
     <TextView android:text="TextView" android:layout_height="wrap_content" android:id="@+id/newSmsDialogSenderView" android:layout_width="wrap_content" android:layout_margin="5dp"></TextView>
     <ScrollView android:layout_width="match_parent" android:layout_height="wrap_content" android:id="@+id/scrollView1" android:layout_weight="1">
         <LinearLayout android:id="@+id/linearLayout2" android:layout_width="match_parent" android:layout_height="match_parent">
-            <TextView android:layout_width="match_parent" android:padding="15dp" android:scrollbars="vertical" android:layout_height="wrap_content" android:text="TextView" android:id="@+id/newSmsDialogTextView"></TextView>
+            <TextView android:layout_width="match_parent" android:padding="15dp" android:scrollbars="vertical" android:layout_height="wrap_content" android:text="TextView" android:id="@+id/newSmsDialogTextView" android:minLines="8"></TextView>
         </LinearLayout>
     </ScrollView>
     <LinearLayout android:layout_height="wrap_content" android:id="@+id/linearLayout1" android:gravity="center" android:layout_width="wrap_content" android:layout_gravity="center">
