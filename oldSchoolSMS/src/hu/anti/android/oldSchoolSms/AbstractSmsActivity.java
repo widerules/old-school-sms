@@ -20,19 +20,23 @@ public abstract class AbstractSmsActivity extends Activity {
     }
 
     protected void showError(Exception e) {
-	e.printStackTrace();
+	try {
+	    final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
 
-	AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+	    alertDialog.setTitle("Exception");
+	    alertDialog.setMessage(e.getLocalizedMessage());
+	    alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+		public void onClick(DialogInterface dialog, int which) {
+		    alertDialog.dismiss();
+		    return;
+		}
+	    });
 
-	alertDialog.setTitle("Exception");
-	alertDialog.setMessage(e.getLocalizedMessage());
-	alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-	    public void onClick(DialogInterface dialog, int which) {
-		return;
-	    }
-	});
-
-	alertDialog.show();
+	    alertDialog.show();
+	} catch (Exception e1) {
+	    Log.e("OldSchoolSMS", e.getLocalizedMessage());
+	    Log.e("OldSchoolSMS", "Error", e);
+	}
     }
 
     protected void openSms(Uri uri, String action) {
