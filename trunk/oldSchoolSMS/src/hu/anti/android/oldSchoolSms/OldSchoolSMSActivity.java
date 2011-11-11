@@ -223,7 +223,10 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 	LinearLayout layout = (LinearLayout) findViewById(R.id.AdMob);
 	AdMob.addView(this, layout);
 
-	SmsNotificationReceiver.updateNotification(getBaseContext());
+	// updateNotifications
+	Intent smsNotificationIntent = new Intent();
+	smsNotificationIntent.setClassName(getBaseContext(), SmsNotificationReceiver.class.getCanonicalName());
+	getBaseContext().sendBroadcast(smsNotificationIntent);
 
 	Intent intent = getIntent();
 	String action = intent.getAction();
@@ -465,7 +468,7 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 			    // store
 			    smsList.add(sms);
 
-			    setProgress(smsList.size() * 10000 / (maxPosition + 1));
+			    OldSchoolSMSActivity.this.setProgress(smsList.size() * 10000 / (maxPosition + 1));
 			} while (smsList.size() < preferences.pageSize && cursor.moveToNext());
 		    }
 		} catch (Exception e) {
