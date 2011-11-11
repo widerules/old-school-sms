@@ -2,6 +2,11 @@
 #labels Featured
 
 = ReleaseNotes =
+Minden új kiadás tartalmaz hibajavítást, ez nem kerül külön kiemelésre... az új funkciók, képességek a következők:
+== 2011.11.11. ==
+  * új SMS, sikeres küldés, sikeres kézbesítés esetén állítható az értesítés kérése
+  * új SMS, sikeres kézbesítés esetén állítható hang és vibrálás jelzés
+  * új SMS esetén villog a LED
 == 2011.11.03. ==
   * AdMob áthelyezése, hogy újat kérjen minden megjelenítésnél
   * beérkező popup értesítőn nevet ír ki a szám helyett
