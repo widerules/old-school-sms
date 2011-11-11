@@ -6,7 +6,9 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class SentStatusReceiver extends AbstractSmsBroadcastReceiver {
@@ -35,9 +37,20 @@ public class SentStatusReceiver extends AbstractSmsBroadcastReceiver {
 	// update status
 	context.getContentResolver().update(uri, values, null, null);
 
+	if (Activity.RESULT_OK == getResultCode()) {
+	    // get preferences
+	    SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+	    boolean notifyOnSuccessfulSend = sharedPrefs.getBoolean("notifyOnSuccessfulSend", true);
+
+	    if (!notifyOnSuccessfulSend)
+		return;
+	}
+
 	// notify the user
 	String message = Sms.decodeSmsSendStatus(context.getResources(), getResultCode());
-	showStatusNotification(context, uri, context.getResources().getString(R.string.SMS_SENT_TITLE), message);
+	String title = context.getResources().getString(R.string.SMS_SENT_TITLE);
+
+	showStatusNotification(context, uri, title, message, new long[(0)], null);
     }
 
     public static Intent getIntent(Context packageContext, Uri uri) {

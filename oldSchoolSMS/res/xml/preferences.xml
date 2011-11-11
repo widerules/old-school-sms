@@ -15,14 +15,45 @@
 
 	</PreferenceCategory>
 
-	<PreferenceCategory android:title="Behaviour">
+	<PreferenceCategory android:title="Behaviour - receiveing">
 		
 		<CheckBoxPreference android:key="notifyOnNewSms"
 			android:title="Notify on new SMS" android:summary="Notify if new SMS arrives"
 			android:defaultValue="true" />
+
+		<EditTextPreference android:key="vibratorPattern"
+			android:title="Vibration Pattern"
+			android:summary="Vibration pattern of notification in ms (in format: vibrate,wait,wibrate,wait...)"
+			android:dialogTitle="vibratorPattern" android:dialogMessage="vibratorPattern"
+			android:defaultValue="500,200,300" android:numeric="integer" android:dependency="notifyOnNewSms"/>
+		
+		<RingtonePreference android:title="@string/notificationSound" android:key="notificationSound" android:ringtoneType="notification" android:showSilent="true" android:showDefault="true"
+		 android:dependency="notifyOnNewSms" />
+
 		<CheckBoxPreference android:key="popupOnNewSms"
 			android:title="Popup on new SMS" android:summary="Display popup window if new SMS arrives"
 			android:defaultValue="true" android:dependency="notifyOnNewSms" />
+
+	</PreferenceCategory>
+
+	<PreferenceCategory android:title="Behaviour - sending">
+
+		<CheckBoxPreference android:key="notifyOnSuccessfulSend"
+			android:title="Notify on successful send" android:summary="Display notification if sending of sms was successful"
+			android:defaultValue="true" />
+
+		<CheckBoxPreference android:key="notifyOnDelivery"
+			android:title="Notify on delivery" android:summary="Display notification if sms is delivered succesfuly"
+			android:defaultValue="true" />
+
+		<RingtonePreference android:title="@string/notificationSound" android:key="deliverySound" android:ringtoneType="notification" android:showSilent="true" android:showDefault="true" 
+		 android:dependency="notifyOnDelivery"/>
+
+		<EditTextPreference android:key="deliveryVibratorPattern"
+			android:title="Vibration Pattern"
+			android:summary="Vibration pattern of notification in ms (in format: vibrate,wait,wibrate,wait...)"
+			android:dialogTitle="vibratorPattern" android:dialogMessage="vibratorPattern"
+			android:defaultValue="500" android:numeric="integer" android:dependency="notifyOnDelivery"/>
 
 	</PreferenceCategory>
 

@@ -25,9 +25,20 @@ public class NewSmsPopupReceiver extends AbstractSmsBroadcastReceiver {
 
 	// get preferences
 	SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-	boolean notifyOnNewSms = sharedPrefs.getBoolean("notifyOnNewSms", true);
 
+	boolean notifyOnNewSms = sharedPrefs.getBoolean("notifyOnNewSms", true);
 	if (!notifyOnNewSms) {
+	    return;
+	}
+
+	// trigger the notifier
+	Intent newIntent = new Intent(ReceivedSmsActivity.NEW_SMS_ACTION);
+	newIntent.setClassName(context, SmsNotificationReceiver.class.getCanonicalName());
+
+	context.sendBroadcast(newIntent);
+
+	boolean popupOnNewSms = sharedPrefs.getBoolean("popupOnNewSms", true);
+	if (!popupOnNewSms) {
 	    return;
 	}
 
@@ -62,27 +73,24 @@ public class NewSmsPopupReceiver extends AbstractSmsBroadcastReceiver {
 		    else
 			receivedSms.put(address, body);
 		}
-		boolean popupOnNewSms = sharedPrefs.getBoolean("popupOnNewSms", true);
 
 		// display it
-		if (popupOnNewSms) {
-		    for (Entry<String, String> entry : receivedSms.entrySet()) {
-			String address = entry.getKey();
-			String body = entry.getValue();
+		for (Entry<String, String> entry : receivedSms.entrySet()) {
+		    String address = entry.getKey();
+		    String body = entry.getValue();
 
-			Log.d("OldSchoolSMS", "Received new SMS from (" + address + ") content: " + body);
+		    Log.d("OldSchoolSMS", "Received new SMS from (" + address + ") content: " + body);
 
-			Intent newIntent = new Intent(ReceivedSmsActivity.NEW_SMS_ACTION);
-			newIntent.setClassName(context, ReceivedSmsActivity.class.getCanonicalName());
-			newIntent.putExtra(ReceivedSmsActivity.INTENT_SMS_BODY, body);
-			newIntent.putExtra(ReceivedSmsActivity.INTENT_SMS_ADDRESS, address);
+		    Intent popupIntent = new Intent(ReceivedSmsActivity.NEW_SMS_ACTION);
+		    popupIntent.setClassName(context, ReceivedSmsActivity.class.getCanonicalName());
+		    popupIntent.putExtra(ReceivedSmsActivity.INTENT_SMS_BODY, body);
+		    popupIntent.putExtra(ReceivedSmsActivity.INTENT_SMS_ADDRESS, address);
 
-			newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		    popupIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-			context.startActivity(newIntent);
+		    context.startActivity(popupIntent);
 
-			Log.d("OldSchoolSMS", "Started new popup: " + newIntent);
-		    }
+		    Log.d("OldSchoolSMS", "Started new popup: " + popupIntent);
 		}
 	    }
 	}
