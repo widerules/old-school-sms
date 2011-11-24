@@ -46,7 +46,7 @@
 				<data android:scheme="smsto" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".popup.ReceivedSmsActivity" android:theme="@android:style/Theme.Dialog" android:taskAffinity="hu.anti.android.oldSchoolSms.popop"></activity>
+		<activity android:name=".popup.ReceivedSmsActivity" android:theme="@android:style/Theme.Dialog" android:taskAffinity="hu.anti.android.oldSchoolSms.popop" android:excludeFromRecents="true" android:launchMode="singleInstance"></activity>
 
 		<activity android:name=".SmsPreferences"></activity>
 
