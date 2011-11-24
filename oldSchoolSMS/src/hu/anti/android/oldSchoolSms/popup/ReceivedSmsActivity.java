@@ -3,6 +3,12 @@ package hu.anti.android.oldSchoolSms.popup;
 import hu.anti.android.oldSchoolSms.R;
 import hu.anti.android.oldSchoolSms.Sms;
 import hu.anti.android.oldSchoolSms.SmsSendActivity;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -21,8 +27,11 @@ import android.widget.TextView;
 public class ReceivedSmsActivity extends Activity {
     public static String NEW_SMS_ACTION = "NEW_SMS_ACTION";
     public static String INTENT_SMS_BODY = "INTENT_SMS_BODY";
+    public static String INTENT_SMS_TIMESTAMP = "INTENT_SMS_TIMESTAMP";
     public static String INTENT_SMS_ADDRESS = "INTENT_SMS_ADDRESS";
-    private String toNumber;
+
+    private final List<Sms> receivedSms = new ArrayList<Sms>();
+    private int displayedSms = 0;
 
     /************************************************
      * Activity
@@ -42,8 +51,10 @@ public class ReceivedSmsActivity extends Activity {
 	closeButton.setOnClickListener(new OnClickListener() {
 	    @Override
 	    public void onClick(View paramView) {
-		setIntent(null);
-		finish();
+		// remove displayed
+		receivedSms.remove(displayedSms);
+		// update data
+		updateView();
 	    }
 	});
 
@@ -64,8 +75,13 @@ public class ReceivedSmsActivity extends Activity {
 	replayButton.setOnClickListener(new OnClickListener() {
 	    @Override
 	    public void onClick(View paramView) {
-		Uri smsToUri = Uri.parse("smsto:" + toNumber);
+		// get selected sms
+		Sms sms = receivedSms.get(displayedSms);
 
+		// create the uri
+		Uri smsToUri = Uri.parse("smsto:" + sms.address);
+
+		// create intent
 		Intent intent = new Intent(Intent.ACTION_SENDTO);
 		intent.setData(smsToUri);
 		intent.setClass(ReceivedSmsActivity.this.getApplicationContext(), SmsSendActivity.class);
@@ -81,31 +97,80 @@ public class ReceivedSmsActivity extends Activity {
 	super.onResume();
 
 	Intent intent = getIntent();
+	Log.d("OldSchoolSMS", "ReceivedSmsActivity - onResume " + intent);
 
-	if (intent == null)
-	    return;
+	if (intent != null)
+	    if (NEW_SMS_ACTION.equals(intent.getAction())) {
+		Sms sms = extractIntent(intent);
 
-	Log.d("OldSchoolSMS", "Received " + intent);
+		receivedSms.add(sms);
+		displayedSms = 0;
 
-	if (NEW_SMS_ACTION.equals(intent.getAction())) {
-	    // set sender
-	    TextView senderView = (TextView) findViewById(R.id.newSmsDialogSenderView);
-	    toNumber = intent.getStringExtra(INTENT_SMS_ADDRESS);
+		// notify
+		vibrate();
 
-	    senderView.setText(Sms.getDisplayName(getContentResolver(), toNumber));
+		// remove intent
+		setIntent(null);
+	    }
 
-	    // set message
-	    TextView messageView = (TextView) findViewById(R.id.newSmsDialogTextView);
-	    messageView.setText(intent.getStringExtra(INTENT_SMS_BODY));
-
-	    // notify
-	    vibrate();
-	}
+	updateView();
     }
 
     @Override
-    protected void onPause() {
-	super.onPause();
+    protected void onNewIntent(Intent intent) {
+	super.onNewIntent(intent);
+	Log.d("OldSchoolSMS", "ReceivedSmsActivity - onNewIntent: " + intent);
+
+	if (intent != null)
+	    if (NEW_SMS_ACTION.equals(intent.getAction())) {
+		Sms sms = extractIntent(intent);
+
+		receivedSms.add(sms);
+
+		// notify
+		vibrate();
+
+		// remove intent
+		setIntent(null);
+	    }
+
+	// updateView();
+    }
+
+    protected Sms extractIntent(Intent intent) {
+	Sms sms = new Sms();
+	sms.address = intent.getStringExtra(INTENT_SMS_ADDRESS);
+	sms.body = intent.getStringExtra(INTENT_SMS_BODY);
+	sms.date = new Date(intent.getLongExtra(INTENT_SMS_TIMESTAMP, 0));
+
+	return sms;
+    }
+
+    protected void updateView() {
+	// update to last
+	if (displayedSms > receivedSms.size() - 1)
+	    displayedSms = receivedSms.size() - 1;
+
+	// if no more SMS close the dialog
+	if (displayedSms == -1) {
+	    finish();
+	    return;
+	}
+
+	// get selected sms
+	Sms sms = receivedSms.get(displayedSms);
+
+	// set timestamp
+	TextView timestampView = (TextView) findViewById(R.id.newSmsDialogDateTime);
+	timestampView.setText(new SimpleDateFormat("yyyy.MM.dd. HH.mm").format(sms.date));
+
+	// set sender
+	TextView senderView = (TextView) findViewById(R.id.newSmsDialogSenderView);
+	senderView.setText(sms.getDisplayName(getContentResolver()));
+
+	// set message
+	TextView messageView = (TextView) findViewById(R.id.newSmsDialogTextView);
+	messageView.setText(sms.body);
     }
 
     private void vibrate() {
