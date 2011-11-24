@@ -2,6 +2,7 @@ package hu.anti.android.oldSchoolSms.receiver;
 
 import hu.anti.android.oldSchoolSms.popup.ReceivedSmsActivity;
 
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -59,31 +60,42 @@ public class NewSmsPopupReceiver extends AbstractSmsBroadcastReceiver {
 		Object[] smsExtra = (Object[]) extras.get(SMS_EXTRA_NAME);
 
 		Map<String, String> receivedSms = new HashMap<String, String>();
+		Map<String, Long> receivedSmsTimestam = new HashMap<String, Long>();
 
 		for (int i = 0; i < smsExtra.length; ++i) {
 		    SmsMessage sms = SmsMessage.createFromPdu((byte[]) smsExtra[i]);
 
 		    String address = sms.getOriginatingAddress();
 		    String body = sms.getMessageBody().toString();
+		    long timestamp = sms.getTimestampMillis();
 
-		    Log.d("OldSchoolSMS", "Received new SMS part from (" + address + ") content: " + body);
+		    Log.d("OldSchoolSMS", "Received new SMS part at " + timestamp + " from (" + address + ") content: " + body);
 
+		    // store sms text
 		    if (receivedSms.containsKey(address))
 			receivedSms.put(address, receivedSms.get(address) + body);
 		    else
 			receivedSms.put(address, body);
+
+		    // store sms timestamp
+		    receivedSmsTimestam.put(address, timestamp);
 		}
 
 		// display it
 		for (Entry<String, String> entry : receivedSms.entrySet()) {
 		    String address = entry.getKey();
 		    String body = entry.getValue();
+		    Long timestamp = receivedSmsTimestam.get(address);
 
-		    Log.d("OldSchoolSMS", "Received new SMS from (" + address + ") content: " + body);
+		    Log.d("OldSchoolSMS", "Received new SMS at [" + timestamp + "/" + new SimpleDateFormat("yyyy.MM.dd. HH.mm").format(timestamp) + "] from ("
+			    + address + ") content: " + body);
 
 		    Intent popupIntent = new Intent(ReceivedSmsActivity.NEW_SMS_ACTION);
 		    popupIntent.setClassName(context, ReceivedSmsActivity.class.getCanonicalName());
+
+		    // set data
 		    popupIntent.putExtra(ReceivedSmsActivity.INTENT_SMS_BODY, body);
+		    popupIntent.putExtra(ReceivedSmsActivity.INTENT_SMS_TIMESTAMP, timestamp);
 		    popupIntent.putExtra(ReceivedSmsActivity.INTENT_SMS_ADDRESS, address);
 
 		    popupIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
