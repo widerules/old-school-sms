@@ -40,13 +40,25 @@ public abstract class AbstractSmsActivity extends Activity {
     }
 
     protected void openSms(Uri uri, String action) {
+	Sms sms = null;
+
+	// if existing SMS
+	if (uri != null && uri.toString().startsWith(Sms.Uris.SMS_URI_BASE)) {
+	    Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+	    if (cursor.moveToFirst())
+		sms = Sms.parseSms(cursor);
+	}
+
 	Intent intent = new Intent(action);
 	intent.setData(uri);
+
 	// setClass
-	if (Intent.ACTION_VIEW.equals(action))
-	    intent.setClass(getApplicationContext(), SmsViewActivity.class);
-	else
+	if (sms == null || Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type) || !action.equals(Intent.ACTION_VIEW)) {
 	    intent.setClass(getApplicationContext(), SmsSendActivity.class);
+	} else {
+	    intent.setAction(Intent.ACTION_VIEW);
+	    intent.setClass(getApplicationContext(), SmsViewActivity.class);
+	}
 
 	startActivity(intent);
     }
