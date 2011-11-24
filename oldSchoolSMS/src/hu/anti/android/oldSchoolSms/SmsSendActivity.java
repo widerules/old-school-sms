@@ -63,19 +63,6 @@ public class SmsSendActivity extends AbstractSmsActivity {
 		    return;
 		}
 
-		Intent intent = getIntent();
-		String action = intent.getAction();
-		Uri data = intent.getData();
-
-		if (Intent.ACTION_SEND.equals(action) && data != null) {
-		    Sms sms = Sms.getSms(getContentResolver(), data);
-
-		    if (Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type)) {
-			// if from a draft, first delete it
-			getContentResolver().delete(data, null, null);
-		    }
-		}
-
 		// send it
 		sendSms(toNumber, body);
 		smsSent = true;
@@ -233,8 +220,8 @@ public class SmsSendActivity extends AbstractSmsActivity {
 		if (Intent.ACTION_SEND.equals(action) && data != null) {
 		    Sms sms = Sms.getSms(getContentResolver(), data);
 
+		    // update existing draft
 		    if (Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type)) {
-			// update existing draft
 
 			ContentValues values = new ContentValues();
 			values.put(Sms.Fields.ADDRESS, toNumber);
@@ -248,8 +235,12 @@ public class SmsSendActivity extends AbstractSmsActivity {
 		}
 
 		// put to database the new draft sms
-		Uri uri = putNewSmsToDatabase(getContentResolver(), toNumber, body, Sms.Type.MESSAGE_TYPE_DRAFT, Sms.Status.NONE);
-		Log.d("OldSchoolSMS", "onPause SMS uri: " + uri + " getScheme: [" + uri.getScheme() + "]");
+		Uri draftUri = putNewSmsToDatabase(getContentResolver(), toNumber, body, Sms.Type.MESSAGE_TYPE_DRAFT, Sms.Status.NONE);
+		Log.d("OldSchoolSMS", "onPause SMS uri: " + draftUri + " getScheme: [" + draftUri.getScheme() + "]");
+
+		// use new intent for this draft
+		Intent draftIntent = new Intent(Intent.ACTION_SEND, draftUri);
+		setIntent(draftIntent);
 	    }
 	}
     }
@@ -259,7 +250,21 @@ public class SmsSendActivity extends AbstractSmsActivity {
      ************************************************/
 
     protected void sendSms(String address, String body) {
-	// put to database
+	Intent intent = getIntent();
+	String action = intent.getAction();
+	Uri data = intent.getData();
+
+	// check draft source...
+	if (Intent.ACTION_SEND.equals(action) && data != null) {
+	    Sms sms = Sms.getSms(getContentResolver(), data);
+
+	    if (Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type)) {
+		// if from a draft, first delete it
+		getContentResolver().delete(data, null, null);
+	    }
+	}
+
+	// put to database the sent sms
 	Uri uri = putNewSmsToDatabase(getContentResolver(), address, body, Sms.Type.MESSAGE_TYPE_OUTBOX, Sms.Status.NONE);
 
 	Log.d("OldSchoolSMS", "doSend SMS uri: " + uri + " getScheme: [" + uri.getScheme() + "]");
