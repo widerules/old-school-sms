@@ -59,12 +59,16 @@
 
 	<PreferenceCategory android:title="Application developement">
 		
-		<CheckBoxPreference android:key="debugModeSmsList"
-			android:title="SMS list" android:summary="Show debug informations from SMS list"
+		<CheckBoxPreference android:key="debug"
+			android:title="Debug data" android:summary="Advanced debug setings for developers"
 			android:defaultValue="false" />
+
+		<CheckBoxPreference android:key="debugModeSmsList"
+			android:title="SMS details" android:summary="Show debug information from SMS list"
+			android:defaultValue="false" android:dependency="debug" />
 		<CheckBoxPreference android:key="extendedBoxList"
 			android:title="SMS box list" android:summary="Show extended list of SMS boxes"
-			android:defaultValue="false" />
+			android:defaultValue="false" android:dependency="debug" />
 
 	</PreferenceCategory>
 
