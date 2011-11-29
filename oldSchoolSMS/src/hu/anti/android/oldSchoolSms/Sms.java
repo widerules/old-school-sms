@@ -1,6 +1,8 @@
 package hu.anti.android.oldSchoolSms;
 
 import java.lang.reflect.Field;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -200,14 +202,19 @@ public class Sms {
 	if (person != null)
 	    return person;
 
-	if (phoneNumber.startsWith("+"))
-	    person = getPersonName(contentResolver, phoneNumber.substring(1));
-	else
-	    person = getPersonName(contentResolver, "+" + phoneNumber);
+	// url encode
+	person = getPersonName(contentResolver, URLEncoder.encode(phoneNumber));
 
 	if (person != null)
 	    return person;
 
+	// url decode
+	person = getPersonName(contentResolver, URLDecoder.decode(phoneNumber));
+
+	if (person != null)
+	    return person;
+
+	// default...
 	return "(" + phoneNumber + ")";
     }
 

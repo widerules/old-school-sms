@@ -4,6 +4,7 @@ import hu.anti.android.oldSchoolSms.receiver.AbstractSmsBroadcastReceiver;
 import hu.anti.android.oldSchoolSms.receiver.DeliveredStatusReceiver;
 import hu.anti.android.oldSchoolSms.receiver.SentStatusReceiver;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -136,7 +137,10 @@ public class SmsSendActivity extends AbstractSmsActivity {
 		    int columnIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
 
 		    if (columnIndex > -1) {
+			// url decode...
 			String number = cursor.getString(columnIndex);
+			number = URLDecoder.decode(number);
+
 			toNumber = number;
 
 			setText(R.id.toNumber, Sms.getDisplayName(getContentResolver(), number));
@@ -177,6 +181,10 @@ public class SmsSendActivity extends AbstractSmsActivity {
 	    String scheme = intent.getScheme();
 	    // "smsto:" form
 	    String number = intent.getDataString().substring(scheme.length() + 1);
+
+	    // url decode it...
+	    number = URLDecoder.decode(number);
+
 	    toNumber = number;
 
 	    setText(R.id.toNumber, Sms.getDisplayName(getContentResolver(), number));
