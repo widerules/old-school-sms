@@ -64,5 +64,7 @@
 	<string name="SMS_RECIVED_COUNT">Count of unread SMS: %d</string>
 	<string name="enterNumber">Tap here to enter number</string>
 	<string name="notificationSound">Notification Sound</string>
+	<string name="resend">resend</string>
+	<string name="mark_as_read">mark as read</string>
 
 </resources>
