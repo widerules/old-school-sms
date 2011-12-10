@@ -25,7 +25,7 @@ public class Sms {
 
 	public static final List<String> URIS = new ArrayList<String>();
 	static {
-	    URIS.add("content://sms/");
+	    URIS.add(SMS_URI_BASE);
 	    URIS.add(SMS_URI_BASE + "inbox");
 	    URIS.add(SMS_URI_BASE + "sent");
 	    URIS.add(SMS_URI_BASE + "draft");
