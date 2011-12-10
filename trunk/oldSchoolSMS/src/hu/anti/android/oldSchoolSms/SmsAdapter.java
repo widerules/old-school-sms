@@ -68,8 +68,6 @@ public class SmsAdapter extends ArrayAdapter<Sms> {
 	    textStyle = R.style.normalSms;
 	listItem.getText1().setTextAppearance(getContext(), textStyle);
 
-	// Log.d("OldSchoolSMS", "SMS type: [" + sms.type + "] on:" + sms);
-
 	// finish
 	return convertView;
     }
