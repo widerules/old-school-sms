@@ -4,7 +4,7 @@
 		<item android:title="replay" android:id="@+id/replay"></item>
 		<item android:title="forward" android:id="@+id/forward"></item>
 
-		<item android:title="delete" android:id="@+id/delete"></item>
+		<item android:id="@+id/resend" android:title="@string/resend"></item><item android:title="delete" android:id="@+id/delete"></item>
 
 		<item android:title="@string/close" android:id="@+id/close"></item>
 </menu>

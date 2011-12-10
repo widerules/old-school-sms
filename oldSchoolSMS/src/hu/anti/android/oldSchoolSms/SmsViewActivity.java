@@ -1,8 +1,6 @@
 package hu.anti.android.oldSchoolSms;
 
-import android.app.NotificationManager;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -58,14 +56,19 @@ public class SmsViewActivity extends AbstractSmsActivity {
 	    setText(R.id.textViewSms, sms.body);
 
 	    if (Sms.Type.MESSAGE_TYPE_SENT.equals(sms.type) || Sms.Type.MESSAGE_TYPE_OUTBOX.equals(sms.type)
-		    || Sms.Type.MESSAGE_TYPE_UNDELIVERED.equals(sms.type) || Sms.Type.MESSAGE_TYPE_FAILED.equals(sms.type))
+		    || Sms.Type.MESSAGE_TYPE_UNDELIVERED.equals(sms.type) || Sms.Type.MESSAGE_TYPE_FAILED.equals(sms.type)) {
+		// sent
 		setText(R.id.statusText, Sms.decodeSmsDeliveryStatus(getResources(), sms.status));
-	    else
+
+		// clear notification
+		NotificationService.removeNotification(this, sms._id.intValue());
+	    } else {
+		// received
 		setText(R.id.statusText, "");
 
-	    // clear notifications
-	    NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-	    mNotificationManager.cancel(sms._id.intValue());
+		// update notification
+		startService(new Intent(NotificationService.ACTION_UPDATE_SMS_NOTIFICATIONS, null, this, NotificationService.class));
+	    }
 
 	    // update read flag
 	    ContentValues values = new ContentValues();
@@ -95,16 +98,30 @@ public class SmsViewActivity extends AbstractSmsActivity {
 	// Handle item selection
 	switch (item.getItemId()) {
 
+	case R.id.resend: {
+	    // FIXME
+	    Sms sms = Sms.getSms(getContentResolver(), uri);
+
+	    Intent popupIntent = new Intent(NotificationService.ACTION_SEND_SMS, null, this, NotificationService.class);
+	    popupIntent.putExtra(NotificationService.EXTRA_ADDRESS, sms.address);
+	    popupIntent.putExtra(NotificationService.EXTRA_BODY, sms.body);
+
+	    startService(popupIntent);
+
+	    return true;
+	}
+
 	case R.id.forward:
 	    openSms(uri, Intent.ACTION_SEND);
 	    return true;
 
-	case R.id.replay:
+	case R.id.replay: {
 	    Sms sms = Sms.getSms(getContentResolver(), uri);
 	    Uri smsToUri = Uri.parse("smsto:" + sms.address);
 
 	    openSms(smsToUri, Intent.ACTION_SENDTO);
 	    return true;
+	}
 
 	case R.id.delete:
 	    getContentResolver().delete(uri, null, null);
