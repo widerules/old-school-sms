@@ -50,7 +50,7 @@ public class SentStatusReceiver extends AbstractSmsBroadcastReceiver {
 	String message = Sms.decodeSmsSendStatus(context.getResources(), getResultCode());
 	String title = context.getResources().getString(R.string.SMS_SENT_TITLE);
 
-	showStatusNotification(context, uri, title, message, new long[(0)], null);
+	showStatusNotification(context, uri, title, message, null, null);
     }
 
     public static Intent getIntent(Context packageContext, Uri uri) {
