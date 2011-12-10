@@ -16,6 +16,9 @@ import android.util.Log;
 
 public abstract class AbstractSmsBroadcastReceiver extends BroadcastReceiver {
     public static void logIntent(String object, Intent intent) {
+	if (intent == null)
+	    return;
+
 	Bundle extras = intent.getExtras();
 
 	Log.d("OldSchoolSMS", object + "/intent: " + intent);
