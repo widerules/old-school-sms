@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="hu.anti.android.oldSchoolSms" android:versionName="1.0" android:versionCode="5">
+	package="hu.anti.android.oldSchoolSms" android:versionName="1.0" android:versionCode="6">
 	<uses-sdk android:minSdkVersion="7" />
 	<uses-permission android:name="android.permission.WRITE_SMS" />
 	<uses-permission android:name="android.permission.READ_SMS" />
@@ -27,7 +27,7 @@
                 <data android:mimeType="vnd.android-dir/mms-sms" />
             </intent-filter>
 		</activity>
-		<activity android:name=".SmsViewActivity">
+		<activity android:name=".SmsViewActivity" android:noHistory="true">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.ALTERNATIVE" />
@@ -38,7 +38,7 @@
 				<category android:name="android.intent.category.BROWSABLE" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".SmsSendActivity">
+		<activity android:name=".SmsSendActivity" android:noHistory="true">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.ALTERNATIVE" />
@@ -59,18 +59,13 @@
 		</activity>
 		<activity android:name=".popup.ReceivedSmsActivity" android:theme="@android:style/Theme.Dialog" android:taskAffinity="hu.anti.android.oldSchoolSms.popop" android:excludeFromRecents="true" android:launchMode="singleInstance"></activity>
 
-		<activity android:name=".SmsPreferences"></activity>
+		<activity android:name=".SmsPreferenceActivity"></activity>
 
 		<activity android:name="com.google.ads.AdActivity"
 			android:configChanges="keyboard|keyboardHidden|orientation" />
 
-		<receiver android:name=".receiver.NewSmsPopupReceiver"
-			android:exported="true">
-			<intent-filter>
-				<action android:name="android.provider.Telephony.SMS_RECEIVED" />
-			</intent-filter>
-		</receiver>
-		<receiver android:name=".receiver.SmsNotificationReceiver"
+
+		<receiver android:name=".receiver.NewSmsReceiver"
 			android:exported="true">
 			<intent-filter>
 				<action android:name="android.provider.Telephony.SMS_RECEIVED" />
@@ -87,5 +82,7 @@
 				<action android:name="SMS_DELIVERED" />
 			</intent-filter>
 		</receiver>
+		
+		<service android:name=".NotificationService"></service>
 	</application>
 </manifest>
