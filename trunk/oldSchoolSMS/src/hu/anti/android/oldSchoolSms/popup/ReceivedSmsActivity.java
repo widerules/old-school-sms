@@ -10,13 +10,9 @@ import java.util.Date;
 import java.util.List;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Vibrator;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -106,9 +102,6 @@ public class ReceivedSmsActivity extends Activity {
 		receivedSms.add(sms);
 		displayedSms = 0;
 
-		// notify
-		vibrate();
-
 		// remove intent
 		setIntent(null);
 	    }
@@ -126,9 +119,6 @@ public class ReceivedSmsActivity extends Activity {
 		Sms sms = extractIntent(intent);
 
 		receivedSms.add(sms);
-
-		// notify
-		vibrate();
 
 		// remove intent
 		setIntent(null);
@@ -171,25 +161,5 @@ public class ReceivedSmsActivity extends Activity {
 	// set message
 	TextView messageView = (TextView) findViewById(R.id.newSmsDialogTextView);
 	messageView.setText(sms.body);
-    }
-
-    private void vibrate() {
-	SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-	String vibratorPattern = sharedPrefs.getString("vibratorPattern", "333,333,333");
-
-	// extract pattern
-	String[] split = vibratorPattern.split("[,.;/\\- ]");
-	// create vibration pattern holder
-	long[] pattern = new long[(split.length + 1)];
-	// set starting wait to 0ms
-	pattern[0] = 0;
-	// decode pattern string
-	for (int i = 0; i < split.length; i++) {
-	    pattern[i + 1] = Long.parseLong(split[i]);
-	}
-
-	// Start the vibration
-	Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-	vibrator.vibrate(pattern, -1);
     }
 }
