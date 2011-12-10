@@ -1,15 +1,11 @@
 package hu.anti.android.oldSchoolSms;
 
 import hu.anti.android.oldSchoolSms.receiver.AbstractSmsBroadcastReceiver;
-import hu.anti.android.oldSchoolSms.receiver.DeliveredStatusReceiver;
-import hu.anti.android.oldSchoolSms.receiver.SentStatusReceiver;
 
 import java.net.URLDecoder;
-import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,7 +13,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,6 +24,7 @@ import android.widget.Toast;
 
 public class SmsSendActivity extends AbstractSmsActivity {
 
+    private static final int PERSON_SELECTION = 1;
     private boolean dataFilled = false;
     private boolean smsSent = false;
 
@@ -64,8 +60,28 @@ public class SmsSendActivity extends AbstractSmsActivity {
 		    return;
 		}
 
+		// handle draft
+		Intent intent = getIntent();
+		String action = intent.getAction();
+		Uri data = intent.getData();
+		// check draft source...
+		if (Intent.ACTION_SEND.equals(action) && data != null) {
+		    Sms sms = Sms.getSms(getContentResolver(), data);
+
+		    if (Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type)) {
+			// if from a draft, first delete it
+			getContentResolver().delete(data, null, null);
+		    }
+		}
+
 		// send it
-		sendSms(toNumber, body);
+		Intent popupIntent = new Intent(NotificationService.ACTION_SEND_SMS, null, SmsSendActivity.this, NotificationService.class);
+		popupIntent.putExtra(NotificationService.EXTRA_ADDRESS, toNumber);
+		popupIntent.putExtra(NotificationService.EXTRA_BODY, body);
+
+		startService(popupIntent);
+
+		// mark sent status
 		smsSent = true;
 
 		// close activity
@@ -81,7 +97,7 @@ public class SmsSendActivity extends AbstractSmsActivity {
 	    public void onClick(View paramView) {
 		// ask for number
 		Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
-		startActivityForResult(intent, 1);
+		startActivityForResult(intent, PERSON_SELECTION);
 	    }
 	});
 
@@ -128,7 +144,7 @@ public class SmsSendActivity extends AbstractSmsActivity {
 	AbstractSmsBroadcastReceiver.logIntent("sms send activity", intent);
 
 	switch (requestCode) {
-	case 1:
+	case PERSON_SELECTION:
 	    if (resultCode == Activity.RESULT_OK) {
 		Uri contactData = intent.getData();
 		Cursor cursor = managedQuery(contactData, null, null, null, null);
@@ -139,7 +155,8 @@ public class SmsSendActivity extends AbstractSmsActivity {
 		    if (columnIndex > -1) {
 			// url decode...
 			String number = cursor.getString(columnIndex);
-			number = URLDecoder.decode(number);
+			if (number.contains("%"))
+			    number = URLDecoder.decode(number);
 
 			toNumber = number;
 
@@ -183,7 +200,8 @@ public class SmsSendActivity extends AbstractSmsActivity {
 	    String number = intent.getDataString().substring(scheme.length() + 1);
 
 	    // url decode it...
-	    number = URLDecoder.decode(number);
+	    if (number.contains("%"))
+		number = URLDecoder.decode(number);
 
 	    toNumber = number;
 
@@ -243,7 +261,7 @@ public class SmsSendActivity extends AbstractSmsActivity {
 		}
 
 		// put to database the new draft sms
-		Uri draftUri = putNewSmsToDatabase(getContentResolver(), toNumber, body, Sms.Type.MESSAGE_TYPE_DRAFT, Sms.Status.NONE);
+		Uri draftUri = NotificationService.putNewSmsToDatabase(getContentResolver(), toNumber, body, Sms.Type.MESSAGE_TYPE_DRAFT, Sms.Status.NONE);
 		Log.d("OldSchoolSMS", "onPause SMS uri: " + draftUri + " getScheme: [" + draftUri.getScheme() + "]");
 
 		// use new intent for this draft
@@ -251,52 +269,5 @@ public class SmsSendActivity extends AbstractSmsActivity {
 		setIntent(draftIntent);
 	    }
 	}
-    }
-
-    /************************************************
-     * functions
-     ************************************************/
-
-    protected void sendSms(String address, String body) {
-	Intent intent = getIntent();
-	String action = intent.getAction();
-	Uri data = intent.getData();
-
-	// check draft source...
-	if (Intent.ACTION_SEND.equals(action) && data != null) {
-	    Sms sms = Sms.getSms(getContentResolver(), data);
-
-	    if (Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type)) {
-		// if from a draft, first delete it
-		getContentResolver().delete(data, null, null);
-	    }
-	}
-
-	// put to database the sent sms
-	Uri uri = putNewSmsToDatabase(getContentResolver(), address, body, Sms.Type.MESSAGE_TYPE_OUTBOX, Sms.Status.NONE);
-
-	Log.d("OldSchoolSMS", "doSend SMS uri: " + uri + " getScheme: [" + uri.getScheme() + "]");
-
-	// create sent listener
-	PendingIntent sentPI = PendingIntent.getBroadcast(getApplicationContext(), 0, SentStatusReceiver.getIntent(getApplicationContext(), uri), 0);
-
-	// create delivery listener
-	PendingIntent deliveredPI = PendingIntent.getBroadcast(getApplicationContext(), 0, DeliveredStatusReceiver.getIntent(getApplicationContext(), uri), 0);
-
-	SmsManager smsManager = SmsManager.getDefault();
-
-	// split message
-	ArrayList<String> dividedMessage = smsManager.divideMessage(body);
-
-	// fill listener arrays
-	ArrayList<PendingIntent> sentIntents = new ArrayList<PendingIntent>();
-	ArrayList<PendingIntent> deliveryIntents = new ArrayList<PendingIntent>();
-	for (int i = 0; i < dividedMessage.size(); i++) {
-	    sentIntents.add(sentPI);
-	    deliveryIntents.add(deliveredPI);
-	}
-
-	// execute send
-	smsManager.sendMultipartTextMessage(address, null, dividedMessage, sentIntents, deliveryIntents);
     }
 }
