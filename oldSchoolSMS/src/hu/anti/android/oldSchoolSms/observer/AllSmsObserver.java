@@ -5,7 +5,7 @@ import android.content.ContentResolver;
 import android.net.Uri;
 import android.os.Handler;
 
-public class AllSmsObserver extends SmsObserver {
+public class AllSmsObserver extends AbstractSmsObserver {
     private final Uri uri;
 
     public AllSmsObserver(ContentResolver contentResolver, Handler smsHandler) {
