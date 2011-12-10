@@ -3,6 +3,10 @@
 
 = ReleaseNotes =
 Minden új kiadás tartalmaz hibajavítást, ez nem kerül külön kiemelésre... az új funkciók, képességek a következők:
+== 2011.12.10. ==
+  * sebeségnövekedés (átállás service alapú értesítéskezelésre: már nem az alapfelület végzi a notifikációk ezelését)
+  * resend funkció bevezetése
+  * a telefonkönyvbe +36... formában beírtak helyes kezelése sms íráskor
 == 2011.11.24. ==
   * draft kezelés javítása
   * több beérkező SMS lekezelése aktív ablak esetén (a bezárásgomb megnyomása után a következő sms kerül megjelenítésre)
