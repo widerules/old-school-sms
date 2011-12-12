@@ -36,14 +36,21 @@ public abstract class AbstractSmsBroadcastReceiver extends BroadcastReceiver {
     protected void showStatusNotification(Context context, Uri uri, String title, String message, long[] vibratorPattern, Uri soundUri) {
 	// search for sms data
 	Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
-	if (cursor == null || !cursor.moveToFirst()) {
+	if (cursor == null) {
 	    Log.e("OldSchoolSMS", "Recived notification for non existing SMS object: [" + uri + "]");
 
+	    return;
+	} else if (!cursor.moveToFirst()) {
+	    Log.e("OldSchoolSMS", "Recived notification for no SMS object: [" + uri + "]");
+
+	    cursor.close();
 	    return;
 	}
 
 	// read the sms
 	Sms sms = Sms.parseSms(cursor);
+	cursor.close();
+
 	int notificationId = sms._id.intValue();
 
 	// format message with name if required...
