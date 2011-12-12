@@ -26,6 +26,7 @@ public class NotificationService extends IntentService {
 
     public static final String ACTION_UPDATE_SMS_NOTIFICATIONS = "ACTION_UPDATE_SMS_NOTIFICATIONS";
     public static final String ACTION_SEND_SMS = "ACTION_SEND_SMS";
+    public static final String ACTION_MARK_AS_READ_SMS = "ACTION_MARK_AS_READ_SMS";
 
     public NotificationService() {
 	super("OldSchoolSms-NotificationService");
@@ -45,11 +46,16 @@ public class NotificationService extends IntentService {
 	    String body = extras.getString(EXTRA_BODY);
 
 	    sendSms(address, body);
+	} else if (ACTION_MARK_AS_READ_SMS.equals(action)) {
+	    String address = extras.getString(EXTRA_ADDRESS);
+	    String body = extras.getString(EXTRA_BODY);
+
+	    markAsRead(address, body);
 	}
     }
 
     /************************************************
-     * ACTION_UPDATE_SMS_NOTIFICATIONS
+     * ACTION_SEND_SMS
      ************************************************/
 
     protected void sendSms(String address, String body) {
@@ -101,13 +107,15 @@ public class NotificationService extends IntentService {
 	if (cursor != null && cursor.moveToFirst()) {
 	    Sms sms = Sms.parseSms(cursor);
 	    Log.d("OldSchoolSMS", "Inserted new SMS objet: [" + sms + "]");
+
+	    cursor.close();
 	}
 
 	return uri;
     }
 
     /************************************************
-     * ACTION_SEND_SMS
+     * ACTION_UPDATE_SMS_NOTIFICATIONS
      ************************************************/
 
     protected void updateSmsNotifications() {
@@ -129,8 +137,10 @@ public class NotificationService extends IntentService {
 
 	// intent on click
 	Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
-	notificationIntent.setData(Uri.parse(Sms.Uris.SMS_URI_BASE));
-	notificationIntent.setClass(context, OldSchoolSMSActivity.class);
+
+	Uri smsUri = Sms.findLastUnread(getContentResolver());
+	notificationIntent.setData(smsUri);
+	notificationIntent.setClass(context, SmsViewActivity.class);
 
 	PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 
@@ -160,9 +170,25 @@ public class NotificationService extends IntentService {
 	Cursor cursor = context.getContentResolver().query(uri, null,
 		"(" + Sms.Fields.TYPE + " = " + Sms.Type.MESSAGE_TYPE_INBOX + " AND " + Sms.Fields.READ + " = 0)", null, null);
 
-	if (cursor != null)
+	if (cursor != null) {
 	    count = cursor.getCount();
+	    cursor.close();
+	}
 
 	return count;
     }
+
+    /************************************************
+     * ACTION_MARK_AS_READ_SMS
+     ************************************************/
+    protected void markAsRead(String address, String body) {
+	Uri smsUri = Sms.findSmsByContent(getContentResolver(), address, body);
+
+	// update read flag
+	ContentValues values = new ContentValues();
+	values.put(Sms.Fields.READ, Sms.Other.MESSAGE_IS_READ);
+
+	getContentResolver().update(smsUri, values, null, null);
+    }
+
 }
