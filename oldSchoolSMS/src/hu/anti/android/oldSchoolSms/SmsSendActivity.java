@@ -14,6 +14,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -26,7 +29,7 @@ public class SmsSendActivity extends AbstractSmsActivity {
 
     private static final int PERSON_SELECTION = 1;
     private boolean dataFilled = false;
-    private boolean smsSent = false;
+    private boolean smsProcessed = false;
 
     private String toNumber = null;
 
@@ -60,19 +63,7 @@ public class SmsSendActivity extends AbstractSmsActivity {
 		    return;
 		}
 
-		// handle draft
-		Intent intent = getIntent();
-		String action = intent.getAction();
-		Uri data = intent.getData();
-		// check draft source...
-		if (Intent.ACTION_SEND.equals(action) && data != null) {
-		    Sms sms = Sms.getSms(getContentResolver(), data);
-
-		    if (Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type)) {
-			// if from a draft, first delete it
-			getContentResolver().delete(data, null, null);
-		    }
-		}
+		deleteDraft();
 
 		// send it
 		Intent popupIntent = new Intent(NotificationService.ACTION_SEND_SMS, null, SmsSendActivity.this, NotificationService.class);
@@ -82,7 +73,7 @@ public class SmsSendActivity extends AbstractSmsActivity {
 		startService(popupIntent);
 
 		// mark sent status
-		smsSent = true;
+		smsProcessed = true;
 
 		// close activity
 		finish();
@@ -147,7 +138,7 @@ public class SmsSendActivity extends AbstractSmsActivity {
 	case PERSON_SELECTION:
 	    if (resultCode == Activity.RESULT_OK) {
 		Uri contactData = intent.getData();
-		Cursor cursor = managedQuery(contactData, null, null, null, null);
+		Cursor cursor = getContentResolver().query(contactData, null, null, null, null);
 
 		if (cursor.moveToFirst()) {
 		    int columnIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
@@ -163,6 +154,9 @@ public class SmsSendActivity extends AbstractSmsActivity {
 			setText(R.id.toNumber, Sms.getDisplayName(getContentResolver(), number));
 		    }
 		}
+
+		if (cursor != null)
+		    cursor.close();
 	    }
 	    break;
 
@@ -232,7 +226,7 @@ public class SmsSendActivity extends AbstractSmsActivity {
 	LinearLayout layout = (LinearLayout) findViewById(R.id.AdMob);
 	AdMob.removeView(this, layout);
 
-	if (!smsSent) {
+	if (!smsProcessed) {
 	    // get message
 	    TextView messageText = (TextView) findViewById(R.id.messageText);
 	    String body = messageText.getText().toString();
@@ -267,6 +261,79 @@ public class SmsSendActivity extends AbstractSmsActivity {
 		// use new intent for this draft
 		Intent draftIntent = new Intent(Intent.ACTION_SEND, draftUri);
 		setIntent(draftIntent);
+	    }
+	}
+    }
+
+    /************************************************
+     * Activity - OptionsMenu
+     ************************************************/
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+	MenuInflater inflater = getMenuInflater();
+	inflater.inflate(R.menu.sms_send, menu);
+
+	return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+	MenuItem deleteMenuItem = menu.findItem(R.id.delete);
+
+	// default disable
+	deleteMenuItem.setEnabled(false);
+
+	Uri uri = getIntent().getData();
+	if (uri != null) {
+	    Sms sms = Sms.getSms(getContentResolver(), uri);
+	    if (sms != null)
+		// enable it only if draft...
+		deleteMenuItem.setEnabled(Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type));
+	}
+
+	return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+	Uri uri = getIntent().getData();
+
+	// Handle item selection
+	switch (item.getItemId()) {
+
+	case R.id.cancel:
+	    smsProcessed = true;
+	    finish();
+	    return true;
+
+	case R.id.delete:
+	    smsProcessed = true;
+	    deleteDraft();
+	    finish();
+	    return true;
+
+	default:
+	    return super.onOptionsItemSelected(item);
+	}
+    }
+
+    /************************************************
+     * functions
+     ************************************************/
+
+    private void deleteDraft() {
+	// handle draft
+	Intent intent = getIntent();
+	String action = intent.getAction();
+	Uri data = intent.getData();
+	// check draft source...
+	if (Intent.ACTION_SEND.equals(action) && data != null) {
+	    Sms sms = Sms.getSms(getContentResolver(), data);
+
+	    if (Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type)) {
+		// if from a draft, first delete it
+		getContentResolver().delete(data, null, null);
 	    }
 	}
     }
