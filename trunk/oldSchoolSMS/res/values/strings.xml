@@ -66,5 +66,6 @@
 	<string name="notificationSound">Notification Sound</string>
 	<string name="resend">resend</string>
 	<string name="mark_as_read">mark as read</string>
+	<string name="cancel">cancel</string>
 
 </resources>
