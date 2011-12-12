@@ -56,21 +56,21 @@ public class NewSmsReceiver extends AbstractSmsBroadcastReceiver {
 	    startSmSObserver(context);
 	}
 
-	// initialize the Notification
-	Notification notification = new Notification();
-
-	// notification ring tone
-	String notificationSound = sharedPrefs.getString("notificationSound", "DEFAULT_SOUND");
-	notification.sound = Uri.parse(notificationSound);
-
-	// LED
-	notification.defaults |= Notification.DEFAULT_LIGHTS;
-
-	// fire it
-	NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-	mNotificationManager.notify(1, notification);
-
 	if ("android.provider.Telephony.SMS_RECEIVED".equals(intent.getAction())) {
+	    // initialize the Notification
+	    Notification notification = new Notification();
+
+	    // notification ring tone
+	    String notificationSound = sharedPrefs.getString("notificationSound", "DEFAULT_SOUND");
+	    notification.sound = Uri.parse(notificationSound);
+
+	    // LED
+	    notification.defaults |= Notification.DEFAULT_LIGHTS;
+
+	    // fire it
+	    NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+	    mNotificationManager.notify(1, notification);
+
 	    // vibrate
 	    String vibratorPattern = sharedPrefs.getString("vibratorPattern", "333,333,333");
 	    long[] pattern = extractPattern(vibratorPattern);
@@ -162,11 +162,6 @@ public class NewSmsReceiver extends AbstractSmsBroadcastReceiver {
 		super.handleMessage(msg);
 
 		Log.d("OldSchoolSMS", "NewSmsReceiver: NewSmsReceiver/AllSmsObserver received Message: " + msg);
-
-		Intent intent = new Intent();
-		intent.setClassName(context, NewSmsReceiver.class.getCanonicalName());
-
-		context.sendBroadcast(intent);
 
 		// update notification count
 		context.startService(new Intent(NotificationService.ACTION_UPDATE_SMS_NOTIFICATIONS, null, context, NotificationService.class));
