@@ -122,12 +122,20 @@ public class Sms {
     public static Sms getSms(ContentResolver contentResolver, Uri uri) {
 	Cursor cursor = contentResolver.query(uri, null, null, null, null);
 
+	if (cursor == null)
+	    return new Sms();
+
 	Log.d("OldSchoolSMS", "For [" + uri + "] found [" + cursor.getCount() + "] element(s)");
 
 	if (!cursor.moveToFirst())
 	    return new Sms();
 
-	return parseSms(cursor);
+	Sms sms = parseSms(cursor);
+
+	if (cursor != null)
+	    cursor.close();
+
+	return sms;
     }
 
     // public static Sms getSms(Uri data) {
@@ -192,6 +200,53 @@ public class Sms {
 	return getDisplayName(contentResolver, address);
     }
 
+    public Uri findSmsByContent(ContentResolver contentResolver) {
+	return findSmsByContent(contentResolver, address, body);
+    }
+
+    public static Uri findSmsByContent(ContentResolver contentResolver, String address, String body) {
+	// find in db
+	Cursor cursor = contentResolver.query(Uri.parse(Sms.Uris.SMS_URI_BASE), new String[] { Sms.Fields.ID }, //
+		Sms.Fields.ADDRESS + " = ? and " + Sms.Fields.BODY + " = ? and " + Sms.Fields.READ + " = " + Sms.Other.MESSAGE_IS_NOT_READ, new String[] {
+			address, body },//
+		Sms.Fields.DATE + " desc");
+
+	if (cursor == null)
+	    return null;
+
+	if (!cursor.moveToFirst()) {
+	    cursor.close();
+	    return null;
+	}
+
+	Uri smsUri = Uri.parse(Sms.Uris.SMS_URI_BASE + cursor.getLong(0));
+
+	cursor.close();
+
+	return smsUri;
+    }
+
+    public static Uri findLastUnread(ContentResolver contentResolver) {
+	// find in db
+	Cursor cursor = contentResolver.query(Uri.parse(Sms.Uris.SMS_URI_BASE), new String[] { Sms.Fields.ID }, //
+		Sms.Fields.READ + " = " + Sms.Other.MESSAGE_IS_NOT_READ, null,//
+		Sms.Fields.DATE + " desc");
+
+	if (cursor == null)
+	    return null;
+
+	if (!cursor.moveToFirst()) {
+	    cursor.close();
+	    return null;
+	}
+
+	Uri smsUri = Uri.parse(Sms.Uris.SMS_URI_BASE + cursor.getLong(0));
+
+	cursor.close();
+
+	return smsUri;
+    }
+
     public static String getDisplayName(ContentResolver contentResolver, String phoneNumber) {
 	if (phoneNumber == null)
 	    return "-";
@@ -226,10 +281,15 @@ public class Sms {
 
 	Cursor personCursor = contentResolver.query(uri, new String[] { PhoneLookup.DISPLAY_NAME }, null, null, null);
 
-	if (personCursor != null && personCursor.moveToFirst())
-	    return personCursor.getString(0);
+	String personName = null;
 
-	return null;
+	if (personCursor != null && personCursor.moveToFirst())
+	    personName = personCursor.getString(0);
+
+	if (personCursor != null)
+	    personCursor.close();
+
+	return personName;
     }
 
     public static String decodeSmsDeliveryStatus(Resources resources, String status) {
