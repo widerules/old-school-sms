@@ -1,5 +1,6 @@
 package hu.anti.android.oldSchoolSms.popup;
 
+import hu.anti.android.oldSchoolSms.NotificationService;
 import hu.anti.android.oldSchoolSms.R;
 import hu.anti.android.oldSchoolSms.Sms;
 import hu.anti.android.oldSchoolSms.SmsSendActivity;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 public class ReceivedSmsActivity extends Activity {
@@ -47,8 +49,11 @@ public class ReceivedSmsActivity extends Activity {
 	closeButton.setOnClickListener(new OnClickListener() {
 	    @Override
 	    public void onClick(View paramView) {
+		updateReadStatus();
+
 		// remove displayed
 		receivedSms.remove(displayedSms);
+
 		// update data
 		updateView();
 	    }
@@ -60,10 +65,22 @@ public class ReceivedSmsActivity extends Activity {
 	deleteButton.setOnClickListener(new OnClickListener() {
 	    @Override
 	    public void onClick(View paramView) {
-		finish();
+		// get selected sms
+		Sms sms = receivedSms.get(displayedSms);
+
+		// get uri
+		Uri smsUri = sms.findSmsByContent(getContentResolver());
+
+		// delete
+		getContentResolver().delete(smsUri, null, null);
+
+		// remove displayed
+		receivedSms.remove(displayedSms);
+
+		// update data
+		updateView();
 	    }
 	});
-	deleteButton.setVisibility(View.INVISIBLE);
 
 	// ////////////////////////////////////////////////////////////
 	// replay button
@@ -71,6 +88,8 @@ public class ReceivedSmsActivity extends Activity {
 	replayButton.setOnClickListener(new OnClickListener() {
 	    @Override
 	    public void onClick(View paramView) {
+		updateReadStatus();
+
 		// get selected sms
 		Sms sms = receivedSms.get(displayedSms);
 
@@ -162,4 +181,20 @@ public class ReceivedSmsActivity extends Activity {
 	TextView messageView = (TextView) findViewById(R.id.newSmsDialogTextView);
 	messageView.setText(sms.body);
     }
+
+    private void updateReadStatus() {
+	CheckBox markAsReadView = (CheckBox) findViewById(R.id.newSmsDialogMarkAsRead);
+	boolean markAsRead = markAsReadView.isChecked();
+
+	if (markAsRead) {
+	    Intent intent = new Intent(NotificationService.ACTION_MARK_AS_READ_SMS, null, getApplicationContext(), NotificationService.class);
+
+	    Sms sms = receivedSms.get(displayedSms);
+	    intent.putExtra(NotificationService.EXTRA_ADDRESS, sms.address);
+	    intent.putExtra(NotificationService.EXTRA_BODY, sms.body);
+
+	    getApplicationContext().startService(intent);
+	}
+    }
+
 }
