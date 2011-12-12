@@ -7,6 +7,7 @@ Minden új kiadás tartalmaz hibajavítást, ez nem kerül külön kiemelésre..
   * progress bar működés javítás, hogy végigérjen és szabályosan tűnjön el
   * sms íráskor el lehet vetni, hogy ne mentődjön draft formában
   * draft szerkesztésekor el lehet vetni, és egyben törölni is a piszkozatot
+  * új sms törlése a popup ablakból közvetlenül
 == 2011.12.10. ==
   * sebeségnövekedés (átállás service alapú értesítéskezelésre: már nem az alapfelület végzi a notifikációk ezelését)
   * resend funkció bevezetése
