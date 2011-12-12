@@ -41,8 +41,12 @@ public abstract class AbstractSmsActivity extends Activity {
 	// if existing SMS
 	if (uri != null && uri.toString().startsWith(Sms.Uris.SMS_URI_BASE)) {
 	    Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-	    if (cursor.moveToFirst())
-		sms = Sms.parseSms(cursor);
+
+	    if (cursor != null) {
+		if (cursor.moveToFirst())
+		    sms = Sms.parseSms(cursor);
+		cursor.close();
+	    }
 	}
 
 	Intent intent = new Intent(action);

@@ -33,8 +33,9 @@ public abstract class AbstractSmsObserver extends ContentObserver {
 
 	    @Override
 	    public void run() {
+		Cursor cur = null;
 		try {
-		    Cursor cur = contentResolver.query(getUri(), null, null, null, "_id");
+		    cur = contentResolver.query(getUri(), null, null, null, "_id");
 
 		    if (cur.getCount() != smsCount) {
 			smsCount = cur.getCount();
@@ -45,6 +46,9 @@ public abstract class AbstractSmsObserver extends ContentObserver {
 		} catch (Exception e) {
 		    e.printStackTrace();
 		}
+
+		if (cur != null)
+		    cur.close();
 	    }
 	};
 	thread.start();
