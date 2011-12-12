@@ -120,6 +120,11 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 	((ListView) this.findViewById(R.id.SMSList)).setOnItemClickListener(new OnItemClickListener() {
 	    @Override
 	    public void onItemClick(AdapterView<?> paramAdapterView, View view, int pos, long id) {
+		if (smsList.size() <= pos) {
+		    Log.w("OldSchoolSMS", "position [" + pos + "] too large for sms list (" + smsList.size() + ")");
+		    return;
+		}
+
 		Sms sms = smsList.get(pos);
 
 		if (preferences.debugModeSmsList) {
@@ -141,6 +146,9 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 			    content += cursor.getColumnName(i) + "\n";
 			}
 		    }
+
+		    if (cursor != null)
+			cursor.close();
 
 		    Toast.makeText(OldSchoolSMSActivity.this, content, Toast.LENGTH_LONG).show();
 
@@ -192,7 +200,14 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 	    public void onReceive(Context paramContext, Intent paramIntent) {
 		Log.d("OldSchoolSMS", "Received " + paramIntent);
 
-		// notify...
+		// move to end the progress bar
+		setProgress(10000);
+		setProgressBarVisibility(false);
+
+		// start indeterminate progress
+		setProgressBarIndeterminateVisibility(true);
+		setProgressBarIndeterminate(true);
+
 		ListView smsListView = (ListView) findViewById(R.id.SMSList);
 		@SuppressWarnings("unchecked")
 		ArrayAdapter<Sms> arrayAdapter = ((ArrayAdapter<Sms>) smsListView.getAdapter());
@@ -203,11 +218,9 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 		    arrayAdapter.add(smsList.get(i));
 		}
 
-		// arrayAdapter.notifyDataSetChanged();
-
-		setProgressBarVisibility(false);
-		// if (dialog != null)
-		// dialog.dismiss();
+		// stop indeterminate progress
+		setProgressBarIndeterminate(false);
+		setProgressBarIndeterminateVisibility(false);
 	    }
 	};
     }
@@ -370,6 +383,8 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 		return false;
 
 	    Sms sms = Sms.parseSms(cursor);
+	    if (cursor != null)
+		cursor.close();
 
 	    openSms(uri, Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type) ? Intent.ACTION_SEND : Intent.ACTION_VIEW);
 
@@ -397,6 +412,8 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 		return false;
 
 	    Sms sms = Sms.parseSms(cursor);
+	    if (cursor != null)
+		cursor.close();
 
 	    Intent popupIntent = new Intent(NotificationService.ACTION_SEND_SMS, null, this, NotificationService.class);
 	    popupIntent.putExtra(NotificationService.EXTRA_ADDRESS, sms.address);
@@ -446,6 +463,7 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 	    @Override
 	    synchronized public void run() {
 
+		Cursor cursor = null;
 		try {
 		    Log.d("OldSchoolSMS", "Thread started");
 
@@ -458,7 +476,7 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 
 		    // create cursor
 		    ContentResolver contentResolver = getContentResolver();
-		    Cursor cursor = contentResolver.query(uri, null, null, null, Sms.Fields.DATE + " desc");
+		    cursor = contentResolver.query(uri, null, null, null, Sms.Fields.DATE + " desc");
 
 		    // set max size
 		    int count = cursor == null ? 0 : cursor.getCount();
@@ -496,6 +514,9 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 		} catch (Exception e) {
 		    showError(e);
 		}
+
+		if (cursor != null)
+		    cursor.close();
 
 		Intent intent = new Intent(ACTION_UPDATE_FINISHED);
 		sendBroadcast(intent);
