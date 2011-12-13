@@ -1,0 +1,9 @@
+#summary Usage of OldSchoolSms app
+
+= Main =
+== Preferences ==
+= Viewing =
+= Sending =
+== Sent status ==
+== Delivery status ==
+= Popup =
