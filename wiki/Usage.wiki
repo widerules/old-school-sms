@@ -1,6 +1,7 @@
 #summary Usage of OldSchoolSms app
 
 = Main =
+== SMS Boxes ==
 == Preferences ==
 = Viewing =
 = Sending =
