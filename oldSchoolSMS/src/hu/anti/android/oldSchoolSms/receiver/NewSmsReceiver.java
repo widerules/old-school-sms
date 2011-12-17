@@ -56,7 +56,9 @@ public class NewSmsReceiver extends AbstractSmsBroadcastReceiver {
 	    startSmSObserver(context);
 	}
 
-	if ("android.provider.Telephony.SMS_RECEIVED".equals(intent.getAction())) {
+	// process action
+	String action = intent.getAction();
+	if ("android.provider.Telephony.SMS_RECEIVED".equals(action)) {
 	    // initialize the Notification
 	    Notification notification = new Notification();
 
@@ -119,6 +121,9 @@ public class NewSmsReceiver extends AbstractSmsBroadcastReceiver {
 		    }
 		}
 	    }
+	} else if (Intent.ACTION_BOOT_COMPLETED.equals(action)) {
+	    // update notification count
+	    context.startService(new Intent(NotificationService.ACTION_UPDATE_SMS_NOTIFICATIONS, null, context, NotificationService.class));
 	}
     }
 
