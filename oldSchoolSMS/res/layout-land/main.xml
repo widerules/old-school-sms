@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/linearLayout1"
+	android:layout_width="match_parent" android:layout_height="match_parent"
+	xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="horizontal" android:layout_margin="10dp" android:gravity="center" android:layout_gravity="center">
+	<LinearLayout android:orientation="vertical"
+		android:layout_gravity="center" android:gravity="center"
+		android:layout_width="match_parent" android:layout_height="match_parent" android:layout_weight="1">
+		<Button android:layout_width="match_parent" android:text="@string/newSms"
+			android:id="@+id/mainNewSms" android:layout_height="match_parent"
+			android:layout_gravity="center" android:layout_weight="1"></Button>
+		<Button android:layout_width="match_parent" android:id="@+id/mainAll"
+			android:text="@string/BoxAll" android:layout_height="match_parent"
+			android:layout_gravity="center" android:layout_weight="1"></Button>
+		<Button android:layout_width="match_parent" android:text="@string/preferences"
+			android:id="@+id/mainPreferences" android:layout_height="match_parent"
+			android:layout_gravity="center" android:layout_weight="1"></Button>
+	</LinearLayout>
+	<LinearLayout android:layout_height="match_parent"
+		android:id="@+id/linearLayout2"
+		android:orientation="vertical" android:layout_width="match_parent" android:layout_weight="1">
+		<Button android:layout_weight="1" android:layout_height="match_parent"
+			android:layout_width="match_parent" android:id="@+id/mainInbox"
+			android:text="@string/BoxInbox" android:layout_gravity="center"></Button>
+		<Button android:layout_weight="1" android:layout_height="match_parent"
+			android:layout_width="match_parent" android:id="@+id/mainSent"
+			android:text="@string/BoxSent" android:layout_gravity="center"></Button>
+		<Button android:layout_weight="1" android:layout_height="match_parent"
+			android:layout_width="match_parent" android:id="@+id/mainDraft"
+			android:text="@string/BoxDraft" android:layout_gravity="center"></Button>
+	</LinearLayout>
+</LinearLayout>

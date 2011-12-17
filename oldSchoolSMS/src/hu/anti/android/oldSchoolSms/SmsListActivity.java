@@ -40,7 +40,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 
-public class OldSchoolSMSActivity extends AbstractSmsActivity {
+public class SmsListActivity extends AbstractSmsActivity {
 
     public static final String ACTION_UPDATE = "UPDATE";
     public static final String ACTION_UPDATE_FINISHED = "UPDATE_FINISHED";
@@ -52,11 +52,9 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
     private int pageIndexCurrent = 0;
 
     private class Preferences {
-
 	protected boolean debugModeSmsList = true;
 
 	protected int pageSize = 50;
-
     }
 
     private final Preferences preferences = new Preferences();
@@ -79,7 +77,7 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 	super.onCreate(savedInstanceState);
 	requestWindowFeature(Window.FEATURE_PROGRESS);
 
-	setContentView(R.layout.main);
+	setContentView(R.layout.sms_list);
 
 	// ////////////////////////////////////////////////////////////
 	// previouse button
@@ -150,7 +148,7 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 		    if (cursor != null)
 			cursor.close();
 
-		    Toast.makeText(OldSchoolSMSActivity.this, content, Toast.LENGTH_LONG).show();
+		    Toast.makeText(SmsListActivity.this, content, Toast.LENGTH_LONG).show();
 
 		} else {
 		    Uri uri = ContentUris.withAppendedId(Uri.parse(Sms.Uris.SMS_URI_BASE), sms._id);
@@ -171,6 +169,18 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 		// " is selected.", Toast.LENGTH_SHORT).show();
 
 		pageIndexCurrent = 0;
+
+		// ////////////////////////////////////////////////////////////
+		// store selection
+		SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+		Editor editor = sharedPrefs.edit();
+
+		// SMS box
+		Spinner spinner = (Spinner) findViewById(R.id.boxSpinner);
+		editor.putString("smsBox", spinner.getSelectedItem().toString());
+
+		// commit
+		editor.commit();
 
 		updateSmsList();
 	    }
@@ -237,50 +247,10 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 	// get shared preferences
 	SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
-	// ////////////////////////////////////////////////////////////
-	// updateNotifications
-	startService(new Intent(NotificationService.ACTION_UPDATE_SMS_NOTIFICATIONS, null, this, NotificationService.class));
-
-	// ////////////////////////////////////////////////////////////
-	// update spiner
-
 	// update showMessageContentInList
 	boolean showMessageContentInList = sharedPrefs.getBoolean("showMessageContentInList", true);
 	ListView smsListView = (ListView) findViewById(R.id.SMSList);
 	((SmsAdapter) smsListView.getAdapter()).setShowMessageContentInList(showMessageContentInList);
-
-	// get extendedBoxList
-	boolean extendedBoxList = sharedPrefs.getBoolean("extendedBoxList", false);
-	// create adapter
-	ArrayAdapter<CharSequence> boxAdapter;
-	if (extendedBoxList)
-	    boxAdapter = ArrayAdapter.createFromResource(this, R.array.boxes_extended_array, android.R.layout.simple_spinner_item);
-	else
-	    boxAdapter = ArrayAdapter.createFromResource(this, R.array.boxes_array, android.R.layout.simple_spinner_item);
-	boxAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-	// set to spinner
-	Spinner spinner = (Spinner) findViewById(R.id.boxSpinner);
-	spinner.setAdapter(boxAdapter);
-
-	// get last selected box
-	String smsBox = sharedPrefs.getString("smsBox", Sms.Uris.SMS_URI_BASE);
-	// reselect last selected
-	for (int position = 0; position < boxAdapter.getCount(); position++) {
-	    // find last selected
-	    if (smsBox.equals(boxAdapter.getItem(position))) {
-		spinner.setSelection(position);
-
-		boxAdapter.notifyDataSetChanged();
-		break;
-	    }
-	}
-
-	// if nothing is selected, select the first
-	if (spinner.getSelectedItemId() == Spinner.INVALID_ROW_ID) {
-	    spinner.setSelection(0);
-	    boxAdapter.notifyDataSetChanged();
-	}
 
 	// ////////////////////////////////////////////////////////////
 	// update preferences
@@ -288,6 +258,47 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 	preferences.pageSize = Integer.parseInt(sharedPrefs.getString("pageSize", "50"));
 	// debugModeSmsList
 	preferences.debugModeSmsList = sharedPrefs.getBoolean("debugModeSmsList", false) && sharedPrefs.getBoolean("debug", false);
+
+	// ////////////////////////////////////////////////////////////
+	// update spiner
+
+	// get extendedBoxList
+	boolean extendedBoxList = sharedPrefs.getBoolean("extendedBoxList", false);
+	Spinner spinner = (Spinner) findViewById(R.id.boxSpinner);
+
+	if (extendedBoxList) {
+	    // create adapter
+	    ArrayAdapter<CharSequence> boxAdapter;
+	    boxAdapter = ArrayAdapter.createFromResource(this, R.array.boxes_extended_array, android.R.layout.simple_spinner_item);
+	    boxAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+	    // set to spinner
+	    spinner.setAdapter(boxAdapter);
+
+	    // get last selected box
+	    String smsBox = sharedPrefs.getString("smsBox", Sms.Uris.SMS_URI_BASE);
+	    // reselect last selected
+	    for (int position = 0; position < boxAdapter.getCount(); position++) {
+		// find last selected
+		if (smsBox.equals(boxAdapter.getItem(position))) {
+		    spinner.setSelection(position);
+
+		    boxAdapter.notifyDataSetChanged();
+		    break;
+		}
+	    }
+
+	    // if nothing is selected, select the first
+	    if (spinner.getSelectedItemId() == Spinner.INVALID_ROW_ID) {
+		spinner.setSelection(0);
+		boxAdapter.notifyDataSetChanged();
+	    }
+
+	    spinner.setVisibility(View.VISIBLE);
+	} else {
+	    spinner.setVisibility(View.GONE);
+	    updateSmsList();
+	}
 
 	// ////////////////////////////////////////////////////////////
 	// register receivers
@@ -312,18 +323,6 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 	unregisterReceiver(listUpdatedReceiver);
 	// SMS list observer
 	getContentResolver().unregisterContentObserver(smsObserver);
-
-	// ////////////////////////////////////////////////////////////
-	// store preferences
-	SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-	Editor editor = sharedPrefs.edit();
-
-	// SMS box
-	Spinner spinner = (Spinner) findViewById(R.id.boxSpinner);
-	editor.putString("smsBox", spinner.getSelectedItem().toString());
-
-	// commit
-	editor.commit();
     }
 
     /************************************************
@@ -470,9 +469,14 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 		    // remove existing data
 		    smsList.clear();
 
+		    // get shared preferences
+		    SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+		    String smsBox = sharedPrefs.getString("smsBox", "ALL").toLowerCase();
+
 		    // get box uri
-		    Spinner spinner = (Spinner) findViewById(R.id.boxSpinner);
-		    Uri uri = Uri.parse(Sms.Uris.URIS.get(spinner.getSelectedItemPosition()));
+		    Uri uri = Uri.parse(Sms.Uris.SMS_URI_BASE + ("all".equals(smsBox) ? "" : smsBox));
+
+		    Log.d("OldSchoolSMS", "Selected SMS box: " + uri);
 
 		    // create cursor
 		    ContentResolver contentResolver = getContentResolver();
@@ -505,7 +509,7 @@ public class OldSchoolSMSActivity extends AbstractSmsActivity {
 			    smsList.add(sms);
 
 			    try {
-				OldSchoolSMSActivity.this.setProgress(smsList.size() * 10000 / (maxPosition + 1));
+				SmsListActivity.this.setProgress(smsList.size() * 10000 / (maxPosition + 1));
 			    } catch (Exception e) {
 				Log.e("OldSchoolSMS", e.getLocalizedMessage());
 			    }
