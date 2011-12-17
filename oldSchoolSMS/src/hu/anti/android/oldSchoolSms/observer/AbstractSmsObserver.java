@@ -35,7 +35,7 @@ public abstract class AbstractSmsObserver extends ContentObserver {
 	    public void run() {
 		Cursor cur = null;
 		try {
-		    cur = contentResolver.query(getUri(), null, null, null, "_id");
+		    cur = contentResolver.query(getUri(), null, null, null, Sms.Fields.ID);
 
 		    if (cur.getCount() != smsCount) {
 			smsCount = cur.getCount();
