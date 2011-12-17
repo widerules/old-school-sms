@@ -163,7 +163,7 @@ public class NotificationService extends IntentService {
 	mNotificationManager.cancel(id);
     }
 
-    private int getUnreadCount(Context context) {
+    public static int getUnreadCount(Context context) {
 	int count = 0;
 
 	Uri uri = Uri.parse(Sms.Uris.SMS_URI_BASE);
