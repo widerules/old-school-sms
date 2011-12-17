@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="CategoryViewTitle">Nézet</string>
+    <string name="CategoryViewSummary">A főablak megjelenése</string>
+    <string name="CategoryBehaviorReceivingTitle">Viselkedés - beérkezéskor</string>
+    <string name="CategoryBehaviorReceivingSummary">Az alkalmazás működése SMS érkezésekor</string>
+    <string name="CategoryBehaviorSendingTitle">Viselkedés - küldéskor</string>
+    <string name="CategoryBehaviorSendingSummary">Az alkalmazás működése SMS küldésekor</string>
+
+    <string name="showMessageContentInListTitle">Szöveg mutatása</string>
+    <string name="showMessageContentInListSummary">Az SMS listában megjelenjen annak tartalma is</string>
+    <string name="pageSizeTitle">Oldal mérete</string>
+    <string name="pageSizeSummary">A főablakban maximálisan mutatott SMS-ek száma</string>
+    <string name="notifyOnNewSmsTitle">Értesítés érkezésekor</string>
+    <string name="notifyOnNewSmsSummary">Értesítést adjon az alkalmazás ha érkezik új SMS</string>
+    <string name="popupOnNewSmsTitle">SMS ablak</string>
+    <string name="popupOnNewSmsSummary">SMS érkezésekor felugorjon egy balak az üzenettel</string>
+    <string name="notifyOnSuccessfulSendTitle">Küldés értesítés</string>
+    <string name="notifyOnSuccessfulSendSummary">Értesítés megjelenítése ha az SMS kiküldése sikeres</string>
+    <string name="notifyOnDeliveryTitle">Kézbesítés értesítés</string>
+    <string name="notifyOnDeliverySummary">Értesítés megjelenítése ha az SMS kézbesítése sikeres</string>
+    
+    <string name="vibratorPatternTitle">Rezgési minta</string>
+    <string name="vibratorPatternSummary">Értesítés esetén a rezgés mintázata ms-ben(értéke: vibrálás,szünet,vibrálás,szünet...)</string>
+    <string name="notificationSoundTitle">Értesítési hang</string>
+    <string name="notificationSoundSummary">Értesítéskor lejátszott hangjelzés</string>
+
+</resources>

@@ -1,59 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-	<PreferenceCategory android:title="View">
+	<PreferenceCategory android:title="@string/CategoryViewTitle" android:summary="@string/CategoryViewSummary">
 
 		<CheckBoxPreference android:key="showMessageContentInList"
-			android:title="Show message" android:summary="Show message content in SMS list"
-			android:defaultValue="true" />
+			android:defaultValue="true" android:title="@string/showMessageContentInListTitle" android:summary="@string/showMessageContentInListSummary"/>
 
 		<EditTextPreference android:key="pageSize"
-			android:title="Page size"
-			android:summary="Maximum number of SMS messages in the main screen list"
-			android:dialogTitle="pageSize" android:dialogMessage="pageSize"
-			android:defaultValue="50" android:numeric="integer" />
+			android:defaultValue="50" android:numeric="integer" android:title="@string/pageSizeTitle" android:summary="@string/pageSizeSummary" android:dialogMessage="@string/pageSizeTitle" android:dialogTitle="@string/pageSizeTitle"/>
 
 	</PreferenceCategory>
 
-	<PreferenceCategory android:title="Behaviour - receiveing">
+	<PreferenceCategory android:title="@string/CategoryBehaviorReceivingTitle" android:summary="@string/CategoryBehaviorReceivingSummary">
 		
 		<CheckBoxPreference android:key="notifyOnNewSms"
-			android:title="Notify on new SMS" android:summary="Notify if new SMS arrives"
-			android:defaultValue="true" />
+			android:defaultValue="true" android:summary="@string/notifyOnNewSmsSummary" android:title="@string/notifyOnNewSmsTitle"/>
 
-		<EditTextPreference android:key="vibratorPattern"
-			android:title="Vibration Pattern"
-			android:summary="Vibration pattern of notification in ms (in format: vibrate,wait,wibrate,wait...)"
-			android:dialogTitle="vibratorPattern" android:dialogMessage="vibratorPattern"
-			android:defaultValue="500,200,300" android:numeric="integer" android:dependency="notifyOnNewSms"/>
 		
-		<RingtonePreference android:title="@string/notificationSound" android:key="notificationSound" android:ringtoneType="notification" android:showSilent="true" android:showDefault="true"
-		 android:dependency="notifyOnNewSms" />
+		
+		<RingtonePreference android:key="notificationSound" android:ringtoneType="notification" android:showSilent="true" android:showDefault="true"
+		 android:dependency="notifyOnNewSms" android:summary="@string/notificationSoundSummary" android:title="@string/notificationSoundTitle"/><EditTextPreference android:key="vibratorPattern" android:defaultValue="500,200,300" android:dependency="notifyOnNewSms" android:numeric="integer" android:title="@string/vibratorPatternTitle" android:summary="@string/vibratorPatternSummary" android:dialogMessage="@string/vibratorPatternSummary" android:dialogTitle="@string/vibratorPatternTitle" />
 
 		<CheckBoxPreference android:key="popupOnNewSms"
-			android:title="Popup on new SMS" android:summary="Display popup window if new SMS arrives"
-			android:defaultValue="true" android:dependency="notifyOnNewSms" />
+			android:defaultValue="true" android:dependency="notifyOnNewSms" android:summary="@string/popupOnNewSmsSummary" android:title="@string/popupOnNewSmsTitle"/>
 
 	</PreferenceCategory>
 
-	<PreferenceCategory android:title="Behaviour - sending">
+	<PreferenceCategory android:title="@string/CategoryBehaviorSendingTitle" android:summary="@string/CategoryBehaviorSendingSummary">
 
 		<CheckBoxPreference android:key="notifyOnSuccessfulSend"
-			android:title="Notify on successful send" android:summary="Display notification if sending of sms was successful"
-			android:defaultValue="true" />
+			android:defaultValue="true" android:summary="@string/notifyOnSuccessfulSendSummary" android:title="@string/notifyOnSuccessfulSendTitle"/>
 
 		<CheckBoxPreference android:key="notifyOnDelivery"
-			android:title="Notify on delivery" android:summary="Display notification if sms is delivered succesfuly"
-			android:defaultValue="true" />
+			android:defaultValue="true" android:summary="@string/notifyOnDeliverySummary" android:title="@string/notifyOnDeliveryTitle"/>
 
-		<RingtonePreference android:title="@string/notificationSound" android:key="deliverySound" android:ringtoneType="notification" android:showSilent="true" android:showDefault="true" 
-		 android:dependency="notifyOnDelivery"/>
+		<RingtonePreference android:key="deliverySound" android:ringtoneType="notification" android:showSilent="true" android:showDefault="true" 
+		 android:dependency="notifyOnDelivery" android:summary="@string/notificationSoundSummary" android:title="@string/notificationSoundTitle"/>
 
 		<EditTextPreference android:key="deliveryVibratorPattern"
-			android:title="Vibration Pattern"
-			android:summary="Vibration pattern of notification in ms (in format: vibrate,wait,wibrate,wait...)"
-			android:dialogTitle="vibratorPattern" android:dialogMessage="vibratorPattern"
-			android:defaultValue="500" android:numeric="integer" android:dependency="notifyOnDelivery"/>
+			android:defaultValue="500" android:dependency="notifyOnDelivery" android:dialogMessage="@string/vibratorPatternSummary" android:title="@string/vibratorPatternTitle" android:dialogTitle="@string/vibratorPatternTitle" android:summary="@string/vibratorPatternSummary" android:numeric="integer"/>
 
 	</PreferenceCategory>
 
@@ -67,8 +52,7 @@
 			android:title="SMS details" android:summary="Show debug information from SMS list"
 			android:defaultValue="false" android:dependency="debug" />
 		<CheckBoxPreference android:key="extendedBoxList"
-			android:title="SMS box list" android:summary="Show extended list of SMS boxes"
-			android:defaultValue="false" android:dependency="debug" />
+			android:title="SMS box list" android:defaultValue="false" android:dependency="debug" android:summary="Show extended list of SMS boxes in SMS-list view"/>
 
 	</PreferenceCategory>
 

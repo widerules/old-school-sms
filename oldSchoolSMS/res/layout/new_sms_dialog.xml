@@ -10,11 +10,11 @@
             <TextView android:layout_width="match_parent" android:padding="15dp" android:scrollbars="vertical" android:text="TextView" android:id="@+id/newSmsDialogTextView" android:minLines="8" android:layout_height="match_parent"></TextView>
         </LinearLayout>
     </ScrollView>
-    <LinearLayout android:orientation="vertical" android:id="@+id/linearLayout3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:layout_gravity="center" android:background="@android:drawable/alert_dark_frame">
-        <LinearLayout android:id="@+id/linearLayout1" android:layout_width="wrap_content" android:padding="5dp" android:gravity="center" android:layout_height="wrap_content">
-            <Button android:layout_width="wrap_content" android:layout_marginRight="10dp" android:layout_height="wrap_content" android:layout_marginLeft="10dp" android:text="@string/replay" android:id="@+id/newSmsDialogReplayButton"></Button>
-            <Button android:layout_width="wrap_content" android:layout_marginRight="10dp" android:layout_height="wrap_content" android:layout_marginLeft="10dp" android:text="@string/delete" android:id="@+id/newSmsDialogDeleteButton"></Button>
-            <Button android:layout_width="wrap_content" android:layout_marginRight="10dp" android:layout_height="wrap_content" android:layout_marginLeft="10dp" android:text="@string/close" android:id="@+id/newSmsDialogCloseButton"></Button>
+    <LinearLayout android:id="@+id/linearLayout3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:layout_gravity="center" android:background="@android:drawable/alert_dark_frame" android:orientation="vertical" android:padding="20dp">
+        <LinearLayout android:id="@+id/linearLayout1" android:layout_width="wrap_content" android:gravity="center" android:layout_height="wrap_content" android:baselineAligned="true" android:orientation="horizontal">
+            <Button android:text="@string/replay" android:id="@+id/newSmsDialogReplayButton" android:layout_height="wrap_content" android:gravity="center" android:layout_width="wrap_content" android:singleLine="true" android:layout_weight="1"></Button>
+            <Button android:text="@string/delete" android:id="@+id/newSmsDialogDeleteButton" android:layout_height="wrap_content" android:gravity="center" android:layout_width="wrap_content" android:singleLine="true" android:layout_weight="1"></Button>
+            <Button android:text="@string/close" android:id="@+id/newSmsDialogCloseButton" android:layout_height="wrap_content" android:gravity="center" android:layout_width="wrap_content" android:singleLine="true" android:layout_weight="1"></Button>
         </LinearLayout>
         <CheckBox android:checked="true" android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/newSmsDialogMarkAsRead" android:text="@string/mark_as_read"></CheckBox>
     </LinearLayout>
