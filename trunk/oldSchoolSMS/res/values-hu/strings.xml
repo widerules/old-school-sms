@@ -45,4 +45,9 @@
 	<string name="SMS_RECIVED_TITLE">Új SMS</string>
 	<string name="SMS_RECIVED_COUNT">%d nem olvasott SMS van</string>
 
+	<string name="BoxAll">Összes SMS</string>
+	<string name="BoxInbox">Bejövő</string>
+	<string name="BoxSent">Kimenő</string>
+	<string name="BoxDraft">Piszkozat</string>
+
 </resources>
