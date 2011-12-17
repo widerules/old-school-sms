@@ -3,10 +3,13 @@ package hu.anti.android.oldSchoolSms;
 import hu.anti.android.oldSchoolSms.receiver.AbstractSmsBroadcastReceiver;
 
 import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -28,6 +31,7 @@ import android.widget.Toast;
 public class SmsSendActivity extends AbstractSmsActivity {
 
     private static final int PERSON_SELECTION = 1;
+
     private boolean dataFilled = false;
     private boolean smsProcessed = false;
 
@@ -49,17 +53,14 @@ public class SmsSendActivity extends AbstractSmsActivity {
 		TextView messageText = (TextView) findViewById(R.id.messageText);
 		String body = messageText.getText().toString();
 
+		Context context = SmsSendActivity.this.getApplicationContext();
 		if (body == null || body.length() == 0) {
-		    Toast.makeText(SmsSendActivity.this.getApplicationContext(), "Empty SMS body!", Toast.LENGTH_SHORT).show();
+		    Toast.makeText(context, context.getResources().getString(R.string.emptyBody), Toast.LENGTH_SHORT).show();
 		    return;
 		}
 
-		// get address
-		// TextView toNumber = (TextView) findViewById(R.id.toNumber);
-		// String address = toNumber.getText().toString();
-
 		if (toNumber == null || toNumber.length() == 0) {
-		    Toast.makeText(SmsSendActivity.this.getApplicationContext(), "Empty SMS address!", Toast.LENGTH_SHORT).show();
+		    Toast.makeText(context, context.getResources().getString(R.string.emptyAddress), Toast.LENGTH_SHORT).show();
 		    return;
 		}
 
@@ -86,8 +87,7 @@ public class SmsSendActivity extends AbstractSmsActivity {
 	personSelectButton.setOnClickListener(new OnClickListener() {
 	    @Override
 	    public void onClick(View paramView) {
-		// ask for number
-		Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+		Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
 		startActivityForResult(intent, PERSON_SELECTION);
 	    }
 	});
@@ -137,26 +137,74 @@ public class SmsSendActivity extends AbstractSmsActivity {
 	switch (requestCode) {
 	case PERSON_SELECTION:
 	    if (resultCode == Activity.RESULT_OK) {
+		// Get the Uri for the data returned by the contact picker
+		// This Uri identifies the person picked
 		Uri contactData = intent.getData();
-		Cursor cursor = getContentResolver().query(contactData, null, null, null, null);
 
-		if (cursor.moveToFirst()) {
-		    int columnIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+		// Query the table
+		Cursor contactsCursor = managedQuery(contactData, null, null, null, null);
 
-		    if (columnIndex > -1) {
-			// url decode...
-			String number = cursor.getString(columnIndex);
-			if (number.contains("%"))
-			    number = URLDecoder.decode(number);
+		// If the cursor is not empty
+		if (contactsCursor.moveToFirst()) {
 
-			toNumber = number;
+		    // Get the id name and phone number indicator
+		    String id = contactsCursor.getString(contactsCursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
+		    String name = contactsCursor.getString(contactsCursor.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME));
+		    String hasPhoneNumber = contactsCursor.getString(contactsCursor.getColumnIndexOrThrow(ContactsContract.Contacts.HAS_PHONE_NUMBER));
 
-			setText(R.id.toNumber, Sms.getDisplayName(getContentResolver(), number));
+		    Log.d("OldSchoolSMS", "id " + id + " name: " + name + " hasPhoneNumber: " + hasPhoneNumber);
+
+		    // If the contact has a phone number
+		    if (Integer.parseInt(hasPhoneNumber) > 0) {
+			Cursor phoneCursor = managedQuery(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+				ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + id, null, null);
+
+			final List<String> values = new ArrayList<String>();
+			final List<String> items = new ArrayList<String>();
+
+			// Get the phone numbers from the contact
+			for (phoneCursor.moveToFirst(); !phoneCursor.isAfterLast(); phoneCursor.moveToNext()) {
+			    int phoneType = phoneCursor.getInt(phoneCursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.TYPE));
+			    String phoneLabel = phoneCursor.getString(phoneCursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.LABEL));
+			    String phoneNumber = phoneCursor.getString(phoneCursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER));
+			    if (phoneNumber.contains("%"))
+				phoneNumber = URLDecoder.decode(phoneNumber);
+
+			    Log.d("OldSchoolSMS", "phoneType: " + phoneType + "(" + phoneLabel + ") phoneNumber: " + phoneNumber);
+
+			    CharSequence typeLabel;
+			    if (ContactsContract.CommonDataKinds.Phone.TYPE_CUSTOM == phoneType)
+				typeLabel = phoneLabel;
+			    else
+				typeLabel = ContactsContract.CommonDataKinds.Phone.getTypeLabel(SmsSendActivity.this.getResources(), phoneType, "?");
+
+			    items.add(typeLabel + ": " + phoneNumber);
+			    values.add(phoneNumber);
+			}
+
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			// builder.setTitle("Make your selection");
+			builder.setItems(items.toArray(new CharSequence[items.size()]), new DialogInterface.OnClickListener() {
+			    @Override
+			    public void onClick(DialogInterface dialog, int which) {
+				if (which >= 0) {
+				    String number = values.get(which);
+
+				    toNumber = number;
+				    setText(R.id.toNumber, Sms.getDisplayName(getContentResolver(), number));
+				}
+				dialog.dismiss();
+			    }
+			});
+
+			builder.show();
+		    } else {
+			Toast.makeText(this, R.string.alertNoPhoneNumber, Toast.LENGTH_LONG).show();
+
+			// select another contact
+			startActivityForResult(new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI), PERSON_SELECTION);
 		    }
 		}
-
-		if (cursor != null)
-		    cursor.close();
 	    }
 	    break;
 
