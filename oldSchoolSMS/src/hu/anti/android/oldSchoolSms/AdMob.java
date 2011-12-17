@@ -12,6 +12,8 @@ public class AdMob {
     private static final String MY_BANNER_UNIT_ID = "a14e629cd0b493d";
 
     public static void addView(Activity activity, LinearLayout layout) {
+	if (layout == null)
+	    return;
 
 	// Create the adView
 	final AdView adView = new AdView(activity, AdSize.BANNER, MY_BANNER_UNIT_ID);
@@ -24,7 +26,8 @@ public class AdMob {
     }
 
     public static void removeView(Activity activity, LinearLayout layout) {
-	layout.removeAllViews();
+	if (layout != null)
+	    layout.removeAllViews();
     }
 
     private static AdRequest getAdRequest() {
