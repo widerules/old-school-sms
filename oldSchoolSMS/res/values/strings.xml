@@ -18,6 +18,7 @@
 
 	<string name="emptyBody">Empty SMS body!</string>
 	<string name="emptyAddress">Empty SMS address!</string>
+	<string name="alertNoPhoneNumber">No phone number entry for selected contact!</string>
 
 	<!-- SMS status -->
 	<string name="SMS_STATUS_NONE">None</string>
