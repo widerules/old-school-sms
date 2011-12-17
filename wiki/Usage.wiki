@@ -2,7 +2,9 @@
 
 = Main =
 http://old-school-sms.googlecode.com/svn/wiki/main.png
+http://old-school-sms.googlecode.com/svn/wiki/main2.png
 == SMS Boxes ==
+http://old-school-sms.googlecode.com/svn/wiki/list.png
 == Preferences ==
 = Viewing =
 http://old-school-sms.googlecode.com/svn/wiki/view.png
