@@ -18,6 +18,7 @@
 
 	<string name="emptyBody">Üres az SMS tartalma!</string>
 	<string name="emptyAddress">Nincs megadva címzett!</string>
+	<string name="alertNoPhoneNumber">Nincs telefonszám megadva a kiválasztott személyhez!</string>
 
 	<!-- SMS status -->
 	<string name="SMS_STATUS_NONE">Nincs</string>
