@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical" android:layout_width="match_parent" android:layout_height="match_parent">
+	    <LinearLayout android:layout_width="match_parent" android:orientation="vertical" android:id="@+id/AdMob"  android:layout_height="wrap_content"></LinearLayout>
+	    <LinearLayout android:id="@+id/linearLayout1" android:layout_width="match_parent" android:orientation="vertical" android:layout_margin="20dp" android:padding="5dp" android:layout_gravity="center" android:gravity="center" android:layout_height="match_parent">
+	        <Button android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_gravity="center" android:id="@+id/mainNewSms" android:text="@string/newSms" ></Button>
+	        <Button android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_gravity="center" android:id="@+id/mainAll" android:text="@string/BoxAll" ></Button>
+	        <Button android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_gravity="center" android:id="@+id/mainInbox" android:text="@string/BoxInbox" ></Button>
+	        <Button android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_gravity="center" android:id="@+id/mainSent" android:text="@string/BoxSent" ></Button>
+	        <Button android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_gravity="center" android:id="@+id/mainDraft" android:text="@string/BoxDraft" ></Button>
+	        <Button android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_gravity="center" android:id="@+id/mainPreferences" android:text="@string/preferences" ></Button>
+	    </LinearLayout>
+	</RelativeLayout>
