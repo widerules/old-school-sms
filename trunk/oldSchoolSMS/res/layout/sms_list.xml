@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linearLayout"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+    <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/linearLayout1">
+        <Button android:id="@+id/mainPreviouse" android:layout_height="wrap_content" android:text="@string/previous" android:clickable="false" android:layout_weight="0.1" android:layout_width="wrap_content" android:minWidth="15dp"></Button>
+        <Spinner android:layout_weight="1" android:layout_height="wrap_content" android:id="@+id/boxSpinner" android:layout_width="wrap_content"></Spinner>
+        <Button android:id="@+id/mainNext" android:layout_height="wrap_content" android:text="@string/next" android:clickable="false" android:layout_weight="0.1" android:layout_width="wrap_content" android:minWidth="15dp"></Button>
+    </LinearLayout>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:id="@+id/AdMob"></LinearLayout>
+	
+	<ListView android:id="@+id/SMSList" 
+			android:layout_height="wrap_content" 
+			android:layout_width="fill_parent" 
+			android:layout_margin="2dip" />
+</LinearLayout>

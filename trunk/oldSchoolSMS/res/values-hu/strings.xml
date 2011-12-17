@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<string name="newSms">új sms</string>
+	<string name="multiDelete">több sms törlése</string>
+	<string name="preferences">beállítások</string>
+	<string name="view">megnyit</string>
+	<string name="delete">töröl</string>
+	<string name="forward">továbbít</string>
+	<string name="replay">válasz</string>
+	<string name="resend">újraküld</string>
+	<string name="cancel">elvet</string>
+	<string name="close">bezár</string>
+	<string name="send">elküld</string>
+	<string name="select">kiválaszt</string>
+	<string name="enterNumber">Érintsd meg szám beírásához</string>
+	<string name="mark_as_read">olvasottnak jelöl</string>
+
+	<string name="emptyBody">Üres az SMS tartalma!</string>
+	<string name="emptyAddress">Nincs megadva címzett!</string>
+
+	<!-- SMS status -->
+	<string name="SMS_STATUS_NONE">Nincs</string>
+	<string name="SMS_STATUS_COMPLETE">Rendben</string>
+	<string name="SMS_STATUS_PENDING">Folyamatban...</string>
+	<string name="SMS_STATUS_FAILED">Sikertelen</string>
+
+	<string name="SMS_DELIVERED_TITLE">SMS kézbesítés</string>
+
+	<!-- SMS delivery status -->
+	<string name="SMS_DELIVERED_RESULT_OK">sikeresen kézbesítve %s számára</string>
+	<string name="SMS_DELIVERED_RESULT_FAILED">nem sikerült %s számára kézbesíteni</string>
+
+	<string name="SMS_SENT_TITLE">SMS küldés</string>
+
+	<!-- SMS send status -->
+	<string name="SMS_SENT_RESULT_OK">kiküldve %s számra</string>
+	<string name="SMS_SENT_RESULT_ERROR_GENERIC_FAILUREK">Rendszerhiba</string>
+	<string name="SMS_SENT_RESULT_ERROR_NO_SERVICE">Nincs szolgálltatás</string>
+	<string name="SMS_SENT_RESULT_ERROR_NULL_PDU">Nincs PDU</string>
+	<string name="SMS_SENT_RESULT_ERROR_RADIO_OFF">Ki van kapcsolva a rádió</string>
+
+	<!-- SMS recived -->
+	<string name="SMS_RECIVED_TITLE">Új SMS</string>
+	<string name="SMS_RECIVED_COUNT">%d nem olvasott SMS van</string>
+
+</resources>

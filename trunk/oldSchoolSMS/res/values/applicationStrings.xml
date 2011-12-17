@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<string name="hello">Hello World, OldSchoolSMSActivity!</string>
+
+	<string name="app_name">OldSchoolSMS</string>
+
+	<string name="previous"> &lt; </string>
+	<string name="next">&gt;</string>
+
+	<!-- SMS boxes -->
+	<string-array name="boxes_extended_array">
+		<item>ALL</item>
+		<item>INBOX</item>
+		<item>SENT</item>
+		<item>DRAFT</item>
+		<item>QUEUED</item>
+		<item>OUTBOX</item>
+		<item>UNDELIVERED</item>
+		<item>FAILED</item>
+	</string-array>
+
+	<string-array name="boxes_array">
+		<item>ALL</item>
+		<item>INBOX</item>
+		<item>SENT</item>
+		<item>DRAFT</item>
+	</string-array>
+
+</resources>
