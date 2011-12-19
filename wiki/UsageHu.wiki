@@ -1,4 +1,5 @@
 #summary Az OldSchoolSms alkalmazás kezelési leírása
+#labels Featured
 
 = Főképernyő =
 http://old-school-sms.googlecode.com/svn/wiki/hu-main.png
