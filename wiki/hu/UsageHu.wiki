@@ -1,0 +1,18 @@
+#summary Az OldSchoolSms alkalmazás kezelési leírása
+#labels Featured
+
+= Főképernyő =
+http://old-school-sms.googlecode.com/svn/wiki/hu-main.png
+http://old-school-sms.googlecode.com/svn/wiki/hu-main2.png
+== SMS listák ==
+http://old-school-sms.googlecode.com/svn/wiki/hu-list.png
+== Beállítások ==
+= Megtekintés =
+http://old-school-sms.googlecode.com/svn/wiki/hu-view.png
+= Küldés =
+http://old-school-sms.googlecode.com/svn/wiki/hu-send.png
+== Küldési státusz ==
+http://old-school-sms.googlecode.com/svn/wiki/hu-sent.png
+== Kézbesítési státusz ==
+= Beérkező ablak =
+http://old-school-sms.googlecode.com/svn/wiki/hu-popup.png
