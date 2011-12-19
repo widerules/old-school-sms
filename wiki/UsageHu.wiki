@@ -1,4 +1,4 @@
-#summary Usage of OldSchoolSms app
+#summary Az OldSchoolSms alkalmazás kezelési leírása
 
 = Főképernyő =
 http://old-school-sms.googlecode.com/svn/wiki/hu-main.png
