@@ -2,48 +2,5 @@
 #labels Featured
 
 = ReleaseNotes =
-Minden új kiadás tartalmaz hibajavítást, ez nem kerül külön kiemelésre... az új funkciók, képességek a következők:
-== 2011.12.17. ==
-  * új belépési pont: új sms, boxválasztás és beállítások képernyő jelenik meg indításhoz a lista helyett
-  * az új választó miatt eltűnt a box választó az sms lista nézetből, nagyobbak lettek a lapozó gombok így
-  * új telefonszám kiválasztási logika: személyt kell választani, majd annak a számai közül a keresettet
-  * magyarított felület
-== 2011.12.12. ==
-  * progress bar működés javítás, hogy végigérjen és szabályosan tűnjön el
-  * sms íráskor el lehet vetni, hogy ne mentődjön draft formában
-  * draft szerkesztésekor el lehet vetni, és egyben törölni is a piszkozatot
-  * új sms törlése a popup ablakból közvetlenül
-== 2011.12.10. ==
-  * sebeségnövekedés (átállás service alapú értesítéskezelésre: már nem az alapfelület végzi a notifikációk ezelését)
-  * resend funkció bevezetése
-  * a telefonkönyvbe +36... formában beírtak helyes kezelése sms íráskor
-== 2011.11.24. ==
-  * draft kezelés javítása
-  * több beérkező SMS lekezelése aktív ablak esetén (a bezárásgomb megnyomása után a következő sms kerül megjelenítésre)
-  * időpont kijelzése beérkezett sms ablakban
-  * a popup ablak nem jelenik meg mint alkalmazás
-== 2011.11.11. ==
-  * új SMS, sikeres küldés, sikeres kézbesítés esetén állítható az értesítés kérése
-  * új SMS, sikeres kézbesítés esetén állítható hang és vibrálás jelzés
-  * új SMS esetén villog a LED
-== 2011.11.03. ==
-  * AdMob áthelyezése, hogy újat kérjen minden megjelenítésnél
-  * beérkező popup értesítőn nevet ír ki a szám helyett
-  * beérkező nagy SMS-ek összefűzése
-  * nagy SMS-ek görgetővel jelennek meg megtekintéskor (sima SMS nézegető és beérkező ablak)
-== 2011.11.01. ==
-  * új progress bar
-  * delete funkció
-  * draft auto mentése visszalépéskor (ha volt üzenetszöveg beírva)
-  * draft autó írásra nyitása, és megjelenítésben középreigazítva mutatása
-  * nyers telefonszám helyett a telefonkönyvi név jelenik meg küldésnél
-  * beérkező sms felugrik popup ablakban (még bugzik: nem mindig jelenik meg a teljes szöveg)
-== 2011.10.04. ==
-  * SMS lista betöltésekor progress dialog
-  * olvasatlan notifikáció működés javítása
-== 2011.09.29. ==
-  * NullPointer hiba elhárítva, ha más alkalmazás küld sms-t
-== 2011.09.20. ==
-  * bekapcsoláskor ellenőrzi az olvasatlan üzeneteket
-== start ==
-  * működés :) TODO kifejteni
+
+only on hungarian
