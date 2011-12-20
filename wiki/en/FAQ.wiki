@@ -1,0 +1,14 @@
+#summary Frequently asked questions
+
+= Android Market Issues =
+
+If you're having problems with downloads, installs, refunds, payments, or Android Market access, please contact the Android Market team through the [https://market.android.com/support/ Android Market Help Center] and [http://www.google.com/support/forum/p/Android+Market user forum].
+
+= Make default =
+
+First turn off the built in messaging application:
+  * start the *messaging* application
+  * click _menu_
+  * select _settintgs_
+  * disable _notifications_
+Make sure to enable notifications in OldSchoolSms application...
