@@ -3,6 +3,7 @@
 
 = Főképernyő =
 Alaphelyzetben, az alkalmazás elindításakor egy indítóképernyő fogad bennünket.
+
 http://old-school-sms.googlecode.com/svn/wiki/hu/main.png http://old-school-sms.googlecode.com/svn/wiki/hu/main2.png
 
 Innen lehet elérni, megkezdeni az alapvető műveleteket:
@@ -55,6 +56,7 @@ Az értesítések esetén történő vibráció mintázatát tetszőlegesre lehe
 
 = Megtekintés =
 Kiküldött és fogadott sms-ek megnyitása esetén, annak részleteit külön ablakban, tágasabban elrendezve is módunkban áll megtekinteni. Küldött sms-ek esetén ilyenkor a kézbesítési státusz is látható alul, a bezárás gomb felett.
+
 http://old-school-sms.googlecode.com/svn/wiki/hu/view.png
 = Küldés =
 http://old-school-sms.googlecode.com/svn/wiki/hu/send.png
