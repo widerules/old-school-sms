@@ -59,9 +59,28 @@ Kiküldött és fogadott sms-ek megnyitása esetén, annak részleteit külön a
 
 http://old-school-sms.googlecode.com/svn/wiki/hu/view.png
 = Küldés =
+Sms küldésekor, vagy piszkozat megnyitásakor az üzenet szerkesztési ablak nyílik meg. Itt van lehetőség az üzenet tartalmának és címzettjének szerkesztésére, megadására. Az üzenet szerkesztése az android alap beviteli módján történik a fizikai vagy virtuális billentyűzet segítségével, a szövegmezőre mutatva.
+
+A címzett megadása két féle képen történhet:
+  * közvetlenül telefonszám begépelésével: ehhez a címzett mezőre való kattintás szükséges, aminek hatására feljön egy beviteli mező, ahol megadható a kívánt telefonszám
+  * telefonkönyvben szereplő személy megadásával: ehhez a kiválasztó gombot kell megnyomni, minek hatására előjön a telefonkönyv. A telefonkönyvben szereplő személyek közül kiválasztva egyet, előjön annak telefonszámainak listája, típus - telefonszám formában. A kívánt telefonszám kiválasztása után az betöltődik a címzett mezőbe.
+
+A küldés művelete az elküld gomb megnyomásával indítható.
+
 http://old-school-sms.googlecode.com/svn/wiki/hu/send.png
-== Küldési státusz ==
+== Üzenet státusza ==
+A beállítások függvényében (szolgáltatótó és szerződés függő) kérhetünk visszaigazolást a kimenő sms státuszáról. Két féle státuszjelentés van:
+  * küldési: ez minden esetben létezik, azt a tényt igazolja, hogy maga a készülék továbbította az üzenetet a központ felé
+  * kézbesítési: ehhez megfelelő szolgáltatást kell biztosítania a központnak, annak tényét igazolja vissza, hogy az üzenet a címzett készülékére került, az megkapta (nem összekeverendő az elolvasás tényével...)
+
+Az üzenet állapotát annak benyitásakor, a megtekintés során tudjuk ellenőrizni.
+
 http://old-school-sms.googlecode.com/svn/wiki/hu/sent.png
-== Kézbesítési státusz ==
 = Beérkező ablak =
+Beérkező sms-ekre külön, speciális értesítés is kérhető a hang és rezgés mellett: egy felugró ablak megjelnítése. A felugró ablak tartalmazza a feladót, a beérkezés időpontját, az üzenet tartalmát, valamint lehetőséget biztosít alapvető műveletek gyors elérésére:
+  * válasz: válasz üzenet szerkesztésre való megnyitása közvetlenül
+  * törlés: a beérkezett üzenet azonnali törlése
+  * bezárás: az üzenetablak bezárása, további művelet elvégzése nélkül
+Az ablak tartalmaz még egy kijelölőt is, amivel megadhatjuk, hogy a három művelet elvégzése során a beérkezett üzenet megjelölődjön-e olvasottnak, vagy továbbra is újként legyen kezelve.
+
 http://old-school-sms.googlecode.com/svn/wiki/hu/popup.png
