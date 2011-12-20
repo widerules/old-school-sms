@@ -2,12 +2,59 @@
 #labels Featured
 
 = Főképernyő =
-http://old-school-sms.googlecode.com/svn/wiki/hu/main.png
-http://old-school-sms.googlecode.com/svn/wiki/hu/main2.png
+Alaphelyzetben, az alkalmazás elindításakor egy indítóképernyő fogad bennünket.
+http://old-school-sms.googlecode.com/svn/wiki/hu/main.png http://old-school-sms.googlecode.com/svn/wiki/hu/main2.png
+
+Innen lehet elérni, megkezdeni az alapvető műveleteket:
+  * új sms írása
+  * már létező sms-ek elérése
+  * beállítások kezelése
+
 == SMS listák ==
+Az alkalmazás a következő sms típusokat különbözteti meg:
+  * beérkező
+  * kimenő
+  * piszkozat
+
+A különböző csoportok a kezdőképernyőről érhetőek el, a megfelelő gomb kiválasztásával. Az alkalmazás lehetőséget biztosít minden sms típus együtes megtekintésére is. Ilyenkor az sms küldőjének neve vagy telefonszáma mutatja meg az elhelyezkedésével az sms típusát:
+  * balrarendezett: bejövő
+  * balrarendezett, vastagbetűs: bejövő és még olvasatlan
+  * középrerendezett: elmentett, és még el nem küldött, piszkozat
+  * jobbra rendezett: elküldött
+Az sms lista nem minden sms-t jelenít meg: a beállításnak megfelelően csak egy bizonyos számú üzenet látható mindig. Amennyiben a keresett sms nem látszik, a jobbra-balra mutató gombokkal lapozhatunk a megjelenítésben.
+
 http://old-school-sms.googlecode.com/svn/wiki/hu/list.png
+
+Az üzenet kiválasztásával megnyitjuk azt: beérkező és küldött esetén megtekintésre, piszkozat esetén szerkesztésre.
+
+Az üzenet hosszabban történő nyomvatartása esetén egy menüt kapunk, és lehetőségünk van további műveletek elvégézésére:
+  * megnyit: megegyezik az üzenet kiválasztásával, benyitja azt (megtekintésre, vagy továbbszerkesztésre)
+  * töröl: az üzenet törlése (*vigyázat!!! nem visszavonható művelet!!!*)
+  * továbbít: új sms szerkesztése a kiválasztott üzenet szövegének megtartásával 
+  * válasz: új sms szerkesztése a kiválasztott üzenet küldőjének címezve
+  * újraküld: küldött sms újbóli elküldése ugyan azzal a tartalommal (beérkező esetén az sms tartalmának visszaküldése)
+
 == Beállítások ==
+Az alkalmazás testreszabható a felhasználó igényeinek megfelelően. Az egyes beállítások csoportokba szedve jelennek meg a könnyebb átlálthatóság érdekében:
+  * Nézet: A főablak megjelenése
+    * Szöveg mutatása: Az SMS listában megjelenjen annak tartalma is
+    * Oldal mérete: A főablakban maximálisan mutatott SMS-ek száma
+  * Viselkedés - beérkezéskor: Az alkalmazás működése SMS érkezésekor
+    * Értesítés érkezésekor: Értesítést adjon az alkalmazás ha érkezik új SMS
+    * Értesítési hang: Értesítéskor lejátszott hangjelzés
+    * Rezgési minta: Értesítés esetén a rezgés mintázata ms-ben(értéke: vibrálás,szünet,vibrálás,szünet...)
+    * SMS ablak: SMS érkezésekor felugorjon egy balak az üzenettel
+  * Viselkedés - küldéskor: Az alkalmazás működése SMS küldésekor
+    * Küldés értesítés: Értesítés megjelenítése ha az SMS kiküldése sikeres
+    * Kézbesítés értesítés: Értesítés megjelenítése ha az SMS kézbesítése sikeres
+    * Értesítési hang: Értesítéskor lejátszott hangjelzés
+    * Rezgési minta: Értesítés esetén a rezgés mintázata ms-ben(értéke: vibrálás,szünet,vibrálás,szünet...)
+
+=== Rezgési minta ===
+Az értesítések esetén történő vibráció mintázatát tetszőlegesre lehet formázni a rezgetések és szünetek hosszának váltakozó megadásával ms-ben. Alaphelyzetben ez a minta a következő: 500,200,300. Ez azt jelenti, hogy 500ms rezgéssel kezdődik a jelzés, majd tart 200ms szünetet és végül még egy 300ms ideig tartó rezgést ad.
+
 = Megtekintés =
+Kiküldött és fogadott sms-ek megnyitása esetén, annak részleteit külön ablakban, tágasabban elrendezve is módunkban áll megtekinteni. Küldött sms-ek esetén ilyenkor a kézbesítési státusz is látható alul, a bezárás gomb felett.
 http://old-school-sms.googlecode.com/svn/wiki/hu/view.png
 = Küldés =
 http://old-school-sms.googlecode.com/svn/wiki/hu/send.png
