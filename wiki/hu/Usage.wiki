@@ -1,6 +1,8 @@
 #summary Az OldSchoolSms alkalmazás kezelési leírása
 #labels Featured
 
+<wiki:toc />
+
 = Főképernyő =
 Alaphelyzetben, az alkalmazás elindításakor egy indítóképernyő fogad bennünket.
 
@@ -85,4 +87,7 @@ Beérkező sms-ekre külön, speciális értesítés is kérhető a hang és rez
 
 Az ablak tartalmaz még egy kijelölőt is, amivel megadhatjuk, hogy a három művelet elvégzése során a beérkezett üzenet megjelölődjön-e olvasottnak, vagy továbbra is újként legyen kezelve.
 
-<img src="http://old-school-sms.googlecode.com/svn/wiki/hu/popup.png" align="middle" title="popup"/>
+<table aligne="center">
+<tr><td>http://old-school-sms.googlecode.com/svn/wiki/hu/popup.png
+</td></tr>
+</table>
