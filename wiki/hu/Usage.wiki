@@ -6,7 +6,9 @@
 = Főképernyő =
 Alaphelyzetben, az alkalmazás elindításakor egy indítóképernyő fogad bennünket.
 
+<table align="center"><tr><td>
 http://old-school-sms.googlecode.com/svn/wiki/hu/main.png http://old-school-sms.googlecode.com/svn/wiki/hu/main2.png
+</td></tr></table>
 
 Innen lehet elérni, megkezdeni az alapvető műveleteket:
   * új sms írása
@@ -27,7 +29,9 @@ A különböző csoportok a kezdőképernyőről érhetőek el, a megfelelő gom
 
 Az sms lista nem minden sms-t jelenít meg: a beállításnak megfelelően csak egy bizonyos számú üzenet látható mindig. Amennyiben a keresett sms nem látszik, a jobbra-balra mutató gombokkal lapozhatunk a megjelenítésben.
 
+<table align="center"><tr><td>
 http://old-school-sms.googlecode.com/svn/wiki/hu/list.png
+</td></tr></table>
 
 Az üzenet kiválasztásával megnyitjuk azt: beérkező és küldött esetén megtekintésre, piszkozat esetén szerkesztésre.
 
@@ -60,7 +64,9 @@ Az értesítések esetén történő vibráció mintázatát tetszőlegesre lehe
 = Megtekintés =
 Kiküldött és fogadott sms-ek megnyitása esetén, annak részleteit külön ablakban, tágasabban elrendezve is módunkban áll megtekinteni. Küldött sms-ek esetén ilyenkor a kézbesítési státusz is látható alul, a bezárás gomb felett.
 
+<table align="center"><tr><td>
 http://old-school-sms.googlecode.com/svn/wiki/hu/view.png
+</td></tr></table>
 = Küldés =
 Sms küldésekor, vagy piszkozat megnyitásakor az üzenet szerkesztési ablak nyílik meg. Itt van lehetőség az üzenet tartalmának és címzettjének szerkesztésére, megadására. Az üzenet szerkesztése az android alap beviteli módján történik a fizikai vagy virtuális billentyűzet segítségével, a szövegmezőre mutatva.
 
@@ -70,7 +76,9 @@ A címzett megadása két féle képen történhet:
 
 A küldés művelete az elküld gomb megnyomásával indítható.
 
+<table align="center"><tr><td>
 http://old-school-sms.googlecode.com/svn/wiki/hu/send.png
+</td></tr></table>
 == Üzenet státusza ==
 A beállítások függvényében (szolgáltatótó és szerződés függő) kérhetünk visszaigazolást a kimenő sms státuszáról. Két féle státuszjelentés van:
   * küldési: ez minden esetben létezik, azt a tényt igazolja, hogy maga a készülék továbbította az üzenetet a központ felé
@@ -78,7 +86,9 @@ A beállítások függvényében (szolgáltatótó és szerződés függő) kér
 
 Az üzenet állapotát annak benyitásakor, a megtekintés során tudjuk ellenőrizni.
 
+<table align="center"><tr><td>
 http://old-school-sms.googlecode.com/svn/wiki/hu/sent.png
+</td></tr></table>
 = Beérkező ablak =
 Beérkező sms-ekre külön, speciális értesítés is kérhető a hang és rezgés mellett: egy felugró ablak megjelnítése. A felugró ablak tartalmazza a feladót, a beérkezés időpontját, az üzenet tartalmát, valamint lehetőséget biztosít alapvető műveletek gyors elérésére:
   * válasz: válasz üzenet szerkesztésre való megnyitása közvetlenül
@@ -87,8 +97,6 @@ Beérkező sms-ekre külön, speciális értesítés is kérhető a hang és rez
 
 Az ablak tartalmaz még egy kijelölőt is, amivel megadhatjuk, hogy a három művelet elvégzése során a beérkezett üzenet megjelölődjön-e olvasottnak, vagy továbbra is újként legyen kezelve.
 
-<table align="center" border="0">
-<tr><td>
+<table align="center"><tr><td>
 http://old-school-sms.googlecode.com/svn/wiki/hu/popup.png
-</td></tr>
-</table>
+</td></tr></table>
