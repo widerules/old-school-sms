@@ -1,7 +1,9 @@
 #summary Az OldSchoolSms alkalmazás kezelési leírása
 #labels Featured
 
+<table align="center"><tr><td>
 <wiki:toc />
+</td></tr></table>
 
 = Főképernyő =
 Alaphelyzetben, az alkalmazás elindításakor egy indítóképernyő fogad bennünket.
