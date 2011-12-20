@@ -22,6 +22,7 @@ A különböző csoportok a kezdőképernyőről érhetőek el, a megfelelő gom
   * balrarendezett, vastagbetűs: bejövő és még olvasatlan
   * középrerendezett: elmentett, és még el nem küldött, piszkozat
   * jobbra rendezett: elküldött
+
 Az sms lista nem minden sms-t jelenít meg: a beállításnak megfelelően csak egy bizonyos számú üzenet látható mindig. Amennyiben a keresett sms nem látszik, a jobbra-balra mutató gombokkal lapozhatunk a megjelenítésben.
 
 http://old-school-sms.googlecode.com/svn/wiki/hu/list.png
@@ -81,6 +82,7 @@ Beérkező sms-ekre külön, speciális értesítés is kérhető a hang és rez
   * válasz: válasz üzenet szerkesztésre való megnyitása közvetlenül
   * törlés: a beérkezett üzenet azonnali törlése
   * bezárás: az üzenetablak bezárása, további művelet elvégzése nélkül
+
 Az ablak tartalmaz még egy kijelölőt is, amivel megadhatjuk, hogy a három művelet elvégzése során a beérkezett üzenet megjelölődjön-e olvasottnak, vagy továbbra is újként legyen kezelve.
 
 http://old-school-sms.googlecode.com/svn/wiki/hu/popup.png
