@@ -11,7 +11,7 @@
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/toNumber" android:layout_weight="1" android:layout_margin="5dp" android:text="@string/enterNumber"></TextView>
             <Button android:id="@+id/personSelectButton" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="@string/select"></Button>
         </LinearLayout>
-        <EditText android:id="@+id/messageText" android:layout_weight="1" android:layout_height="wrap_content" android:layout_width="match_parent" android:gravity="top" android:inputType="textShortMessage|textMultiLine|textCapSentences|textLongMessage"></EditText>
+        <EditText android:id="@+id/messageText" android:layout_weight="1" android:layout_height="wrap_content" android:layout_width="match_parent" android:gravity="top" android:inputType="textShortMessage|textCapSentences"></EditText>
         <Button android:id="@+id/sendButton" android:layout_height="wrap_content" android:layout_width="match_parent" android:text="@string/send"></Button>
     </LinearLayout>
     
