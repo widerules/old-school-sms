@@ -9,9 +9,11 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 public abstract class AbstractSmsBroadcastReceiver extends BroadcastReceiver {
@@ -33,38 +35,86 @@ public abstract class AbstractSmsBroadcastReceiver extends BroadcastReceiver {
 	}
     }
 
-    protected void showStatusNotification(Context context, Uri uri, String title, String message, long[] vibratorPattern, Uri soundUri) {
+    protected String updateMessageString(Context context, Uri uri, String message) {
 	// search for sms data
 	Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
 	if (cursor == null) {
 	    Log.e("OldSchoolSMS", "Recived notification for non existing SMS object: [" + uri + "]");
 
-	    return;
+	    return message;
 	} else if (!cursor.moveToFirst()) {
 	    Log.e("OldSchoolSMS", "Recived notification for no SMS object: [" + uri + "]");
 
 	    cursor.close();
-	    return;
+	    return message;
 	}
 
 	// read the sms
 	Sms sms = Sms.parseSms(cursor);
 	cursor.close();
 
-	int notificationId = sms._id.intValue();
-
 	// format message with name if required...
 	String displayName = Sms.getDisplayName(context.getContentResolver(), sms.address);
-	message = String.format(message, displayName);
-
-	// display it
-	showNotification(context, uri, title, message, notificationId, 0, SmsViewActivity.class, vibratorPattern, soundUri);
+	return String.format(message, displayName);
     }
 
-    protected void showNotification(Context context, Uri uri, String title, String message, int notificationId, int count, Class<?> targetClass,
-	    long[] vibratorPattern, Uri soundUri) {
+    protected void showSentStatus(Context context, Uri uri) {
+	// notify the user
+	String message = Sms.decodeSmsSendStatus(context.getResources(), getResultCode());
+	String title = context.getResources().getString(R.string.SMS_SENT_TITLE);
+
+	// fill message text with data
+	message = updateMessageString(context, uri, message);
+
+	int notificationId = Integer.parseInt(uri.getLastPathSegment());
+
+	int iconId = R.drawable.pending_sms;
+
+	// display it
+	showNotification(context, uri, iconId, title, message, notificationId, 0, SmsViewActivity.class, null, null);
+    }
+
+    protected void showDeliveredStatus(Context context, Uri uri, String message) {
+	// notify the user
+	String title = context.getResources().getString(R.string.SMS_DELIVERED_TITLE);
+
+	// fill message text with data
+	message = updateMessageString(context, uri, message);
+
+	int notificationId = Integer.parseInt(uri.getLastPathSegment());
+
 	int iconId = R.drawable.icon;
-	showNotification(context, uri, iconId, title, message, notificationId, count, targetClass, vibratorPattern, soundUri);
+
+	// get preferences
+	SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+
+	// get sound
+	String deliverySound = sharedPrefs.getString("deliverySound", "DEFAULT_SOUND");
+	Uri soundUri = Uri.parse(deliverySound);
+
+	// get vibration
+	String deliveryVibratorPattern = sharedPrefs.getString("deliveryVibratorPattern", "333,333,333");
+	long[] vibratorPattern = decodeVibratorString(deliveryVibratorPattern);
+
+	// display it
+	showNotification(context, uri, iconId, title, message, notificationId, 0, SmsViewActivity.class, vibratorPattern, soundUri);
+    }
+
+    private long[] decodeVibratorString(String vibratorPattern) {
+	// extract pattern
+	String[] split = vibratorPattern.split("[,.;/\\- ]");
+
+	// create vibration pattern holder
+	long[] pattern = new long[(split.length + 1)];
+
+	// set starting wait to 0ms
+	pattern[0] = 0;
+	// decode pattern string
+	for (int i = 0; i < split.length; i++) {
+	    pattern[i + 1] = Long.parseLong(split[i]);
+	}
+
+	return pattern;
     }
 
     protected void showNotification(Context context, Uri uri, int iconId, String title, String message, int notificationId, int count, Class<?> targetClass,

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 public class DeliveredStatusReceiver extends AbstractSmsBroadcastReceiver {
     public static final String DELIVERED_ACTION = "SMS_DELIVERED";
@@ -16,6 +17,13 @@ public class DeliveredStatusReceiver extends AbstractSmsBroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 	logIntent("delivered", intent);
+
+	Uri uri = intent.getData();
+
+	if (uri == null) {
+	    Log.d("OldSchoolSMS", "Received empty intent, skipping");
+	    return;
+	}
 
 	String message;
 	ContentValues values = new ContentValues();
@@ -39,28 +47,19 @@ public class DeliveredStatusReceiver extends AbstractSmsBroadcastReceiver {
 	}
 
 	// update status
-	context.getContentResolver().update(intent.getData(), values, null, null);
+	context.getContentResolver().update(uri, values, null, null);
 
-	SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
 	if (Activity.RESULT_OK == getResultCode()) {
 	    // get preferences
+	    SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
 	    boolean notifyOnDelivery = sharedPrefs.getBoolean("notifyOnDelivery", true);
 
 	    if (!notifyOnDelivery)
 		return;
 	}
 
-	// get sound
-	String deliverySound = sharedPrefs.getString("deliverySound", "DEFAULT_SOUND");
-	Uri soundUri = Uri.parse(deliverySound);
-
-	// get vibration
-	String deliveryVibratorPattern = sharedPrefs.getString("deliveryVibratorPattern", "333,333,333");
-	long[] vibratorPattern = decodeVibratorString(deliveryVibratorPattern);
-
 	// notify the user
-	String title = context.getResources().getString(R.string.SMS_DELIVERED_TITLE);
-	showStatusNotification(context, intent.getData(), title, message, vibratorPattern, soundUri);
+	showDeliveredStatus(context, uri, message);
     }
 
     public static Intent getIntent(Context packageContext, Uri uri) {
@@ -69,22 +68,5 @@ public class DeliveredStatusReceiver extends AbstractSmsBroadcastReceiver {
 	intent.setClass(packageContext, DeliveredStatusReceiver.class);
 
 	return intent;
-    }
-
-    private long[] decodeVibratorString(String vibratorPattern) {
-	// extract pattern
-	String[] split = vibratorPattern.split("[,.;/\\- ]");
-
-	// create vibration pattern holder
-	long[] pattern = new long[(split.length + 1)];
-
-	// set starting wait to 0ms
-	pattern[0] = 0;
-	// decode pattern string
-	for (int i = 0; i < split.length; i++) {
-	    pattern[i + 1] = Long.parseLong(split[i]);
-	}
-
-	return pattern;
     }
 }
