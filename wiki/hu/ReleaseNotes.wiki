@@ -4,6 +4,10 @@
 = ReleaseNotes =
 Minden új kiadás tartalmaz hibajavítást, ez nem kerül külön kiemelésre... az új funkciók, képességek a következők:
 == 2011.12.17. ==
+  * üzenet szövegének másolása menüvel
+  * törlés megerősítést kér
+  * a főablakból a vissza a kilépést jelent
+== 2011.12.17. ==
   * új belépési pont: új sms, boxválasztás és beállítások képernyő jelenik meg indításhoz a lista helyett
   * az új választó miatt eltűnt a box választó az sms lista nézetből, nagyobbak lettek a lapozó gombok így
   * új telefonszám kiválasztási logika: személyt kell választani, majd annak a számai közül a keresettet
