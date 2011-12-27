@@ -1,9 +1,13 @@
 package hu.anti.android.oldSchoolSms;
 
+import android.app.AlertDialog.Builder;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.ClipboardManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -51,6 +55,17 @@ public class SmsViewActivity extends AbstractSmsActivity {
 	    // display SMS
 	    Sms sms = Sms.getSms(getContentResolver(), uri);
 
+	    if (sms == null) {
+		// clear notification
+		try {
+		    NotificationService.removeNotification(this, Integer.parseInt(uri.getLastPathSegment()));
+		} catch (NumberFormatException e) {
+		    Log.e("OldSchoolSMS", "SMS id parse error from: " + uri + " message: " + e.getLocalizedMessage());
+		}
+
+		return;
+	    }
+
 	    setText(R.id.textViewNumber, sms.getDisplayName(getContentResolver()));
 	    setText(R.id.textViewDate, sms.date.toLocaleString());
 	    setText(R.id.textViewSms, sms.body);
@@ -93,7 +108,7 @@ public class SmsViewActivity extends AbstractSmsActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-	Uri uri = getIntent().getData();
+	final Uri uri = getIntent().getData();
 
 	// Handle item selection
 	switch (item.getItemId()) {
@@ -101,12 +116,14 @@ public class SmsViewActivity extends AbstractSmsActivity {
 	case R.id.resend: {
 	    // FIXME
 	    Sms sms = Sms.getSms(getContentResolver(), uri);
+	    if (sms == null)
+		return false;
 
-	    Intent popupIntent = new Intent(NotificationService.ACTION_SEND_SMS, null, this, NotificationService.class);
-	    popupIntent.putExtra(NotificationService.EXTRA_ADDRESS, sms.address);
-	    popupIntent.putExtra(NotificationService.EXTRA_BODY, sms.body);
+	    Intent intent = new Intent(NotificationService.ACTION_SEND_SMS, null, this, NotificationService.class);
+	    intent.putExtra(NotificationService.EXTRA_ADDRESS, sms.address);
+	    intent.putExtra(NotificationService.EXTRA_BODY, sms.body);
 
-	    startService(popupIntent);
+	    startService(intent);
 
 	    return true;
 	}
@@ -117,6 +134,9 @@ public class SmsViewActivity extends AbstractSmsActivity {
 
 	case R.id.replay: {
 	    Sms sms = Sms.getSms(getContentResolver(), uri);
+	    if (sms == null)
+		return false;
+
 	    Uri smsToUri = Uri.parse("smsto:" + sms.address);
 
 	    openSms(smsToUri, Intent.ACTION_SENDTO);
@@ -124,8 +144,28 @@ public class SmsViewActivity extends AbstractSmsActivity {
 	}
 
 	case R.id.delete:
-	    getContentResolver().delete(uri, null, null);
-	    finish();
+	    Builder deletAlert = createDeletAlert(uri);
+	    deletAlert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+		@Override
+		public void onClick(DialogInterface dialogInterface, int arg1) {
+		    // execute delete
+		    getContentResolver().delete(uri, null, null);
+		    dialogInterface.dismiss();
+		    SmsViewActivity.this.finish();
+		}
+	    });
+	    deletAlert.show();
+
+	    return true;
+
+	case R.id.copyText:
+	    Sms sms = Sms.getSms(getContentResolver(), uri);
+	    if (sms == null)
+		return false;
+
+	    ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+	    clipboardManager.setText(sms.body);
+
 	    return true;
 
 	case R.id.close:

@@ -7,10 +7,12 @@ import java.util.ArrayList;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.app.AlertDialog.Builder;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -21,6 +23,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.text.ClipboardManager;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -372,25 +375,30 @@ public class SmsListActivity extends AbstractSmsActivity {
     public boolean onContextItemSelected(MenuItem item) {
 	AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 
-	Uri uri = ContentUris.withAppendedId(Uri.parse(Sms.Uris.SMS_URI_BASE), smsList.get(info.position)._id);
+	final Uri uri = ContentUris.withAppendedId(Uri.parse(Sms.Uris.SMS_URI_BASE), smsList.get(info.position)._id);
 
 	switch (item.getItemId()) {
 	case R.id.view: {
-	    Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-
-	    if (!cursor.moveToFirst())
+	    Sms sms = Sms.getSms(getContentResolver(), uri);
+	    if (sms == null)
 		return false;
-
-	    Sms sms = Sms.parseSms(cursor);
-	    if (cursor != null)
-		cursor.close();
 
 	    openSms(uri, Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type) ? Intent.ACTION_SEND : Intent.ACTION_VIEW);
 
 	    return true;
 	}
 	case R.id.delete:
-	    getContentResolver().delete(uri, null, null);
+	    Builder deletAlert = createDeletAlert(uri);
+	    deletAlert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+		@Override
+		public void onClick(DialogInterface dialogInterface, int arg1) {
+		    // execute delete
+		    getContentResolver().delete(uri, null, null);
+		    dialogInterface.dismiss();
+		}
+	    });
+	    deletAlert.show();
+
 	    return true;
 
 	case R.id.forward:
@@ -399,26 +407,35 @@ public class SmsListActivity extends AbstractSmsActivity {
 
 	case R.id.replay: {
 	    Sms sms = Sms.getSms(getContentResolver(), uri);
+	    if (sms == null)
+		return false;
+
 	    Uri smsToUri = Uri.parse("smsto:" + sms.address);
 
 	    openSms(smsToUri, Intent.ACTION_SENDTO);
 	    return true;
 	}
 	case R.id.resend: {
-	    Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-
-	    if (!cursor.moveToFirst())
+	    Sms sms = Sms.getSms(getContentResolver(), uri);
+	    if (sms == null)
 		return false;
 
-	    Sms sms = Sms.parseSms(cursor);
-	    if (cursor != null)
-		cursor.close();
+	    Intent intent = new Intent(NotificationService.ACTION_SEND_SMS, null, this, NotificationService.class);
+	    intent.putExtra(NotificationService.EXTRA_ADDRESS, sms.address);
+	    intent.putExtra(NotificationService.EXTRA_BODY, sms.body);
 
-	    Intent popupIntent = new Intent(NotificationService.ACTION_SEND_SMS, null, this, NotificationService.class);
-	    popupIntent.putExtra(NotificationService.EXTRA_ADDRESS, sms.address);
-	    popupIntent.putExtra(NotificationService.EXTRA_BODY, sms.body);
+	    startService(intent);
 
-	    startService(popupIntent);
+	    return true;
+	}
+
+	case R.id.copyText: {
+	    Sms sms = Sms.getSms(getContentResolver(), uri);
+	    if (sms == null)
+		return false;
+
+	    ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+	    clipboardManager.setText(sms.body);
 
 	    return true;
 	}
