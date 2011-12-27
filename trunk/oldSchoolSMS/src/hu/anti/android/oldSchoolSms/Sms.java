@@ -123,12 +123,12 @@ public class Sms {
 	Cursor cursor = contentResolver.query(uri, null, null, null, null);
 
 	if (cursor == null)
-	    return new Sms();
+	    return null;
 
 	Log.d("OldSchoolSMS", "For [" + uri + "] found [" + cursor.getCount() + "] element(s)");
 
 	if (!cursor.moveToFirst())
-	    return new Sms();
+	    return null;
 
 	Sms sms = parseSms(cursor);
 
