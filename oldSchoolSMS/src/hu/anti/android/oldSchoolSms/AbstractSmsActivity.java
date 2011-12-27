@@ -67,4 +67,20 @@ public abstract class AbstractSmsActivity extends Activity {
 	TextView view = (TextView) findViewById(id);
 	view.setText(text);
     }
+
+    protected AlertDialog.Builder createDeletAlert(final Uri uri) {
+	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+	builder.setIcon(android.R.drawable.ic_dialog_alert);
+	builder.setTitle(R.string.questionDelete);
+	builder.setCancelable(true);
+	builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+	    @Override
+	    public void onClick(DialogInterface dialogInterface, int arg1) {
+		dialogInterface.dismiss();
+	    }
+	});
+
+	return builder;
+    }
 }
