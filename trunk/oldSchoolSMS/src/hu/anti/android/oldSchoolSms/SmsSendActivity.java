@@ -253,12 +253,14 @@ public class SmsSendActivity extends AbstractSmsActivity {
 		// send/forward
 		Sms sms = Sms.getSms(getContentResolver(), data);
 
-		if (Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type)) {
-		    toNumber = sms.address;
-		    setText(R.id.toNumber, Sms.getDisplayName(getContentResolver(), sms.address));
-		}
+		if (sms != null) {
+		    if (Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type)) {
+			toNumber = sms.address;
+			setText(R.id.toNumber, Sms.getDisplayName(getContentResolver(), sms.address));
+		    }
 
-		setText(R.id.messageText, sms.body);
+		    setText(R.id.messageText, sms.body);
+		}
 	    }
 	} else {
 	    Toast.makeText(getApplicationContext(), "Received not supported action: " + action, Toast.LENGTH_LONG).show();
@@ -289,7 +291,7 @@ public class SmsSendActivity extends AbstractSmsActivity {
 		    Sms sms = Sms.getSms(getContentResolver(), data);
 
 		    // update existing draft
-		    if (Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type)) {
+		    if (sms != null && Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type)) {
 
 			ContentValues values = new ContentValues();
 			values.put(Sms.Fields.ADDRESS, toNumber);
@@ -379,7 +381,7 @@ public class SmsSendActivity extends AbstractSmsActivity {
 	if (Intent.ACTION_SEND.equals(action) && data != null) {
 	    Sms sms = Sms.getSms(getContentResolver(), data);
 
-	    if (Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type)) {
+	    if (sms != null && Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type)) {
 		// if from a draft, first delete it
 		getContentResolver().delete(data, null, null);
 	    }
