@@ -9,6 +9,7 @@
 	<string name="forward">forward</string>
 	<string name="replay">replay</string>
 	<string name="resend">resend</string>
+	<string name="copyText">copy text</string>
 	<string name="cancel">cancel</string>
 	<string name="close">close</string>
 	<string name="send">send</string>
@@ -19,6 +20,8 @@
 	<string name="emptyBody">Empty SMS body!</string>
 	<string name="emptyAddress">Empty SMS address!</string>
 	<string name="alertNoPhoneNumber">No phone number entry for selected contact!</string>
+
+	<string name="questionDelete">Are you sure to delete message?</string>
 
 	<!-- SMS status -->
 	<string name="SMS_STATUS_NONE">None</string>
