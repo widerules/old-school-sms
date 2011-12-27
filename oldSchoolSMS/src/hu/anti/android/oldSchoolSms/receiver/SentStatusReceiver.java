@@ -1,6 +1,5 @@
 package hu.anti.android.oldSchoolSms.receiver;
 
-import hu.anti.android.oldSchoolSms.R;
 import hu.anti.android.oldSchoolSms.Sms;
 import android.app.Activity;
 import android.content.ContentValues;
@@ -46,11 +45,7 @@ public class SentStatusReceiver extends AbstractSmsBroadcastReceiver {
 		return;
 	}
 
-	// notify the user
-	String message = Sms.decodeSmsSendStatus(context.getResources(), getResultCode());
-	String title = context.getResources().getString(R.string.SMS_SENT_TITLE);
-
-	showStatusNotification(context, uri, title, message, null, null);
+	showSentStatus(context, uri);
     }
 
     public static Intent getIntent(Context packageContext, Uri uri) {
