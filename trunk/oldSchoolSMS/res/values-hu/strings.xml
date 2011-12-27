@@ -9,6 +9,7 @@
 	<string name="forward">továbbít</string>
 	<string name="replay">válasz</string>
 	<string name="resend">újraküld</string>
+	<string name="copyText">szöveg másolása</string>
 	<string name="cancel">elvet</string>
 	<string name="close">bezár</string>
 	<string name="send">elküld</string>
@@ -19,6 +20,8 @@
 	<string name="emptyBody">Üres az SMS tartalma!</string>
 	<string name="emptyAddress">Nincs megadva címzett!</string>
 	<string name="alertNoPhoneNumber">Nincs telefonszám megadva a kiválasztott személyhez!</string>
+
+	<string name="questionDelete">Biztos hogy törli az üzenetet?</string>
 
 	<!-- SMS status -->
 	<string name="SMS_STATUS_NONE">Nincs</string>
