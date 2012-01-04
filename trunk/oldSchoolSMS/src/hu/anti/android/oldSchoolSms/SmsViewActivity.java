@@ -114,16 +114,25 @@ public class SmsViewActivity extends AbstractSmsActivity {
 	switch (item.getItemId()) {
 
 	case R.id.resend: {
-	    // FIXME
-	    Sms sms = Sms.getSms(getContentResolver(), uri);
+	    final Sms sms = Sms.getSms(getContentResolver(), uri);
 	    if (sms == null)
 		return false;
 
-	    Intent intent = new Intent(NotificationService.ACTION_SEND_SMS, null, this, NotificationService.class);
-	    intent.putExtra(NotificationService.EXTRA_ADDRESS, sms.address);
-	    intent.putExtra(NotificationService.EXTRA_BODY, sms.body);
+	    // resend only if not a draft
+	    if (!Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type)) {
+		Builder resendAlert = createResendAlert();
+		resendAlert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+		    @Override
+		    public void onClick(DialogInterface dialogInterface, int arg1) {
+			Intent intent = new Intent(NotificationService.ACTION_SEND_SMS, null, SmsViewActivity.this, NotificationService.class);
+			intent.putExtra(NotificationService.EXTRA_ADDRESS, sms.address);
+			intent.putExtra(NotificationService.EXTRA_BODY, sms.body);
 
-	    startService(intent);
+			startService(intent);
+		    }
+		});
+		resendAlert.show();
+	    }
 
 	    return true;
 	}
@@ -144,7 +153,7 @@ public class SmsViewActivity extends AbstractSmsActivity {
 	}
 
 	case R.id.delete:
-	    Builder deletAlert = createDeletAlert(uri);
+	    Builder deletAlert = createDeletAlert();
 	    deletAlert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 		@Override
 		public void onClick(DialogInterface dialogInterface, int arg1) {

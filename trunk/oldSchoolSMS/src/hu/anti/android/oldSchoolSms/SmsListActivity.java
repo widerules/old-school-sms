@@ -5,9 +5,9 @@ import hu.anti.android.oldSchoolSms.observer.AllSmsObserver;
 
 import java.util.ArrayList;
 
+import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.app.AlertDialog.Builder;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -26,22 +26,22 @@ import android.preference.PreferenceManager;
 import android.text.ClipboardManager;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
-import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
 
 public class SmsListActivity extends AbstractSmsActivity {
 
@@ -388,7 +388,7 @@ public class SmsListActivity extends AbstractSmsActivity {
 	    return true;
 	}
 	case R.id.delete:
-	    Builder deletAlert = createDeletAlert(uri);
+	    Builder deletAlert = createDeletAlert();
 	    deletAlert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 		@Override
 		public void onClick(DialogInterface dialogInterface, int arg1) {
@@ -416,15 +416,27 @@ public class SmsListActivity extends AbstractSmsActivity {
 	    return true;
 	}
 	case R.id.resend: {
-	    Sms sms = Sms.getSms(getContentResolver(), uri);
+	    final Sms sms = Sms.getSms(getContentResolver(), uri);
 	    if (sms == null)
 		return false;
 
-	    Intent intent = new Intent(NotificationService.ACTION_SEND_SMS, null, this, NotificationService.class);
-	    intent.putExtra(NotificationService.EXTRA_ADDRESS, sms.address);
-	    intent.putExtra(NotificationService.EXTRA_BODY, sms.body);
+	    // resend only if not a draft
+	    if (!Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type)) {
+		Builder resendAlert = createResendAlert();
+		resendAlert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+		    @Override
+		    public void onClick(DialogInterface dialogInterface, int arg1) {
+			Intent intent = new Intent(NotificationService.ACTION_SEND_SMS, null, SmsListActivity.this, NotificationService.class);
+			intent.putExtra(NotificationService.EXTRA_ADDRESS, sms.address);
+			intent.putExtra(NotificationService.EXTRA_BODY, sms.body);
 
-	    startService(intent);
+			startService(intent);
+
+			dialogInterface.dismiss();
+		    }
+		});
+		resendAlert.show();
+	    }
 
 	    return true;
 	}
