@@ -1,13 +1,13 @@
 package hu.anti.android.oldSchoolSms.receiver;
 
+import hu.anti.android.oldSchoolSms.Preferences;
+import hu.anti.android.oldSchoolSms.R;
 import hu.anti.android.oldSchoolSms.Sms;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class SentStatusReceiver extends AbstractSmsBroadcastReceiver {
@@ -25,12 +25,18 @@ public class SentStatusReceiver extends AbstractSmsBroadcastReceiver {
 	}
 
 	ContentValues values = new ContentValues();
+	int iconId;
+
 	if (Activity.RESULT_OK == getResultCode()) {
 	    values.put(Sms.Fields.STATUS, Sms.Status.PENDING);
 	    values.put(Sms.Fields.TYPE, Sms.Type.MESSAGE_TYPE_UNDELIVERED);
+
+	    iconId = R.drawable.pending_sms;
 	} else {
 	    values.put(Sms.Fields.STATUS, Sms.Status.FAILED);
 	    values.put(Sms.Fields.TYPE, Sms.Type.MESSAGE_TYPE_FAILED);
+
+	    iconId = android.R.drawable.ic_dialog_alert;
 	}
 
 	// update status
@@ -38,14 +44,14 @@ public class SentStatusReceiver extends AbstractSmsBroadcastReceiver {
 
 	if (Activity.RESULT_OK == getResultCode()) {
 	    // get preferences
-	    SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-	    boolean notifyOnSuccessfulSend = sharedPrefs.getBoolean("notifyOnSuccessfulSend", true);
+	    Preferences preferences = new Preferences(context.getApplicationContext());
+	    boolean notifyOnSuccessfulSend = preferences.getNotifyOnSuccessfulSend();
 
 	    if (!notifyOnSuccessfulSend)
 		return;
 	}
 
-	showSentStatus(context, uri);
+	showSentStatus(context, uri, iconId);
     }
 
     public static Intent getIntent(Context packageContext, Uri uri) {
