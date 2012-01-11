@@ -1,14 +1,13 @@
 package hu.anti.android.oldSchoolSms.receiver;
 
+import hu.anti.android.oldSchoolSms.Preferences;
 import hu.anti.android.oldSchoolSms.R;
 import hu.anti.android.oldSchoolSms.Sms;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class DeliveredStatusReceiver extends AbstractSmsBroadcastReceiver {
@@ -25,16 +24,22 @@ public class DeliveredStatusReceiver extends AbstractSmsBroadcastReceiver {
 	    return;
 	}
 
-	String message;
+	int iconId;
 	ContentValues values = new ContentValues();
+
+	String message;
 	switch (getResultCode()) {
 	case Activity.RESULT_OK:
+	    iconId = R.drawable.icon;
+
 	    values.put(Sms.Fields.STATUS, Sms.Status.COMPLETE);
 	    values.put(Sms.Fields.TYPE, Sms.Type.MESSAGE_TYPE_SENT);
 
 	    message = context.getResources().getString(R.string.SMS_DELIVERED_RESULT_OK);
 	    break;
 	case Activity.RESULT_CANCELED:
+	    iconId = android.R.drawable.ic_dialog_alert;
+
 	    values.put(Sms.Fields.STATUS, Sms.Status.FAILED);
 	    values.put(Sms.Fields.TYPE, Sms.Type.MESSAGE_TYPE_FAILED);
 
@@ -42,6 +47,7 @@ public class DeliveredStatusReceiver extends AbstractSmsBroadcastReceiver {
 	    break;
 
 	default:
+	    iconId = R.drawable.icon;
 	    message = "" + getResultCode();
 	    break;
 	}
@@ -51,15 +57,14 @@ public class DeliveredStatusReceiver extends AbstractSmsBroadcastReceiver {
 
 	if (Activity.RESULT_OK == getResultCode()) {
 	    // get preferences
-	    SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-	    boolean notifyOnDelivery = sharedPrefs.getBoolean("notifyOnDelivery", true);
+	    Preferences preferences = new Preferences(context.getApplicationContext());
 
-	    if (!notifyOnDelivery)
+	    if (!preferences.getNotifyOnDelivery())
 		return;
 	}
 
 	// notify the user
-	showDeliveredStatus(context, uri, message);
+	showDeliveredStatus(context, uri, message, iconId);
     }
 
     public static Intent getIntent(Context packageContext, Uri uri) {
