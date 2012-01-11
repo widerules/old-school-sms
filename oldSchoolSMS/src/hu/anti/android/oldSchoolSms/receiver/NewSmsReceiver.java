@@ -1,6 +1,7 @@
 package hu.anti.android.oldSchoolSms.receiver;
 
 import hu.anti.android.oldSchoolSms.NotificationService;
+import hu.anti.android.oldSchoolSms.Preferences;
 import hu.anti.android.oldSchoolSms.observer.AbstractSmsObserver;
 import hu.anti.android.oldSchoolSms.observer.AllSmsObserver;
 import hu.anti.android.oldSchoolSms.popup.ReceivedSmsActivity;
@@ -13,13 +14,11 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
-import android.preference.PreferenceManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
 import android.util.Pair;
@@ -36,9 +35,9 @@ public class NewSmsReceiver extends AbstractSmsBroadcastReceiver {
 	logIntent("NewSmsReceiver", intent);
 
 	// get preferences
-	SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+	Preferences preferences = new Preferences(context.getApplicationContext());
 
-	boolean notifyOnNewSms = sharedPrefs.getBoolean("notifyOnNewSms", false);
+	boolean notifyOnNewSms = preferences.getNotifyOnNewSms();
 	if (!notifyOnNewSms) {
 	    // remove notification
 	    NotificationService.removeNotification(context, 1);
@@ -63,7 +62,7 @@ public class NewSmsReceiver extends AbstractSmsBroadcastReceiver {
 	    Notification notification = new Notification();
 
 	    // notification ring tone
-	    String notificationSound = sharedPrefs.getString("notificationSound", "DEFAULT_SOUND");
+	    String notificationSound = preferences.getNotificationSound();
 	    notification.sound = Uri.parse(notificationSound);
 
 	    // LED
@@ -74,14 +73,14 @@ public class NewSmsReceiver extends AbstractSmsBroadcastReceiver {
 	    mNotificationManager.notify(1, notification);
 
 	    // vibrate
-	    String vibratorPattern = sharedPrefs.getString("vibratorPattern", "333,333,333");
+	    String vibratorPattern = preferences.getVibratorPattern();
 	    long[] pattern = extractPattern(vibratorPattern);
 
 	    // Start the vibration
 	    Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
 	    vibrator.vibrate(pattern, -1);
 
-	    boolean popupOnNewSms = sharedPrefs.getBoolean("popupOnNewSms", true);
+	    boolean popupOnNewSms = preferences.getPopupOnNewSms();
 	    // popup the new SMS
 	    if (popupOnNewSms) {
 		// Get SMS map from Intent

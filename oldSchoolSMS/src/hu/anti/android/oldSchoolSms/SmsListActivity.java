@@ -54,14 +54,6 @@ public class SmsListActivity extends AbstractSmsActivity {
     // the displayed pages index
     private int pageIndexCurrent = 0;
 
-    private class Preferences {
-	protected boolean debugModeSmsList = true;
-
-	protected int pageSize = 50;
-    }
-
-    private final Preferences preferences = new Preferences();
-
     // the max number of elements
     private int pageIndexMax = 0;
 
@@ -69,6 +61,8 @@ public class SmsListActivity extends AbstractSmsActivity {
     private AbstractSmsObserver smsObserver;
 
     private BroadcastReceiver listUpdatedReceiver;
+    private int pageSize;
+    private boolean debugModeSmsList;
 
     /************************************************
      * Activity
@@ -128,7 +122,7 @@ public class SmsListActivity extends AbstractSmsActivity {
 
 		Sms sms = smsList.get(pos);
 
-		if (preferences.debugModeSmsList) {
+		if (debugModeSmsList) {
 		    String content = "";
 
 		    // Sms sms = Sms.getSms(getContentResolver(),
@@ -248,25 +242,25 @@ public class SmsListActivity extends AbstractSmsActivity {
 	AdMob.addView(this, layout);
 
 	// get shared preferences
-	SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+	Preferences preferences = new Preferences(getBaseContext());
 
 	// update showMessageContentInList
-	boolean showMessageContentInList = sharedPrefs.getBoolean("showMessageContentInList", true);
+	boolean showMessageContentInList = preferences.getShowMessageContentInList();
 	ListView smsListView = (ListView) findViewById(R.id.SMSList);
 	((SmsAdapter) smsListView.getAdapter()).setShowMessageContentInList(showMessageContentInList);
 
 	// ////////////////////////////////////////////////////////////
 	// update preferences
 	// page size
-	preferences.pageSize = Integer.parseInt(sharedPrefs.getString("pageSize", "50"));
+	pageSize = preferences.getPageSize();
 	// debugModeSmsList
-	preferences.debugModeSmsList = sharedPrefs.getBoolean("debugModeSmsList", false) && sharedPrefs.getBoolean("debug", false);
+	debugModeSmsList = preferences.getDebugModeSmsList();
 
 	// ////////////////////////////////////////////////////////////
 	// update spiner
 
 	// get extendedBoxList
-	boolean extendedBoxList = sharedPrefs.getBoolean("extendedBoxList", false);
+	boolean extendedBoxList = preferences.getExtendedBoxList();
 	Spinner spinner = (Spinner) findViewById(R.id.boxSpinner);
 
 	if (extendedBoxList) {
@@ -279,7 +273,7 @@ public class SmsListActivity extends AbstractSmsActivity {
 	    spinner.setAdapter(boxAdapter);
 
 	    // get last selected box
-	    String smsBox = sharedPrefs.getString("smsBox", Sms.Uris.SMS_URI_BASE);
+	    String smsBox = preferences.getSmsBox();
 	    // reselect last selected
 	    for (int position = 0; position < boxAdapter.getCount(); position++) {
 		// find last selected
@@ -499,8 +493,8 @@ public class SmsListActivity extends AbstractSmsActivity {
 		    smsList.clear();
 
 		    // get shared preferences
-		    SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-		    String smsBox = sharedPrefs.getString("smsBox", "ALL").toLowerCase();
+		    Preferences preferences = new Preferences(getBaseContext());
+		    String smsBox = preferences.getSmsBox().toLowerCase();
 
 		    // get box uri
 		    Uri uri = Uri.parse(Sms.Uris.SMS_URI_BASE + ("all".equals(smsBox) ? "" : smsBox));
@@ -514,7 +508,7 @@ public class SmsListActivity extends AbstractSmsActivity {
 		    // set max size
 		    int count = cursor == null ? 0 : cursor.getCount();
 
-		    pageIndexMax = (count - 1) / preferences.pageSize;
+		    pageIndexMax = (count - 1) / pageSize;
 
 		    // update page index if too large
 		    if (pageIndexCurrent > pageIndexMax)
@@ -524,8 +518,8 @@ public class SmsListActivity extends AbstractSmsActivity {
 
 		    // check result
 		    if (cursor != null && cursor.moveToFirst()) {
-			int startPosition = preferences.pageSize * pageIndexCurrent;
-			int maxPosition = count - startPosition < preferences.pageSize ? count - startPosition : preferences.pageSize;
+			int startPosition = pageSize * pageIndexCurrent;
+			int maxPosition = count - startPosition < pageSize ? count - startPosition : pageSize;
 
 			// move to page
 			cursor.moveToPosition(startPosition);
@@ -542,7 +536,7 @@ public class SmsListActivity extends AbstractSmsActivity {
 			    } catch (Exception e) {
 				Log.e("OldSchoolSMS", e.getLocalizedMessage());
 			    }
-			} while (smsList.size() < preferences.pageSize && cursor.moveToNext());
+			} while (smsList.size() < pageSize && cursor.moveToNext());
 		    }
 		} catch (Exception e) {
 		    showError(e);
