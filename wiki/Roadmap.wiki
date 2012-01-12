@@ -1,4 +1,4 @@
-#summary Goals of projects
+#summary Goals of the project
 
 = TODO =
   * .
