@@ -11,6 +11,7 @@ public final class R {
     public static final class array {
         public static final int boxes_array=0x7f060001;
         /**  SMS boxes 
+ SMS boxes 
          */
         public static final int boxes_extended_array=0x7f060000;
     }
@@ -18,78 +19,148 @@ public final class R {
     }
     public static final class drawable {
         public static final int icon=0x7f020000;
+        public static final int new_sms=0x7f020001;
+        public static final int pending_sms=0x7f020002;
     }
     public static final class id {
-        public static final int AdMob=0x7f090005;
-        public static final int SMSList=0x7f090006;
-        public static final int boxSpinner=0x7f090003;
-        public static final int buttonClose=0x7f090011;
-        public static final int close=0x7f090017;
-        public static final int delete=0x7f090013;
-        public static final int forward=0x7f090014;
-        public static final int linearLayout=0x7f090000;
-        public static final int linearLayout1=0x7f090001;
-        public static final int mainNext=0x7f090004;
-        public static final int mainPreviouse=0x7f090002;
-        public static final int messageText=0x7f09000a;
-        public static final int personSelectButton=0x7f090009;
-        public static final int preferences=0x7f090016;
-        public static final int replay=0x7f090015;
-        public static final int sendButton=0x7f09000b;
-        public static final int sendLayout=0x7f090007;
-        public static final int statusText=0x7f090010;
-        public static final int textViewDate=0x7f09000e;
-        public static final int textViewNumber=0x7f09000d;
-        public static final int textViewSms=0x7f09000f;
-        public static final int toNumber=0x7f090008;
-        public static final int view=0x7f090012;
-        public static final int viewLayout=0x7f09000c;
+        public static final int AdMob=0x7f090008;
+        public static final int SMSList=0x7f090018;
+        public static final int boxSpinner=0x7f090016;
+        public static final int buttonClose=0x7f090023;
+        public static final int cancel=0x7f09002e;
+        public static final int close=0x7f09002d;
+        public static final int copyText=0x7f090029;
+        public static final int delete=0x7f090025;
+        public static final int forward=0x7f090026;
+        public static final int linearLayout=0x7f090014;
+        public static final int linearLayout1=0x7f090000;
+        public static final int linearLayout2=0x7f090004;
+        public static final int linearLayout3=0x7f09000f;
+        public static final int mainAll=0x7f090002;
+        public static final int mainDraft=0x7f090007;
+        public static final int mainInbox=0x7f090005;
+        public static final int mainNewSms=0x7f090001;
+        public static final int mainNext=0x7f090017;
+        public static final int mainPreferences=0x7f090003;
+        public static final int mainPreviouse=0x7f090015;
+        public static final int mainSent=0x7f090006;
+        public static final int messageText=0x7f09001c;
+        public static final int multiDelete=0x7f09002b;
+        public static final int newSms=0x7f09002a;
+        public static final int newSmsDialogCloseButton=0x7f090013;
+        public static final int newSmsDialogDateTime=0x7f09000c;
+        public static final int newSmsDialogDeleteButton=0x7f090012;
+        public static final int newSmsDialogMarkAsRead=0x7f090010;
+        public static final int newSmsDialogReplayButton=0x7f090011;
+        public static final int newSmsDialogSenderView=0x7f09000b;
+        public static final int newSmsDialogTextView=0x7f09000e;
+        public static final int personSelectButton=0x7f09001b;
+        public static final int preferences=0x7f09002c;
+        public static final int replay=0x7f090027;
+        public static final int resend=0x7f090028;
+        public static final int scrollView1=0x7f09000d;
+        public static final int sendButton=0x7f09001d;
+        public static final int sendLayout=0x7f090019;
+        public static final int statusText=0x7f090022;
+        public static final int tableLayout1=0x7f090009;
+        public static final int tableRow1=0x7f09000a;
+        public static final int textViewDate=0x7f090020;
+        public static final int textViewNumber=0x7f09001f;
+        public static final int textViewSms=0x7f090021;
+        public static final int toNumber=0x7f09001a;
+        public static final int view=0x7f090024;
+        public static final int viewLayout=0x7f09001e;
     }
     public static final class layout {
         public static final int main=0x7f030000;
-        public static final int sms_send=0x7f030001;
-        public static final int sms_view=0x7f030002;
+        public static final int new_sms_dialog=0x7f030001;
+        public static final int sms_list=0x7f030002;
+        public static final int sms_send=0x7f030003;
+        public static final int sms_view=0x7f030004;
     }
     public static final class menu {
         public static final int context_menu=0x7f080000;
         public static final int main=0x7f080001;
         public static final int sms=0x7f080002;
+        public static final int sms_send=0x7f080003;
     }
     public static final class string {
-        public static final int SMS_DELIVERED_RESULT_FAILED=0x7f050012;
-        public static final int SMS_DELIVERED_RESULT_OK=0x7f050011;
+        public static final int BoxAll=0x7f05003c;
+        public static final int BoxDraft=0x7f05003f;
+        public static final int BoxInbox=0x7f05003d;
+        public static final int BoxSent=0x7f05003e;
+        public static final int CategoryBehaviorReceivingSummary=0x7f050006;
+        public static final int CategoryBehaviorReceivingTitle=0x7f050005;
+        public static final int CategoryBehaviorSendingSummary=0x7f050008;
+        public static final int CategoryBehaviorSendingTitle=0x7f050007;
+        public static final int CategoryViewSummary=0x7f050004;
+        public static final int CategoryViewTitle=0x7f050003;
+        public static final int SMS_DELIVERED_RESULT_FAILED=0x7f050033;
         /**  SMS delivery status 
+ SMS delivery status 
          */
-        public static final int SMS_DELIVERED_TITLE=0x7f050010;
-        public static final int SMS_SENT_RESULT_ERROR_GENERIC_FAILUREK=0x7f050015;
-        public static final int SMS_SENT_RESULT_ERROR_NO_SERVICE=0x7f050016;
-        public static final int SMS_SENT_RESULT_ERROR_NULL_PDU=0x7f050017;
-        public static final int SMS_SENT_RESULT_ERROR_RADIO_OFF=0x7f050018;
-        public static final int SMS_SENT_RESULT_OK=0x7f050014;
+        public static final int SMS_DELIVERED_RESULT_OK=0x7f050032;
+        public static final int SMS_DELIVERED_TITLE=0x7f050031;
+        public static final int SMS_RECIVED_COUNT=0x7f05003b;
+        /**  SMS recived 
+ SMS recived 
+         */
+        public static final int SMS_RECIVED_TITLE=0x7f05003a;
+        public static final int SMS_SENT_RESULT_ERROR_GENERIC_FAILUREK=0x7f050036;
+        public static final int SMS_SENT_RESULT_ERROR_NO_SERVICE=0x7f050037;
+        public static final int SMS_SENT_RESULT_ERROR_NULL_PDU=0x7f050038;
+        public static final int SMS_SENT_RESULT_ERROR_RADIO_OFF=0x7f050039;
         /**  SMS send status 
+ SMS send status 
          */
-        public static final int SMS_SENT_TITLE=0x7f050013;
-        public static final int SMS_STATUS_COMPLETE=0x7f05000d;
-        public static final int SMS_STATUS_FAILED=0x7f05000f;
+        public static final int SMS_SENT_RESULT_OK=0x7f050035;
+        public static final int SMS_SENT_TITLE=0x7f050034;
+        public static final int SMS_STATUS_COMPLETE=0x7f05002e;
+        public static final int SMS_STATUS_FAILED=0x7f050030;
         /**  SMS status 
+ SMS status 
          */
-        public static final int SMS_STATUS_NONE=0x7f05000c;
-        public static final int SMS_STATUS_PENDING=0x7f05000e;
-        public static final int app_name=0x7f050001;
-        public static final int close=0x7f050004;
-        public static final int delete=0x7f050007;
-        public static final int forward=0x7f050008;
-        public static final int hello=0x7f050000;
-        public static final int next=0x7f050003;
-        public static final int preferences=0x7f050005;
-        public static final int previous=0x7f050002;
-        public static final int replay=0x7f050009;
-        public static final int select=0x7f05000b;
-        /**  SMS buttons 
-         */
-        public static final int send=0x7f05000a;
-        public static final int smsDataType=0x7f050019;
-        public static final int view=0x7f050006;
+        public static final int SMS_STATUS_NONE=0x7f05002d;
+        public static final int SMS_STATUS_PENDING=0x7f05002f;
+        public static final int alertNoPhoneNumber=0x7f05002a;
+        public static final int app_name=0x7f050000;
+        public static final int cancel=0x7f050022;
+        public static final int close=0x7f050023;
+        public static final int copyText=0x7f050021;
+        public static final int delete=0x7f05001d;
+        public static final int emptyAddress=0x7f050029;
+        public static final int emptyBody=0x7f050028;
+        public static final int enterNumber=0x7f050026;
+        public static final int forward=0x7f05001e;
+        public static final int mark_as_read=0x7f050027;
+        public static final int multiDelete=0x7f05001a;
+        public static final int newSms=0x7f050019;
+        public static final int next=0x7f050002;
+        public static final int notificationSoundSummary=0x7f050018;
+        public static final int notificationSoundTitle=0x7f050017;
+        public static final int notifyOnDeliverySummary=0x7f050014;
+        public static final int notifyOnDeliveryTitle=0x7f050013;
+        public static final int notifyOnNewSmsSummary=0x7f05000e;
+        public static final int notifyOnNewSmsTitle=0x7f05000d;
+        public static final int notifyOnSuccessfulSendSummary=0x7f050012;
+        public static final int notifyOnSuccessfulSendTitle=0x7f050011;
+        public static final int pageSizeSummary=0x7f05000c;
+        public static final int pageSizeTitle=0x7f05000b;
+        public static final int popupOnNewSmsSummary=0x7f050010;
+        public static final int popupOnNewSmsTitle=0x7f05000f;
+        public static final int preferences=0x7f05001b;
+        public static final int previous=0x7f050001;
+        public static final int questionDelete=0x7f05002b;
+        public static final int questionResend=0x7f05002c;
+        public static final int replay=0x7f05001f;
+        public static final int resend=0x7f050020;
+        public static final int select=0x7f050025;
+        public static final int send=0x7f050024;
+        public static final int showMessageContentInListSummary=0x7f05000a;
+        public static final int showMessageContentInListTitle=0x7f050009;
+        public static final int vibratorPatternSummary=0x7f050016;
+        public static final int vibratorPatternTitle=0x7f050015;
+        public static final int view=0x7f05001c;
     }
     public static final class style {
         /**  SMS text 
