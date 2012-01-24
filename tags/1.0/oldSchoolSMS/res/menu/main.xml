@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:title="@string/newSms" android:id="@+id/newSms"></item>
+	<item android:title="@string/multiDelete" android:id="@+id/multiDelete" android:visible="false"></item>
+	<item android:id="@+id/preferences" android:title="@string/preferences" />
+</menu>

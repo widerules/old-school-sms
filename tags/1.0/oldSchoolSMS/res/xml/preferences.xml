@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<PreferenceCategory android:title="@string/CategoryViewTitle" android:summary="@string/CategoryViewSummary">
+
+		<CheckBoxPreference android:key="showMessageContentInList"
+			android:defaultValue="true" android:title="@string/showMessageContentInListTitle" android:summary="@string/showMessageContentInListSummary"/>
+
+		<EditTextPreference android:key="pageSize"
+			android:defaultValue="50" android:numeric="integer" android:title="@string/pageSizeTitle" android:summary="@string/pageSizeSummary" android:dialogMessage="@string/pageSizeTitle" android:dialogTitle="@string/pageSizeTitle"/>
+
+	</PreferenceCategory>
+
+	<PreferenceCategory android:title="@string/CategoryBehaviorReceivingTitle" android:summary="@string/CategoryBehaviorReceivingSummary">
+		
+		<CheckBoxPreference android:key="notifyOnNewSms"
+			android:defaultValue="true" android:summary="@string/notifyOnNewSmsSummary" android:title="@string/notifyOnNewSmsTitle"/>
+
+		
+		
+		<RingtonePreference android:key="notificationSound" android:ringtoneType="notification" android:showSilent="true" android:showDefault="true"
+		 android:dependency="notifyOnNewSms" android:summary="@string/notificationSoundSummary" android:title="@string/notificationSoundTitle"/>
+		<EditTextPreference android:key="vibratorPattern" android:defaultValue="500,200,300" android:dependency="notifyOnNewSms" android:numeric="integer" android:title="@string/vibratorPatternTitle" android:summary="@string/vibratorPatternSummary" android:dialogMessage="@string/vibratorPatternSummary" android:dialogTitle="@string/vibratorPatternTitle" />
+
+		<CheckBoxPreference android:key="popupOnNewSms"
+			android:defaultValue="true" android:dependency="notifyOnNewSms" android:summary="@string/popupOnNewSmsSummary" android:title="@string/popupOnNewSmsTitle"/>
+
+	</PreferenceCategory>
+
+	<PreferenceCategory android:title="@string/CategoryBehaviorSendingTitle" android:summary="@string/CategoryBehaviorSendingSummary">
+
+		<CheckBoxPreference android:key="notifyOnSuccessfulSend"
+			android:defaultValue="true" android:summary="@string/notifyOnSuccessfulSendSummary" android:title="@string/notifyOnSuccessfulSendTitle"/>
+
+		<CheckBoxPreference android:key="notifyOnDelivery"
+			android:defaultValue="true" android:summary="@string/notifyOnDeliverySummary" android:title="@string/notifyOnDeliveryTitle"/>
+
+		<RingtonePreference android:key="deliverySound" android:ringtoneType="notification" android:showSilent="true" android:showDefault="true" 
+		 android:dependency="notifyOnDelivery" android:summary="@string/notificationSoundSummary" android:title="@string/notificationSoundTitle"/>
+
+		<EditTextPreference android:key="deliveryVibratorPattern"
+			android:defaultValue="500" android:dependency="notifyOnDelivery" android:dialogMessage="@string/vibratorPatternSummary" android:title="@string/vibratorPatternTitle" android:dialogTitle="@string/vibratorPatternTitle" android:summary="@string/vibratorPatternSummary" android:numeric="integer"/>
+
+	</PreferenceCategory>
+
+	<PreferenceCategory android:title="Application developement">
+		
+		<CheckBoxPreference android:key="debug"
+			android:title="Debug data" android:summary="Advanced debug setings for developers"
+			android:defaultValue="false" />
+
+		<CheckBoxPreference android:key="debugModeSmsList"
+			android:title="SMS details" android:summary="Show debug information from SMS list"
+			android:defaultValue="false" android:dependency="debug" />
+		<CheckBoxPreference
+		    android:defaultValue="false"
+		    android:dependency="debug"
+		    android:key="extendedBoxList"
+		    android:summary="Show extended list of SMS boxes in SMS-list view"
+		    android:title="SMS box list" />
+
+	</PreferenceCategory>
+
+</PreferenceScreen>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/view" android:title="@string/view"></item>
+    <item android:id="@+id/delete" android:title="@string/delete"></item>
+    <item android:id="@+id/forward" android:title="@string/forward"></item>
+    <item android:id="@+id/replay" android:title="@string/replay"></item>
+    <item android:title="@string/resend" android:id="@+id/resend"></item>
+    <item android:id="@+id/copyText" android:title="@string/copyText"></item>
+    
+</menu>
