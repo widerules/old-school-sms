@@ -6,9 +6,10 @@ import hu.anti.android.oldSchoolSms.Sms;
 import hu.anti.android.oldSchoolSms.SmsSendActivity;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.LinkedList;
+import java.util.NoSuchElementException;
+import java.util.Queue;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -16,8 +17,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -28,8 +29,7 @@ public class ReceivedSmsActivity extends Activity {
     public static String INTENT_SMS_TIMESTAMP = "INTENT_SMS_TIMESTAMP";
     public static String INTENT_SMS_ADDRESS = "INTENT_SMS_ADDRESS";
 
-    private final List<Sms> receivedSms = new ArrayList<Sms>();
-    private int displayedSms = 0;
+    private final Queue<Sms> receivedSms = new LinkedList<Sms>();
 
     /************************************************
      * Activity
@@ -52,7 +52,7 @@ public class ReceivedSmsActivity extends Activity {
 		updateReadStatus();
 
 		// remove displayed
-		receivedSms.remove(displayedSms);
+		receivedSms.poll();
 
 		// update data
 		updateView();
@@ -66,16 +66,21 @@ public class ReceivedSmsActivity extends Activity {
 	    @Override
 	    public void onClick(View paramView) {
 		// get selected sms
-		Sms sms = receivedSms.get(displayedSms);
+		Sms sms = receivedSms.element();
 
 		// get uri
 		Uri smsUri = sms.findSmsByContent(getContentResolver());
 
 		// delete
-		getContentResolver().delete(smsUri, null, null);
+		if (smsUri != null)
+		    getContentResolver().delete(smsUri, null, null);
 
 		// remove displayed
-		receivedSms.remove(displayedSms);
+		try {
+		    receivedSms.remove(sms);
+		} catch (NoSuchElementException e) {
+		    Log.w("OldSchoolSMS", "SMS " + sms.toString() + " removed: " + e.getLocalizedMessage());
+		}
 
 		// update data
 		updateView();
@@ -91,7 +96,7 @@ public class ReceivedSmsActivity extends Activity {
 		updateReadStatus();
 
 		// get selected sms
-		Sms sms = receivedSms.get(displayedSms);
+		Sms sms = receivedSms.element();
 
 		// create the uri
 		Uri smsToUri = Uri.parse("smsto:" + sms.address);
@@ -114,16 +119,7 @@ public class ReceivedSmsActivity extends Activity {
 	Intent intent = getIntent();
 	Log.d("OldSchoolSMS", "ReceivedSmsActivity - onResume " + intent);
 
-	if (intent != null)
-	    if (NEW_SMS_ACTION.equals(intent.getAction())) {
-		Sms sms = extractIntent(intent);
-
-		receivedSms.add(sms);
-		displayedSms = 0;
-
-		// remove intent
-		setIntent(null);
-	    }
+	queueSms(intent);
 
 	updateView();
     }
@@ -133,41 +129,35 @@ public class ReceivedSmsActivity extends Activity {
 	super.onNewIntent(intent);
 	Log.d("OldSchoolSMS", "ReceivedSmsActivity - onNewIntent: " + intent);
 
+	queueSms(intent);
+
+	// updateView();
+    }
+
+    private void queueSms(Intent intent) {
 	if (intent != null)
 	    if (NEW_SMS_ACTION.equals(intent.getAction())) {
-		Sms sms = extractIntent(intent);
+		Sms sms = new Sms();
+		sms.address = intent.getStringExtra(INTENT_SMS_ADDRESS);
+		sms.body = intent.getStringExtra(INTENT_SMS_BODY);
+		sms.date = new Date(intent.getLongExtra(INTENT_SMS_TIMESTAMP, 0));
 
 		receivedSms.add(sms);
 
 		// remove intent
 		setIntent(null);
 	    }
-
-	// updateView();
-    }
-
-    protected Sms extractIntent(Intent intent) {
-	Sms sms = new Sms();
-	sms.address = intent.getStringExtra(INTENT_SMS_ADDRESS);
-	sms.body = intent.getStringExtra(INTENT_SMS_BODY);
-	sms.date = new Date(intent.getLongExtra(INTENT_SMS_TIMESTAMP, 0));
-
-	return sms;
     }
 
     protected void updateView() {
-	// update to last
-	if (displayedSms > receivedSms.size() - 1)
-	    displayedSms = receivedSms.size() - 1;
-
 	// if no more SMS close the dialog
-	if (displayedSms == -1) {
+	if (receivedSms.size() == 0) {
 	    finish();
 	    return;
 	}
 
 	// get selected sms
-	Sms sms = receivedSms.get(displayedSms);
+	Sms sms = receivedSms.element();
 
 	// set timestamp
 	TextView timestampView = (TextView) findViewById(R.id.newSmsDialogDateTime);
@@ -189,7 +179,7 @@ public class ReceivedSmsActivity extends Activity {
 	if (markAsRead) {
 	    Intent intent = new Intent(NotificationService.ACTION_MARK_AS_READ_SMS, null, getApplicationContext(), NotificationService.class);
 
-	    Sms sms = receivedSms.get(displayedSms);
+	    Sms sms = receivedSms.element();
 	    intent.putExtra(NotificationService.EXTRA_ADDRESS, sms.address);
 	    intent.putExtra(NotificationService.EXTRA_BODY, sms.body);
 
