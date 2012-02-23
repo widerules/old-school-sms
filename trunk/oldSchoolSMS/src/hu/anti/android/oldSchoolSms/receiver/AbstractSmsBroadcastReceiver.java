@@ -88,28 +88,10 @@ public abstract class AbstractSmsBroadcastReceiver extends BroadcastReceiver {
 	Uri soundUri = Uri.parse(deliverySound);
 
 	// get vibration
-	String deliveryVibratorPattern = preferences.getDeliveryVibratorPattern();
-	long[] vibratorPattern = decodeVibratorString(deliveryVibratorPattern);
+	long[] vibratorPattern = preferences.getDeliveryVibratorPattern();
 
 	// display it
 	showNotification(context, uri, iconId, title, message, notificationId, 0, SmsViewActivity.class, vibratorPattern, soundUri);
-    }
-
-    private long[] decodeVibratorString(String vibratorPattern) {
-	// extract pattern
-	String[] split = vibratorPattern.split("[,.;/\\- ]");
-
-	// create vibration pattern holder
-	long[] pattern = new long[(split.length + 1)];
-
-	// set starting wait to 0ms
-	pattern[0] = 0;
-	// decode pattern string
-	for (int i = 0; i < split.length; i++) {
-	    pattern[i + 1] = Long.parseLong(split[i]);
-	}
-
-	return pattern;
     }
 
     protected void showNotification(Context context, Uri uri, int iconId, String title, String message, int notificationId, int count, Class<?> targetClass,

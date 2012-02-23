@@ -73,8 +73,7 @@ public class NewSmsReceiver extends AbstractSmsBroadcastReceiver {
 	    mNotificationManager.notify(1, notification);
 
 	    // vibrate
-	    String vibratorPattern = preferences.getVibratorPattern();
-	    long[] pattern = extractPattern(vibratorPattern);
+	    long[] pattern = preferences.getVibratorPattern();
 
 	    // Start the vibration
 	    Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
@@ -124,20 +123,6 @@ public class NewSmsReceiver extends AbstractSmsBroadcastReceiver {
 	    // update notification count
 	    context.startService(new Intent(NotificationService.ACTION_UPDATE_SMS_NOTIFICATIONS, null, context, NotificationService.class));
 	}
-    }
-
-    private long[] extractPattern(String vibratorPattern) {
-	// extract pattern
-	String[] split = vibratorPattern.split("[,.;/\\- ]");
-	// create vibration pattern holder
-	long[] pattern = new long[(split.length + 1)];
-	// set starting wait to 0ms
-	pattern[0] = 0;
-	// decode pattern string
-	for (int i = 0; i < split.length; i++) {
-	    pattern[i + 1] = Long.parseLong(split[i]);
-	}
-	return pattern;
     }
 
     protected void popupSms(final Context context, String address, String body, Long timestamp) {
