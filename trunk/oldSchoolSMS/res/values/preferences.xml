@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- category -->
     <string name="CategoryViewTitle">View</string>
     <string name="CategoryViewSummary">Main window view preferences</string>
     <string name="CategoryBehaviorReceivingTitle">Behavior - receiving</string>
     <string name="CategoryBehaviorReceivingSummary">Behavior of application when receiving an SMS</string>
     <string name="CategoryBehaviorSendingTitle">Behavior - sending</string>
     <string name="CategoryBehaviorSendingSummary">Behavior of application when sending an SMS</string>
+
+    <!-- entry -->
     <string name="showMessageContentInListTitle">Show message</string>
     <string name="showMessageContentInListSummary">Show message content in SMS list</string>
     <string name="pageSizeTitle">Page size</string>
