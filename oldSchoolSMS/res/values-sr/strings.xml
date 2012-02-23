@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="newSms">Novi SMS</string>
+    <string name="multiDelete">Brisanje vise SMS-a</string>
+    <string name="preferences">Podešavanje programa</string>
+    <string name="view">Otvori</string>
+    <string name="delete">Obriši</string>
+    <string name="forward">Prosledi</string>
+    <string name="replay">Odgovori</string>
+    <string name="resend">Pošalji ponovo</string>
+    <string name="copyText">Kopiraj tekst</string>
+    <string name="cancel">Poništeni</string>
+    <string name="close">Zatvari</string>
+    <string name="send">Pošalji</string>
+    <string name="select">Izaberi</string>
+    <string name="enterNumber">Dotakni za upisivanja broja</string>
+    <string name="mark_as_read">Pročitano</string>
+    <string name="emptyBody">Prazan SMS!</string>
+    <string name="emptyAddress">Nema adrese!</string>
+    <string name="alertNoPhoneNumber">Nije dat odgovarajući telefonski broj!</string>
+    <string name="alertVibrationPattern">Pogrešno vibriranje. Pravi format u ms: vibriranje sa prekidima…</string>
+    <string name="questionDelete">Da obrišem?</string>
+    <string name="questionResend">Da pošaljem ponovo?</string>
+    <!-- SMS status -->
+    <string name="SMS_STATUS_NONE">Nema</string>
+    <string name="SMS_STATUS_COMPLETE">U redu</string>
+    <string name="SMS_STATUS_PENDING">U toku…</string>
+    <string name="SMS_STATUS_FAILED">Neuspešan</string>
+    <string name="SMS_DELIVERED_TITLE">Dostava SMS-a</string>
+    <!-- SMS delivery status -->
+    <string name="SMS_DELIVERED_RESULT_OK">Uspešno dostavljeno %s-u</string>
+    <string name="SMS_DELIVERED_RESULT_FAILED">Neuspešno dostavljeno %s-u</string>
+    <string name="SMS_SENT_TITLE">Slanje SMS-a</string>
+    <!-- SMS send status -->
+    <string name="SMS_SENT_RESULT_OK">Poslato %s-u</string>
+    <string name="SMS_SENT_RESULT_ERROR_GENERIC_FAILUREK">Greška u sistemu</string>
+    <string name="SMS_SENT_RESULT_ERROR_NO_SERVICE">Nema usluge</string>
+    <string name="SMS_SENT_RESULT_ERROR_NULL_PDU">Nema PDU</string>
+    <string name="SMS_SENT_RESULT_ERROR_RADIO_OFF">Isklučen radio</string>
+    <!-- SMS recived -->
+    <string name="SMS_RECIVED_TITLE">Nova poruka</string>
+    <string name="SMS_RECIVED_COUNT">Broj nepročitanih poruke %d</string>
+    <string name="BoxAll">Poruke zajedno</string>
+    <string name="BoxInbox">Prijemne poruke</string>
+    <string name="BoxSent">Poslate poruke</string>
+    <string name="BoxDraft">Draftovi</string>
+
+</resources>
