@@ -63,6 +63,7 @@ public class SmsListActivity extends AbstractSmsActivity {
     private BroadcastReceiver listUpdatedReceiver;
     private int pageSize;
     private boolean debugModeSmsList;
+    private boolean updateInProgress;
 
     /************************************************
      * Activity
@@ -205,6 +206,7 @@ public class SmsListActivity extends AbstractSmsActivity {
 	listUpdatedReceiver = new BroadcastReceiver() {
 	    @Override
 	    public void onReceive(Context paramContext, Intent paramIntent) {
+		updateInProgress = true;
 		Log.d("OldSchoolSMS", "Received " + paramIntent);
 
 		// move to end the progress bar
@@ -228,6 +230,8 @@ public class SmsListActivity extends AbstractSmsActivity {
 		// stop indeterminate progress
 		setProgressBarIndeterminate(false);
 		setProgressBarIndeterminateVisibility(false);
+
+		updateInProgress = false;
 	    }
 	};
     }
@@ -477,6 +481,9 @@ public class SmsListActivity extends AbstractSmsActivity {
      * functions
      ************************************************/
     public void updateSmsList() {
+	if (updateInProgress)
+	    return;
+
 	// showDialog(0);
 	setProgressBarVisibility(true);
 	setProgress(0);
