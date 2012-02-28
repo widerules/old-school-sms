@@ -184,9 +184,6 @@ public class NotificationService extends IntentService {
     protected void markAsRead(String address, String body) {
 	Uri smsUri = Sms.findSmsByContent(getContentResolver(), address, body);
 
-	if (smsUri == null)
-	    return;
-
 	// update read flag
 	ContentValues values = new ContentValues();
 	values.put(Sms.Fields.READ, Sms.Other.MESSAGE_IS_READ);
