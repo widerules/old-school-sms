@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/AdMob"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center"
+        android:layout_margin="20dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="5dp" >
+
+        <Button
+            android:id="@+id/mainNewSms"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/newSms" >
+        </Button>
+
+        <Button
+            android:id="@+id/mainAll"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/BoxAll" >
+        </Button>
+
+        <Button
+            android:id="@+id/mainInbox"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/BoxInbox" >
+        </Button>
+
+        <Button
+            android:id="@+id/mainSent"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/BoxSent" >
+        </Button>
+
+        <Button
+            android:id="@+id/mainDraft"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/BoxDraft" >
+        </Button>
+
+        <Button
+            android:id="@+id/mainPreferences"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/preferences" >
+        </Button>
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- category -->
+    <string name="CategoryViewTitle">View</string>
+    <string name="CategoryViewSummary">Main window view preferences</string>
+    <string name="CategoryBehaviorReceivingTitle">Behavior - receiving</string>
+    <string name="CategoryBehaviorReceivingSummary">Behavior of application when receiving an SMS</string>
+    <string name="CategoryBehaviorSendingTitle">Behavior - sending</string>
+    <string name="CategoryBehaviorSendingSummary">Behavior of application when sending an SMS</string>
+
+    <!-- entry -->
+    <string name="showMessageContentInListTitle">Show message</string>
+    <string name="showMessageContentInListSummary">Show message content in SMS list</string>
+    <string name="pageSizeTitle">Page size</string>
+    <string name="pageSizeSummary">Maximum number of SMS messages in the main screen list</string>
+    <string name="notifyOnNewSmsTitle">Notify on new SMS</string>
+    <string name="notifyOnNewSmsSummary">Notify if new SMS arrives</string>
+    <string name="popupOnNewSmsTitle">Popup on new SMS</string>
+    <string name="popupOnNewSmsSummary">Display popup window if new SMS arrives</string>
+    <string name="notifyOnSuccessfulSendTitle">Notify on successful send</string>
+    <string name="notifyOnSuccessfulSendSummary">Display notification if sending of SMS was successful</string>
+    <string name="notifyOnDeliveryTitle">Notify on delivery</string>
+    <string name="notifyOnDeliverySummary">Display notification if SMS is delivered succesfuly</string>
+    <string name="vibratorPatternTitle">Vibration Pattern</string>
+    <string name="vibratorPatternSummary">Vibration pattern of notification in ms (in format: vibrate,wait,vibrate,wait…)</string>
+    <string name="notificationSoundTitle">Notification Sound</string>
+    <string name="notificationSoundSummary">Notification Sound</string>
+
+</resources>

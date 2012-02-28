@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="newSms">New sms</string>
+    <string name="multiDelete">Delete multiple sms</string>
+    <string name="preferences">Preferences</string>
+    <string name="view">View</string>
+    <string name="delete">Delete</string>
+    <string name="forward">Forward</string>
+    <string name="replay">Replay</string>
+    <string name="resend">Resend</string>
+    <string name="copyText">Copy text</string>
+    <string name="cancel">Cancel</string>
+    <string name="close">Close</string>
+    <string name="send">Send</string>
+    <string name="select">Select</string>
+    <string name="enterNumber">Tap here to enter number</string>
+    <string name="mark_as_read">Mark as read</string>
+    <string name="emptyBody">Empty SMS body!</string>
+    <string name="emptyAddress">Empty SMS address!</string>
+    <string name="alertNoPhoneNumber">No phone number entry for selected contact!</string>
+    <string name="alertVibrationPattern">Vrong vibration pattern formula! Valid format in ms: vibrate,wait,vibrate,wait…</string>
+    <string name="questionDelete">Are you sure to delete message?</string>
+    <string name="questionResend">Are you sure to resend message?</string>
+
+    <!-- SMS status -->
+    <string name="SMS_STATUS_NONE">None</string>
+    <string name="SMS_STATUS_COMPLETE">Complete</string>
+    <string name="SMS_STATUS_PENDING">Pending…</string>
+    <string name="SMS_STATUS_FAILED">Failed</string>
+    <string name="SMS_DELIVERED_TITLE">SMS delivery</string>
+
+    <!-- SMS delivery status -->
+    <string name="SMS_DELIVERED_RESULT_OK">Successful to %s</string>
+    <string name="SMS_DELIVERED_RESULT_FAILED">Failed to %s</string>
+    <string name="SMS_SENT_TITLE">SMS sending</string>
+
+    <!-- SMS send status -->
+    <string name="SMS_SENT_RESULT_OK">Sent to %s</string>
+    <string name="SMS_SENT_RESULT_ERROR_GENERIC_FAILUREK">Generic failure</string>
+    <string name="SMS_SENT_RESULT_ERROR_NO_SERVICE">No service</string>
+    <string name="SMS_SENT_RESULT_ERROR_NULL_PDU">Null PDU</string>
+    <string name="SMS_SENT_RESULT_ERROR_RADIO_OFF">Radio is off</string>
+
+    <!-- SMS recived -->
+    <string name="SMS_RECIVED_TITLE">New SMS</string>
+    <string name="SMS_RECIVED_COUNT">Count of unread SMS: %d</string>
+    <string name="BoxAll">All SMS</string>
+    <string name="BoxInbox">Inbox</string>
+    <string name="BoxSent">Sent</string>
+    <string name="BoxDraft">Draft</string>
+
+</resources>
