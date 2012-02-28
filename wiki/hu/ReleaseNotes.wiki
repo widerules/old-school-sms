@@ -3,6 +3,14 @@
 
 = ReleaseNotes =
 Minden új kiadás tartalmaz hibajavítást, ez nem kerül külön kiemelésre... az új funkciók, képességek a következők:
+== 2012.02.23. - Release 1.1  ==
+  * szerb nyelv
+  * preferences kezelés kiemelve egy helyre
+== 2012.01.24. - Release 1.0 ==
+  * első release előkészítése és kiadása
+== 2012.01.11. ==
+  * érkező sms ablak forgásérzékeny
+  * hiba esetén nem az alap ikon jelenik meg, hanem a rendszer figyelmeztetője
 == 2012.01.04. ==
   * újraküldés megerősítést kér
   * piszkozat kezelés javítása
