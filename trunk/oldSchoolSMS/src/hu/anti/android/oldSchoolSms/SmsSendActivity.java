@@ -67,20 +67,29 @@ public class SmsSendActivity extends AbstractSmsActivity {
 		    return;
 		}
 
-		deleteIfDraft();
+		Builder resendAlert = createSendAlert();
+		resendAlert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+		    @Override
+		    public void onClick(DialogInterface dialogInterface, int arg1) {
+			deleteIfDraft();
 
-		// send it
-		Intent popupIntent = new Intent(NotificationService.ACTION_SEND_SMS, null, SmsSendActivity.this, NotificationService.class);
-		popupIntent.putExtra(NotificationService.EXTRA_ADDRESS, toNumber);
-		popupIntent.putExtra(NotificationService.EXTRA_BODY, body);
+			// send it
+			Intent popupIntent = new Intent(NotificationService.ACTION_SEND_SMS, null, SmsSendActivity.this, NotificationService.class);
+			popupIntent.putExtra(NotificationService.EXTRA_ADDRESS, toNumber);
+			popupIntent.putExtra(NotificationService.EXTRA_BODY, body);
 
-		startService(popupIntent);
+			startService(popupIntent);
 
-		// mark sent status
-		smsProcessed = true;
+			// mark sent status
+			smsProcessed = true;
 
-		// close activity
-		finish();
+			// close activity
+			finish();
+
+			dialogInterface.dismiss();
+		    }
+		});
+		resendAlert.show();
 	    }
 	});
 

@@ -22,6 +22,7 @@
     <string name="alertVibrationPattern">Pogrešno vibriranje. Pravi format u ms: vibriranje sa prekidima…</string>
     <string name="questionDelete">Da obrišem?</string>
     <string name="questionResend">Da pošaljem ponovo?</string>
+    <string name="questionSend">Da pošaljem?</string>
     <!-- SMS status -->
     <string name="SMS_STATUS_NONE">Nema</string>
     <string name="SMS_STATUS_COMPLETE">U redu</string>
