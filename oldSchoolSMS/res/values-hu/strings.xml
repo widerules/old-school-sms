@@ -22,6 +22,7 @@
     <string name="alertVibrationPattern">Hibás rezgési minta! A helyes formátum ms-ben: vibrálás,szünet,vibrálás,szünet…</string>
     <string name="questionDelete">Biztos hogy törli az üzenetet?</string>
     <string name="questionResend">Biztos hogy újraküldi az üzenetet?</string>
+    <string name="questionSend">Biztos hogy elküldi az üzenetet?</string>
 
     <!-- SMS status -->
     <string name="SMS_STATUS_NONE">Nincs</string>

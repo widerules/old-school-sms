@@ -22,6 +22,7 @@
     <string name="alertVibrationPattern">Vrong vibration pattern formula! Valid format in ms: vibrate,wait,vibrate,wait…</string>
     <string name="questionDelete">Are you sure to delete message?</string>
     <string name="questionResend">Are you sure to resend message?</string>
+    <string name="questionSend">Are you sure to send message?</string>
 
     <!-- SMS status -->
     <string name="SMS_STATUS_NONE">None</string>

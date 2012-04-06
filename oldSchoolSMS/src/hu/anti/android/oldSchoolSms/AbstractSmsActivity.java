@@ -99,4 +99,20 @@ public abstract class AbstractSmsActivity extends Activity {
 
 	return builder;
     }
+
+    protected AlertDialog.Builder createSendAlert() {
+	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+	builder.setIcon(android.R.drawable.ic_dialog_alert);
+	builder.setTitle(R.string.questionSend);
+	builder.setCancelable(true);
+	builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+	    @Override
+	    public void onClick(DialogInterface dialogInterface, int arg1) {
+		dialogInterface.dismiss();
+	    }
+	});
+
+	return builder;
+    }
 }
