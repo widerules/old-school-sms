@@ -2,7 +2,9 @@ package hu.anti.android.oldSchoolSms;
 
 import java.util.List;
 
+import android.content.AsyncQueryHandler;
 import android.content.Context;
+import android.database.Cursor;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,13 +12,13 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TwoLineListItem;
 
-public class SmsAdapter extends ArrayAdapter<Sms> {
+public class SmsArrayAdapter extends ArrayAdapter<Sms> {
 
     private final List<Sms> objects;
 
     private boolean showMessageContentInList;
 
-    public SmsAdapter(Context context, List<Sms> objects) {
+    public SmsArrayAdapter(Context context, List<Sms> objects) {
 	super(context, android.R.layout.simple_list_item_2, objects);
 
 	this.objects = objects;
@@ -25,7 +27,7 @@ public class SmsAdapter extends ArrayAdapter<Sms> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 	// get sms object
-	Sms sms = objects.get(position);
+	final Sms sms = objects.get(position);
 
 	// if new, create it
 	if (convertView == null) {
@@ -34,11 +36,26 @@ public class SmsAdapter extends ArrayAdapter<Sms> {
 	}
 
 	// list item
-	TwoLineListItem listItem = (TwoLineListItem) convertView;
+	final TwoLineListItem listItem = (TwoLineListItem) convertView;
 
 	// sender
-	String person = sms.getDisplayName(getContext().getContentResolver());
-	listItem.getText1().setText(person);
+	AsyncQueryHandler asyncQueryHandler = new AsyncQueryHandler(getContext().getContentResolver()) {
+
+	    @Override
+	    protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
+		String personName = null;
+
+		if (cursor != null && cursor.moveToFirst())
+		    personName = cursor.getString(0);
+		else
+		    // default...
+		    personName = "(" + sms.address + ")";
+
+		listItem.getText1().setText(personName);
+	    }
+	};
+	listItem.getText1().setText("-");
+	Sms.getDisplayName(asyncQueryHandler, sms.address);
 
 	// sms date
 	String text2 = sms.date.toLocaleString();

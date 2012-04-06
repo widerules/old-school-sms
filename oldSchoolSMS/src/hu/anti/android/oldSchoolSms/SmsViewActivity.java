@@ -1,10 +1,12 @@
 package hu.anti.android.oldSchoolSms;
 
 import android.app.AlertDialog.Builder;
+import android.content.AsyncQueryHandler;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.ClipboardManager;
@@ -53,7 +55,7 @@ public class SmsViewActivity extends AbstractSmsActivity {
 
 	if (Intent.ACTION_VIEW.equals(action)) {
 	    // display SMS
-	    Sms sms = Sms.getSms(getContentResolver(), uri);
+	    final Sms sms = Sms.getSms(getContentResolver(), uri);
 
 	    if (sms == null) {
 		// clear notification
@@ -66,7 +68,25 @@ public class SmsViewActivity extends AbstractSmsActivity {
 		return;
 	    }
 
-	    setText(R.id.textViewNumber, sms.getDisplayName(getContentResolver()));
+	    final TextView toNumberView = (TextView) findViewById(R.id.textViewNumber);
+	    AsyncQueryHandler asyncQueryHandler = new AsyncQueryHandler(getContentResolver()) {
+
+		@Override
+		protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
+		    String personName = null;
+
+		    if (cursor != null && cursor.moveToFirst())
+			personName = cursor.getString(0);
+		    else
+			// default...
+			personName = "(" + sms.address + ")";
+
+		    toNumberView.setText(personName);
+		}
+	    };
+	    toNumberView.setText("-");
+	    Sms.getDisplayName(asyncQueryHandler, sms.address);
+
 	    setText(R.id.textViewDate, sms.date.toLocaleString());
 	    setText(R.id.textViewSms, sms.body);
 
