@@ -14,7 +14,7 @@ import android.content.ContentUris;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
-import android.provider.ContactsContract.PhoneLookup;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.telephony.SmsManager;
 import android.util.Log;
 
@@ -252,9 +252,9 @@ public class Sms {
 	    return;
 
 	// try the number simply, url encode, url decode
-	asyncQueryHandler.startQuery(0, null, PhoneLookup.CONTENT_FILTER_URI,
-		new String[] { PhoneLookup.DISPLAY_NAME }, //
-		PhoneLookup.NUMBER + "=? OR " + PhoneLookup.NUMBER + "=? OR " + PhoneLookup.NUMBER + "=?",
+	asyncQueryHandler.startQuery(0, null, Phone.CONTENT_URI,
+		new String[] { Phone.DISPLAY_NAME }, //
+		Phone.NUMBER + "=? OR " + Phone.NUMBER + "=? OR " + Phone.NUMBER + "=?",
 		new String[] { phoneNumber, URLEncoder.encode(phoneNumber), URLDecoder.decode(phoneNumber) }, null);
     }
 
