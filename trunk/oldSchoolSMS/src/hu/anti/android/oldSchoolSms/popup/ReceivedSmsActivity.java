@@ -12,7 +12,9 @@ import java.util.NoSuchElementException;
 import java.util.Queue;
 
 import android.app.Activity;
+import android.content.AsyncQueryHandler;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -157,15 +159,32 @@ public class ReceivedSmsActivity extends Activity {
 	}
 
 	// get selected sms
-	Sms sms = receivedSms.element();
+	final Sms sms = receivedSms.element();
 
 	// set timestamp
 	TextView timestampView = (TextView) findViewById(R.id.newSmsDialogDateTime);
 	timestampView.setText(new SimpleDateFormat("yyyy.MM.dd. HH.mm").format(sms.date));
 
 	// set sender
-	TextView senderView = (TextView) findViewById(R.id.newSmsDialogSenderView);
-	senderView.setText(sms.getDisplayName(getContentResolver()));
+	final TextView senderView = (TextView) findViewById(R.id.newSmsDialogSenderView);
+
+	AsyncQueryHandler asyncQueryHandler = new AsyncQueryHandler(getContentResolver()) {
+
+	    @Override
+	    protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
+		String personName = null;
+
+		if (cursor != null && cursor.moveToFirst())
+		    personName = cursor.getString(0);
+		else
+		    // default...
+		    personName = "(" + sms.address + ")";
+
+		senderView.setText(personName);
+	    }
+	};
+	senderView.setText("-");
+	Sms.getDisplayName(asyncQueryHandler, sms.address);
 
 	// set message
 	TextView messageView = (TextView) findViewById(R.id.newSmsDialogTextView);

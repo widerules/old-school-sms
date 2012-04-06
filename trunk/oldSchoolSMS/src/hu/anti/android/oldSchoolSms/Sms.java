@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.res.Resources;
@@ -196,10 +197,6 @@ public class Sms {
 	return cursor.getInt(index);
     }
 
-    public String getDisplayName(ContentResolver contentResolver) {
-	return getDisplayName(contentResolver, address);
-    }
-
     public Uri findSmsByContent(ContentResolver contentResolver) {
 	return findSmsByContent(contentResolver, address, body);
     }
@@ -247,49 +244,18 @@ public class Sms {
 	return smsUri;
     }
 
-    public static String getDisplayName(ContentResolver contentResolver, String phoneNumber) {
+    public static void getDisplayName(AsyncQueryHandler asyncQueryHandler, String phoneNumber) {
 	if (phoneNumber == null)
-	    return "-";
+	    return;
 
-	// try the number simply...
-	String person = getPersonName(contentResolver, phoneNumber);
-
-	if (person != null)
-	    return person;
-
-	// url encode
-	person = getPersonName(contentResolver, URLEncoder.encode(phoneNumber));
-
-	if (person != null)
-	    return person;
-
-	// url decode
-	person = getPersonName(contentResolver, URLDecoder.decode(phoneNumber));
-
-	if (person != null)
-	    return person;
-
-	// default...
-	return "(" + phoneNumber + ")";
-    }
-
-    private static String getPersonName(ContentResolver contentResolver, String phoneNumber) {
 	if (phoneNumber == null || phoneNumber.length() == 0)
-	    return null;
+	    return;
 
-	Uri uri = Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
-
-	Cursor personCursor = contentResolver.query(uri, new String[] { PhoneLookup.DISPLAY_NAME }, null, null, null);
-
-	String personName = null;
-
-	if (personCursor != null && personCursor.moveToFirst())
-	    personName = personCursor.getString(0);
-
-	if (personCursor != null)
-	    personCursor.close();
-
-	return personName;
+	// try the number simply, url encode, url decode
+	asyncQueryHandler.startQuery(0, null, PhoneLookup.CONTENT_FILTER_URI,
+		new String[] { PhoneLookup.DISPLAY_NAME }, //
+		PhoneLookup.NUMBER + "=? OR " + PhoneLookup.NUMBER + "=? OR " + PhoneLookup.NUMBER + "=?",
+		new String[] { phoneNumber, URLEncoder.encode(phoneNumber), URLDecoder.decode(phoneNumber) }, null);
     }
 
     public static String decodeSmsDeliveryStatus(Resources resources, String status) {

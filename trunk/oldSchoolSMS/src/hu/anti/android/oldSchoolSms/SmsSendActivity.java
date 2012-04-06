@@ -9,6 +9,7 @@ import java.util.List;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.content.AsyncQueryHandler;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -53,7 +54,7 @@ public class SmsSendActivity extends AbstractSmsActivity {
 	    public void onClick(View paramView) {
 		// get message
 		TextView messageText = (TextView) findViewById(R.id.messageText);
-		String body = messageText.getText().toString();
+		final String body = messageText.getText().toString();
 
 		Context context = SmsSendActivity.this.getApplicationContext();
 		if (body == null || body.length() == 0) {
@@ -118,7 +119,7 @@ public class SmsSendActivity extends AbstractSmsActivity {
 			toNumber = value;
 
 			// set text to display
-			toNumberView.setText(Sms.getDisplayName(getContentResolver(), value));
+			updateToNumber(value);
 		    }
 		});
 
@@ -194,7 +195,7 @@ public class SmsSendActivity extends AbstractSmsActivity {
 				    String number = values.get(which);
 
 				    toNumber = number;
-				    setText(R.id.toNumber, Sms.getDisplayName(getContentResolver(), number));
+				    updateToNumber(number);
 				}
 				dialog.dismiss();
 			    }
@@ -250,7 +251,8 @@ public class SmsSendActivity extends AbstractSmsActivity {
 
 	    toNumber = number;
 
-	    setText(R.id.toNumber, Sms.getDisplayName(getContentResolver(), number));
+	    updateToNumber(number);
+
 	} else if (Intent.ACTION_SEND.equals(action)) {
 	    if (data != null) {
 		// send/forward
@@ -259,7 +261,7 @@ public class SmsSendActivity extends AbstractSmsActivity {
 		if (sms != null) {
 		    if (Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type)) {
 			toNumber = sms.address;
-			setText(R.id.toNumber, Sms.getDisplayName(getContentResolver(), sms.address));
+			updateToNumber(sms.address);
 		    }
 
 		    setText(R.id.messageText, sms.body);
@@ -279,44 +281,49 @@ public class SmsSendActivity extends AbstractSmsActivity {
 	LinearLayout layout = (LinearLayout) findViewById(R.id.AdMob);
 	AdMob.removeView(this, layout);
 
-	if (!smsProcessed) {
-	    // get message
-	    TextView messageText = (TextView) findViewById(R.id.messageText);
-	    String body = messageText.getText().toString();
-
-	    Intent intent = getIntent();
-	    String action = intent.getAction();
-	    Uri data = intent.getData();
-
-	    if (Intent.ACTION_SEND.equals(action) && data != null) {
-		Sms sms = Sms.getSms(getContentResolver(), data);
-
-		// update existing draft
-		if (sms != null && Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type)) {
-
-		    ContentValues values = new ContentValues();
-		    values.put(Sms.Fields.ADDRESS, toNumber);
-		    values.put(Sms.Fields.BODY, body);
-
-		    getContentResolver().update(data, values, null, null);
-
-		    Log.d("OldSchoolSMS", "onPause updated SMS uri: " + data + " getScheme: [" + data.getScheme() + "]");
-		    return;
-		}
-	    }
-
-	    if (body != null && body.length() != 0) {
-		// put to database the new draft sms
-		Uri draftUri = NotificationService.putNewSmsToDatabase(getContentResolver(), toNumber, body, Sms.Type.MESSAGE_TYPE_DRAFT, Sms.Status.NONE);
-		Log.d("OldSchoolSMS", "onPause SMS uri: " + draftUri + " getScheme: [" + draftUri.getScheme() + "]");
-
-		// use new intent for this draft
-		Intent draftIntent = new Intent(Intent.ACTION_SEND, draftUri);
-		setIntent(draftIntent);
-	    } else
-		// remove if exist a draft of it
-		deleteIfDraft();
+	if (smsProcessed) {
+	    // remove if exist a draft of it
+	    deleteIfDraft();
+	    // finish
+	    return;
 	}
+
+	// get message
+	TextView messageText = (TextView) findViewById(R.id.messageText);
+	String body = messageText.getText().toString();
+
+	Intent intent = getIntent();
+	String action = intent.getAction();
+	Uri dataUri = intent.getData();
+
+	if (Intent.ACTION_SEND.equals(action) && dataUri != null) {
+	    Sms sms = Sms.getSms(getContentResolver(), dataUri);
+
+	    // update existing draft
+	    if (sms != null && Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type)) {
+
+		ContentValues values = new ContentValues();
+		values.put(Sms.Fields.ADDRESS, toNumber);
+		values.put(Sms.Fields.BODY, body);
+
+		getContentResolver().update(dataUri, values, null, null);
+
+		Log.d("OldSchoolSMS", "onPause updated SMS uri: " + dataUri + " getScheme: [" + dataUri.getScheme() + "]");
+		return;
+	    }
+	}
+
+	if (body != null && body.length() != 0) {
+	    // put to database the new draft sms
+	    Uri draftUri = NotificationService.putNewSmsToDatabase(getContentResolver(), toNumber, body, Sms.Type.MESSAGE_TYPE_DRAFT, Sms.Status.NONE);
+	    Log.d("OldSchoolSMS", "onPause new draft SMS uri: " + draftUri + " getScheme: [" + draftUri.getScheme() + "]");
+
+	    // use new intent for this draft
+	    Intent draftIntent = new Intent(Intent.ACTION_SEND, draftUri);
+	    setIntent(draftIntent);
+	} else
+	    // remove if exist a draft of it
+	    deleteIfDraft();
     }
 
     /************************************************
@@ -411,5 +418,27 @@ public class SmsSendActivity extends AbstractSmsActivity {
 	Uri data = intent.getData();
 
 	return data;
+    }
+
+    private void updateToNumber(final String address) {
+	final TextView toNumberView = (TextView) findViewById(R.id.toNumber);
+
+	AsyncQueryHandler asyncQueryHandler = new AsyncQueryHandler(getContentResolver()) {
+
+	    @Override
+	    protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
+		String personName = null;
+
+		if (cursor != null && cursor.moveToFirst())
+		    personName = cursor.getString(0);
+		else
+		    // default...
+		    personName = "(" + address + ")";
+
+		toNumberView.setText(personName);
+	    }
+	};
+	toNumberView.setText("-");
+	Sms.getDisplayName(asyncQueryHandler, address);
     }
 }

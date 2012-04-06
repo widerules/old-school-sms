@@ -107,7 +107,7 @@ public class SmsListActivity extends AbstractSmsActivity {
 	// SMS list
 	ListView smsListView = (ListView) findViewById(R.id.SMSList);
 	// sms list adapter
-	SmsAdapter smsAdapter = new SmsAdapter(this, new ArrayList<Sms>());
+	SmsArrayAdapter smsAdapter = new SmsArrayAdapter(this, new ArrayList<Sms>());
 
 	// sms list
 	smsListView.setAdapter(smsAdapter);
@@ -251,7 +251,7 @@ public class SmsListActivity extends AbstractSmsActivity {
 	// update showMessageContentInList
 	boolean showMessageContentInList = preferences.getShowMessageContentInList();
 	ListView smsListView = (ListView) findViewById(R.id.SMSList);
-	((SmsAdapter) smsListView.getAdapter()).setShowMessageContentInList(showMessageContentInList);
+	((SmsArrayAdapter) smsListView.getAdapter()).setShowMessageContentInList(showMessageContentInList);
 
 	// ////////////////////////////////////////////////////////////
 	// update preferences
