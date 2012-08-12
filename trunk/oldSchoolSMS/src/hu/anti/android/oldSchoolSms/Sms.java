@@ -1,8 +1,6 @@
 package hu.anti.android.oldSchoolSms;
 
 import java.lang.reflect.Field;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,7 +12,7 @@ import android.content.ContentUris;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
-import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.provider.ContactsContract.PhoneLookup;
 import android.telephony.SmsManager;
 import android.util.Log;
 
@@ -251,11 +249,9 @@ public class Sms {
 	if (phoneNumber == null || phoneNumber.length() == 0)
 	    return;
 
-	// try the number simply, url encode, url decode
-	asyncQueryHandler.startQuery(0, null, Phone.CONTENT_URI,
-		new String[] { Phone.DISPLAY_NAME }, //
-		Phone.NUMBER + "=? OR " + Phone.NUMBER + "=? OR " + Phone.NUMBER + "=?",
-		new String[] { phoneNumber, URLEncoder.encode(phoneNumber), URLDecoder.decode(phoneNumber) }, null);
+	asyncQueryHandler.startQuery(0, null, Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber)),
+		new String[] { PhoneLookup.DISPLAY_NAME }, //
+		null, null, null);
     }
 
     public static String decodeSmsDeliveryStatus(Resources resources, String status) {
