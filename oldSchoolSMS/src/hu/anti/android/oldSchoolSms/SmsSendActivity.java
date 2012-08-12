@@ -447,7 +447,10 @@ public class SmsSendActivity extends AbstractSmsActivity {
 		toNumberView.setText(personName);
 	    }
 	};
-	toNumberView.setText("-");
+	if (address == null)
+	    toNumberView.setText("-");
+	else
+	    toNumberView.setText(address);
 	Sms.getDisplayName(asyncQueryHandler, address);
     }
 }

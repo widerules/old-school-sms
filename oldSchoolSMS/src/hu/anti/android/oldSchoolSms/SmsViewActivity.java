@@ -84,7 +84,10 @@ public class SmsViewActivity extends AbstractSmsActivity {
 		    toNumberView.setText(personName);
 		}
 	    };
-	    toNumberView.setText("-");
+	    if (sms.address == null)
+		toNumberView.setText("-");
+	    else
+		toNumberView.setText(sms.address);
 	    Sms.getDisplayName(asyncQueryHandler, sms.address);
 
 	    setText(R.id.textViewDate, sms.date.toLocaleString());
