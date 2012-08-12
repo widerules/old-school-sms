@@ -5,6 +5,7 @@ import java.util.List;
 import android.content.AsyncQueryHandler;
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,11 +52,17 @@ public class SmsArrayAdapter extends ArrayAdapter<Sms> {
 		    // default...
 		    personName = "(" + sms.address + ")";
 
+		Log.v("OldSchoolSMS", sms.address + " -> " + personName);
+
 		listItem.getText1().setText(personName);
 	    }
 	};
-	listItem.getText1().setText("-");
+	if (sms.address == null)
+	    listItem.getText1().setText("-");
+	else
+	    listItem.getText1().setText(sms.address);
 	Sms.getDisplayName(asyncQueryHandler, sms.address);
+	Log.v("OldSchoolSMS", "Looking for number: " + sms.address);
 
 	// sms date
 	String text2 = sms.date.toLocaleString();
