@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="hu.anti.android.oldSchoolSms"
-    android:versionCode="12"
-    android:versionName="1.2" >
+    android:versionCode="13"
+    android:versionName="1.3" >
 
     <uses-sdk android:minSdkVersion="7" />
 
@@ -57,7 +57,9 @@
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
-        <activity android:name=".SmsSendActivity" >
+        <activity
+            android:name=".SmsSendActivity"
+            android:configChanges="orientation|screenLayout" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -92,7 +94,7 @@
         </activity>
         <activity
             android:name="com.google.ads.AdActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation" />
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" />
 
         <receiver
             android:name=".receiver.NewSmsReceiver"
