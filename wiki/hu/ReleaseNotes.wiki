@@ -3,6 +3,14 @@
 
 = ReleaseNotes =
 Minden új kiadás tartalmaz hibajavítást, ez nem kerül külön kiemelésre... az új funkciók, képességek a következők:
+== 2012.08.12. - Release 1.3  ==
+  * Google AdMob Ads SDK verzióváltás
+  * a még nem megcímzett, de elmentett sms-eknél minus jelet mutat a szám helyett
+  * beérkezéskor is megerősítést kér a törlésre
+  * telefonszám keresés javítása
+== 2012.04.06. - Release 1.2  ==
+  * Küldés megerősítés kérése
+  * stabilitási problémák javítása
 == 2012.02.23. - Release 1.1  ==
   * szerb nyelv
   * preferences kezelés kiemelve egy helyre
