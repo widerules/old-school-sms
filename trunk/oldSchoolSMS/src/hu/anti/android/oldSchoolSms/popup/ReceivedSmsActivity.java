@@ -12,7 +12,10 @@ import java.util.NoSuchElementException;
 import java.util.Queue;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.AsyncQueryHandler;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -68,24 +71,34 @@ public class ReceivedSmsActivity extends Activity {
 	    @Override
 	    public void onClick(View paramView) {
 		// get selected sms
-		Sms sms = receivedSms.element();
+		final Sms sms = receivedSms.element();
 
-		// get uri
-		Uri smsUri = sms.findSmsByContent(getContentResolver());
+		Builder deletAlert = createDeletAlert();
+		deletAlert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+		    @Override
+		    public void onClick(DialogInterface dialogInterface, int arg1) {
+			dialogInterface.dismiss();
 
-		// delete
-		if (smsUri != null)
-		    getContentResolver().delete(smsUri, null, null);
+			// remove displayed
+			try {
+			    // get uri
+			    final Uri smsUri = sms.findSmsByContent(getContentResolver());
 
-		// remove displayed
-		try {
-		    receivedSms.remove(sms);
-		} catch (NoSuchElementException e) {
-		    Log.w("OldSchoolSMS", "SMS " + sms.toString() + " removed: " + e.getLocalizedMessage());
-		}
+			    // delete
+			    if (smsUri != null)
+				getContentResolver().delete(smsUri, null, null);
 
-		// update data
-		updateView();
+			    receivedSms.remove(sms);
+
+			    // update data
+			    updateView();
+			} catch (NoSuchElementException e) {
+			    Log.w("OldSchoolSMS", "SMS " + sms.toString() + " removed: " + e.getLocalizedMessage());
+			}
+		    }
+		});
+
+		deletAlert.show();
 	    }
 	});
 
@@ -183,7 +196,7 @@ public class ReceivedSmsActivity extends Activity {
 		senderView.setText(personName);
 	    }
 	};
-	senderView.setText("-");
+	senderView.setText(sms.address);
 	Sms.getDisplayName(asyncQueryHandler, sms.address);
 
 	// set message
@@ -206,4 +219,19 @@ public class ReceivedSmsActivity extends Activity {
 	}
     }
 
+    protected AlertDialog.Builder createDeletAlert() {
+	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+	builder.setIcon(android.R.drawable.ic_dialog_alert);
+	builder.setTitle(R.string.questionDelete);
+	builder.setCancelable(true);
+	builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+	    @Override
+	    public void onClick(DialogInterface dialogInterface, int arg1) {
+		dialogInterface.dismiss();
+	    }
+	});
+
+	return builder;
+    }
 }
