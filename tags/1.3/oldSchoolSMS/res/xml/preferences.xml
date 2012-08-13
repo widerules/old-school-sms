@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory
+        android:summary="@string/CategoryViewSummary"
+        android:title="@string/CategoryViewTitle" >
+
+        <!--
+             ListPreference
+            android:entries="@array/language_array"
+            android:entryValues="@array/language_value_array"
+            android:key="language"
+            android:summary="@string/languageSummary"
+            android:title="@string/languageTitle" /
+        -->
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="showMessageContentInList"
+            android:summary="@string/showMessageContentInListSummary"
+            android:title="@string/showMessageContentInListTitle" />
+
+        <EditTextPreference
+            android:defaultValue="50"
+            android:dialogMessage="@string/pageSizeTitle"
+            android:dialogTitle="@string/pageSizeTitle"
+            android:key="pageSize"
+            android:numeric="integer"
+            android:summary="@string/pageSizeSummary"
+            android:title="@string/pageSizeTitle" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:summary="@string/CategoryBehaviorReceivingSummary"
+        android:title="@string/CategoryBehaviorReceivingTitle" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="notifyOnNewSms"
+            android:summary="@string/notifyOnNewSmsSummary"
+            android:title="@string/notifyOnNewSmsTitle" />
+
+        <RingtonePreference
+            android:dependency="notifyOnNewSms"
+            android:key="notificationSound"
+            android:ringtoneType="notification"
+            android:showDefault="true"
+            android:showSilent="true"
+            android:summary="@string/notificationSoundSummary"
+            android:title="@string/notificationSoundTitle" />
+
+        <EditTextPreference
+            android:defaultValue="500,200,300"
+            android:dependency="notifyOnNewSms"
+            android:dialogMessage="@string/vibratorPatternSummary"
+            android:dialogTitle="@string/vibratorPatternTitle"
+            android:key="vibratorPattern"
+            android:summary="@string/vibratorPatternSummary"
+            android:title="@string/vibratorPatternTitle" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:dependency="notifyOnNewSms"
+            android:key="popupOnNewSms"
+            android:summary="@string/popupOnNewSmsSummary"
+            android:title="@string/popupOnNewSmsTitle" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:summary="@string/CategoryBehaviorSendingSummary"
+        android:title="@string/CategoryBehaviorSendingTitle" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="notifyOnSuccessfulSend"
+            android:summary="@string/notifyOnSuccessfulSendSummary"
+            android:title="@string/notifyOnSuccessfulSendTitle" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="notifyOnDelivery"
+            android:summary="@string/notifyOnDeliverySummary"
+            android:title="@string/notifyOnDeliveryTitle" />
+
+        <RingtonePreference
+            android:dependency="notifyOnDelivery"
+            android:key="deliverySound"
+            android:ringtoneType="notification"
+            android:showDefault="true"
+            android:showSilent="true"
+            android:summary="@string/notificationSoundSummary"
+            android:title="@string/notificationSoundTitle" />
+
+        <EditTextPreference
+            android:defaultValue="500"
+            android:dependency="notifyOnDelivery"
+            android:dialogMessage="@string/vibratorPatternSummary"
+            android:dialogTitle="@string/vibratorPatternTitle"
+            android:key="deliveryVibratorPattern"
+            android:summary="@string/vibratorPatternSummary"
+            android:title="@string/vibratorPatternTitle" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Application developement" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="debug"
+            android:summary="Advanced debug setings for developers"
+            android:title="Debug data" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:dependency="debug"
+            android:key="debugModeSmsList"
+            android:summary="Show debug information from SMS list"
+            android:title="SMS details" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:dependency="debug"
+            android:key="extendedBoxList"
+            android:summary="Show extended list of SMS boxes in SMS-list view"
+            android:title="SMS box list" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
