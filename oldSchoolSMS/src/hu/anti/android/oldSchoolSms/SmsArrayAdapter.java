@@ -5,6 +5,7 @@ import java.util.List;
 import android.content.AsyncQueryHandler;
 import android.content.Context;
 import android.database.Cursor;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -32,7 +33,8 @@ public class SmsArrayAdapter extends ArrayAdapter<Sms> {
 
 	// if new, create it
 	if (convertView == null) {
-	    LayoutInflater li = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	    LayoutInflater li = (LayoutInflater) getContext().getSystemService(
+		    Context.LAYOUT_INFLATER_SERVICE);
 	    convertView = li.inflate(android.R.layout.simple_list_item_2, null);
 	}
 
@@ -40,10 +42,12 @@ public class SmsArrayAdapter extends ArrayAdapter<Sms> {
 	final TwoLineListItem listItem = (TwoLineListItem) convertView;
 
 	// sender
-	AsyncQueryHandler asyncQueryHandler = new AsyncQueryHandler(getContext().getContentResolver()) {
+	AsyncQueryHandler asyncQueryHandler = new AsyncQueryHandler(
+		getContext().getContentResolver()) {
 
 	    @Override
-	    protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
+	    protected void onQueryComplete(int token, Object cookie,
+		    Cursor cursor) {
 		String personName = null;
 
 		if (cursor != null && cursor.moveToFirst())
@@ -59,13 +63,14 @@ public class SmsArrayAdapter extends ArrayAdapter<Sms> {
 	};
 	if (sms.address == null)
 	    listItem.getText1().setText("-");
-	else
+	else {
 	    listItem.getText1().setText(sms.address);
-	Sms.getDisplayName(asyncQueryHandler, sms.address);
-	Log.v("OldSchoolSMS", "Looking for number: " + sms.address);
+	    Sms.getDisplayName(asyncQueryHandler, sms.address);
+	    Log.v("OldSchoolSMS", "Looking for number: " + sms.address);
+	}
 
 	// sms date
-	String text2 = sms.date.toLocaleString();
+	String text2 = DateFormat.getDateFormat(getContext()).format(sms.date);
 
 	// message
 	if (showMessageContentInList) {
@@ -78,7 +83,9 @@ public class SmsArrayAdapter extends ArrayAdapter<Sms> {
 	// sent-received
 	if (Sms.Type.MESSAGE_TYPE_INBOX.equals(sms.type))
 	    listItem.getText1().setGravity(Gravity.LEFT);
-	else if (Sms.Type.MESSAGE_TYPE_OUTBOX.equals(sms.type) || Sms.Type.MESSAGE_TYPE_FAILED.equals(sms.type) || Sms.Type.MESSAGE_TYPE_SENT.equals(sms.type)
+	else if (Sms.Type.MESSAGE_TYPE_OUTBOX.equals(sms.type)
+		|| Sms.Type.MESSAGE_TYPE_FAILED.equals(sms.type)
+		|| Sms.Type.MESSAGE_TYPE_SENT.equals(sms.type)
 		|| Sms.Type.MESSAGE_TYPE_UNDELIVERED.equals(sms.type))
 	    listItem.getText1().setGravity(Gravity.RIGHT);
 	else
@@ -86,7 +93,8 @@ public class SmsArrayAdapter extends ArrayAdapter<Sms> {
 
 	// read-unread
 	int textStyle = R.style.normalSms;
-	if (Sms.Type.MESSAGE_TYPE_INBOX.equals(sms.type) && sms.read != null && !sms.read)
+	if (Sms.Type.MESSAGE_TYPE_INBOX.equals(sms.type) && sms.read != null
+		&& !sms.read)
 	    textStyle = R.style.unreadSms;
 	else
 	    textStyle = R.style.normalSms;
