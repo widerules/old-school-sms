@@ -43,6 +43,8 @@ Az üzenet hosszabban történő nyomvatartása esetén egy menüt kapunk, és l
   * továbbít: új sms szerkesztése a kiválasztott üzenet szövegének megtartásával 
   * válasz: új sms szerkesztése a kiválasztott üzenet küldőjének címezve
   * újraküld: küldött sms újbóli elküldése ugyan azzal a tartalommal (beérkező esetén az sms tartalmának visszaküldése)
+  * szöveg másolása: az sms szövegének vágólapra másolása
+  * szám felhívása: az sms címmezőjében lévő telefonszám felhívása
 
 == Beállítások ==
 Az alkalmazás testreszabható a felhasználó igényeinek megfelelően. Az egyes beállítások csoportokba szedve jelennek meg a könnyebb átlálthatóság érdekében:

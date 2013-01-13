@@ -43,6 +43,8 @@ If you longpress the sms in the list you got a context menu:
   * forward: opens new sms view with content of selected sms
   * replay: opens new sms view addressed with sender (receiver) of selected sms
   * resend: sends again the same sms to same number (if incoming sms, sends back the sms to sender)
+  * copy text: copy the content of the message to clipboard
+  * call number: call the number from the sms address
 
 == Preferences ==
 You can customize the aplication for your own. The preferences are separated in to groups for better usage:
