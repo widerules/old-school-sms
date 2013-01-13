@@ -2,6 +2,7 @@ package hu.anti.android.oldSchoolSms;
 
 import hu.anti.android.oldSchoolSms.receiver.AbstractSmsBroadcastReceiver;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,37 +59,53 @@ public class SmsSendActivity extends AbstractSmsActivity {
 
 		Context context = SmsSendActivity.this.getApplicationContext();
 		if (body == null || body.length() == 0) {
-		    Toast.makeText(context, context.getResources().getString(R.string.emptyBody), Toast.LENGTH_SHORT).show();
+		    Toast.makeText(
+			    context,
+			    context.getResources()
+				    .getString(R.string.emptyBody),
+			    Toast.LENGTH_SHORT).show();
 		    return;
 		}
 
 		if (toNumber == null || toNumber.length() == 0) {
-		    Toast.makeText(context, context.getResources().getString(R.string.emptyAddress), Toast.LENGTH_SHORT).show();
+		    Toast.makeText(
+			    context,
+			    context.getResources().getString(
+				    R.string.emptyAddress), Toast.LENGTH_SHORT)
+			    .show();
 		    return;
 		}
 
 		Builder resendAlert = createSendAlert();
-		resendAlert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-		    @Override
-		    public void onClick(DialogInterface dialogInterface, int arg1) {
-			deleteIfDraft();
+		resendAlert.setPositiveButton(android.R.string.yes,
+			new DialogInterface.OnClickListener() {
+			    @Override
+			    public void onClick(
+				    DialogInterface dialogInterface, int arg1) {
+				deleteIfDraft();
 
-			// send it
-			Intent popupIntent = new Intent(NotificationService.ACTION_SEND_SMS, null, SmsSendActivity.this, NotificationService.class);
-			popupIntent.putExtra(NotificationService.EXTRA_ADDRESS, toNumber);
-			popupIntent.putExtra(NotificationService.EXTRA_BODY, body);
+				// send it
+				Intent popupIntent = new Intent(
+					NotificationService.ACTION_SEND_SMS,
+					null, SmsSendActivity.this,
+					NotificationService.class);
+				popupIntent.putExtra(
+					NotificationService.EXTRA_ADDRESS,
+					toNumber);
+				popupIntent.putExtra(
+					NotificationService.EXTRA_BODY, body);
 
-			startService(popupIntent);
+				startService(popupIntent);
 
-			// mark sent status
-			smsProcessed = true;
+				// mark sent status
+				smsProcessed = true;
 
-			// close activity
-			finish();
+				// close activity
+				finish();
 
-			dialogInterface.dismiss();
-		    }
-		});
+				dialogInterface.dismiss();
+			    }
+			});
 		resendAlert.show();
 	    }
 	});
@@ -99,7 +116,8 @@ public class SmsSendActivity extends AbstractSmsActivity {
 	personSelectButton.setOnClickListener(new OnClickListener() {
 	    @Override
 	    public void onClick(View paramView) {
-		Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+		Intent intent = new Intent(Intent.ACTION_PICK,
+			ContactsContract.Contacts.CONTENT_URI);
 		startActivityForResult(intent, PERSON_SELECTION);
 	    }
 	});
@@ -110,7 +128,8 @@ public class SmsSendActivity extends AbstractSmsActivity {
 	toNumberView.setOnClickListener(new OnClickListener() {
 	    @Override
 	    public void onClick(View v) {
-		AlertDialog.Builder dialog = new AlertDialog.Builder(SmsSendActivity.this);
+		AlertDialog.Builder dialog = new AlertDialog.Builder(
+			SmsSendActivity.this);
 
 		// Set an EditText view to get user input
 		final EditText input = new EditText(SmsSendActivity.this);
@@ -120,23 +139,29 @@ public class SmsSendActivity extends AbstractSmsActivity {
 
 		dialog.setView(input);
 
-		dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-		    public void onClick(DialogInterface dialog, int whichButton) {
-			String value = input.getText().toString();
+		dialog.setPositiveButton("Ok",
+			new DialogInterface.OnClickListener() {
+			    @Override
+			    public void onClick(DialogInterface dialog,
+				    int whichButton) {
+				String value = input.getText().toString();
 
-			// store the number
-			toNumber = value;
+				// store the number
+				toNumber = value;
 
-			// set text to display
-			updateToNumber(value);
-		    }
-		});
+				// set text to display
+				updateToNumber(value);
+			    }
+			});
 
-		dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-		    public void onClick(DialogInterface dialog, int whichButton) {
-			dialog.dismiss();
-		    }
-		});
+		dialog.setNegativeButton("Cancel",
+			new DialogInterface.OnClickListener() {
+			    @Override
+			    public void onClick(DialogInterface dialog,
+				    int whichButton) {
+				dialog.dismiss();
+			    }
+			});
 
 		dialog.show();
 	    }
@@ -144,7 +169,8 @@ public class SmsSendActivity extends AbstractSmsActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+    protected void onActivityResult(int requestCode, int resultCode,
+	    Intent intent) {
 	AbstractSmsBroadcastReceiver.logIntent("sms send activity", intent);
 
 	switch (requestCode) {
@@ -155,67 +181,96 @@ public class SmsSendActivity extends AbstractSmsActivity {
 		Uri contactData = intent.getData();
 
 		// Query the table
-		Cursor contactsCursor = managedQuery(contactData, null, null, null, null);
+		Cursor contactsCursor = managedQuery(contactData, null, null,
+			null, null);
 
 		// If the cursor is not empty
 		if (contactsCursor.moveToFirst()) {
 
 		    // Get the id name and phone number indicator
-		    String id = contactsCursor.getString(contactsCursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
-		    String name = contactsCursor.getString(contactsCursor.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME));
-		    String hasPhoneNumber = contactsCursor.getString(contactsCursor.getColumnIndexOrThrow(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+		    String id = contactsCursor
+			    .getString(contactsCursor
+				    .getColumnIndexOrThrow(ContactsContract.Contacts._ID));
+		    String name = contactsCursor
+			    .getString(contactsCursor
+				    .getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME));
+		    String hasPhoneNumber = contactsCursor
+			    .getString(contactsCursor
+				    .getColumnIndexOrThrow(ContactsContract.Contacts.HAS_PHONE_NUMBER));
 
-		    Log.d("OldSchoolSMS", "id " + id + " name: " + name + " hasPhoneNumber: " + hasPhoneNumber);
+		    Log.d("OldSchoolSMS", "id " + id + " name: " + name
+			    + " hasPhoneNumber: " + hasPhoneNumber);
 
 		    // If the contact has a phone number
 		    if (Integer.parseInt(hasPhoneNumber) > 0) {
-			Cursor phoneCursor = managedQuery(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-				ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + id, null, null);
+			Cursor phoneCursor = managedQuery(
+				ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+				null,
+				ContactsContract.CommonDataKinds.Phone.CONTACT_ID
+					+ " = " + id, null, null);
 
 			final List<String> values = new ArrayList<String>();
 			final List<String> items = new ArrayList<String>();
 
 			// Get the phone numbers from the contact
-			for (phoneCursor.moveToFirst(); !phoneCursor.isAfterLast(); phoneCursor.moveToNext()) {
-			    int phoneType = phoneCursor.getInt(phoneCursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.TYPE));
-			    String phoneLabel = phoneCursor.getString(phoneCursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.LABEL));
-			    String phoneNumber = phoneCursor.getString(phoneCursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER));
+			for (phoneCursor.moveToFirst(); !phoneCursor
+				.isAfterLast(); phoneCursor.moveToNext()) {
+			    int phoneType = phoneCursor
+				    .getInt(phoneCursor
+					    .getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.TYPE));
+			    String phoneLabel = phoneCursor
+				    .getString(phoneCursor
+					    .getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.LABEL));
+			    String phoneNumber = phoneCursor
+				    .getString(phoneCursor
+					    .getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER));
 			    if (phoneNumber.contains("%"))
 				phoneNumber = URLDecoder.decode(phoneNumber);
 
-			    Log.d("OldSchoolSMS", "phoneType: " + phoneType + "(" + phoneLabel + ") phoneNumber: " + phoneNumber);
+			    Log.d("OldSchoolSMS", "phoneType: " + phoneType
+				    + "(" + phoneLabel + ") phoneNumber: "
+				    + phoneNumber);
 
 			    CharSequence typeLabel;
 			    if (ContactsContract.CommonDataKinds.Phone.TYPE_CUSTOM == phoneType)
 				typeLabel = phoneLabel;
 			    else
-				typeLabel = ContactsContract.CommonDataKinds.Phone.getTypeLabel(SmsSendActivity.this.getResources(), phoneType, "?");
+				typeLabel = ContactsContract.CommonDataKinds.Phone
+					.getTypeLabel(SmsSendActivity.this
+						.getResources(), phoneType, "?");
 
 			    items.add(typeLabel + ": " + phoneNumber);
 			    values.add(phoneNumber);
 			}
 
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			AlertDialog.Builder builder = new AlertDialog.Builder(
+				this);
 			// builder.setTitle("Make your selection");
-			builder.setItems(items.toArray(new CharSequence[items.size()]), new DialogInterface.OnClickListener() {
-			    @Override
-			    public void onClick(DialogInterface dialog, int which) {
-				if (which >= 0) {
-				    String number = values.get(which);
+			builder.setItems(
+				items.toArray(new CharSequence[items.size()]),
+				new DialogInterface.OnClickListener() {
+				    @Override
+				    public void onClick(DialogInterface dialog,
+					    int which) {
+					if (which >= 0) {
+					    String number = values.get(which);
 
-				    toNumber = number;
-				    updateToNumber(number);
-				}
-				dialog.dismiss();
-			    }
-			});
+					    toNumber = number;
+					    updateToNumber(number);
+					}
+					dialog.dismiss();
+				    }
+				});
 
 			builder.show();
 		    } else {
-			Toast.makeText(this, R.string.alertNoPhoneNumber, Toast.LENGTH_LONG).show();
+			Toast.makeText(this, R.string.alertNoPhoneNumber,
+				Toast.LENGTH_LONG).show();
 
 			// select another contact
-			startActivityForResult(new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI), PERSON_SELECTION);
+			startActivityForResult(new Intent(Intent.ACTION_PICK,
+				ContactsContract.Contacts.CONTENT_URI),
+				PERSON_SELECTION);
 		    }
 		}
 	    }
@@ -246,17 +301,24 @@ public class SmsSendActivity extends AbstractSmsActivity {
 	Uri data = intent.getData();
 
 	Log.d("OldSchoolSMS", "Received " + action + " with content: " + data);
-	AbstractSmsBroadcastReceiver.logIntent(this.getClass().getCanonicalName(), intent);
+	AbstractSmsBroadcastReceiver.logIntent(this.getClass()
+		.getCanonicalName(), intent);
 
 	if (Intent.ACTION_SENDTO.equals(action)) {
 	    // send to/replay
 	    String scheme = intent.getScheme();
 	    // "smsto:" form
-	    String number = intent.getDataString().substring(scheme.length() + 1);
+	    String number = intent.getDataString().substring(
+		    scheme.length() + 1);
 
 	    // url decode it...
 	    if (number.contains("%"))
-		number = URLDecoder.decode(number);
+		try {
+		    number = URLDecoder.decode(number, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+		    Log.w("OldSchoolSMS", "URLDecoder error decoding number ["
+			    + number + "]: " + e.getLocalizedMessage());
+		}
 
 	    toNumber = number;
 
@@ -277,7 +339,9 @@ public class SmsSendActivity extends AbstractSmsActivity {
 		}
 	    }
 	} else {
-	    Toast.makeText(getApplicationContext(), "Received not supported action: " + action, Toast.LENGTH_LONG).show();
+	    Toast.makeText(getApplicationContext(),
+		    "Received not supported action: " + action,
+		    Toast.LENGTH_LONG).show();
 	}
     }
 
@@ -317,15 +381,19 @@ public class SmsSendActivity extends AbstractSmsActivity {
 
 		getContentResolver().update(dataUri, values, null, null);
 
-		Log.d("OldSchoolSMS", "onPause updated SMS uri: " + dataUri + " getScheme: [" + dataUri.getScheme() + "]");
+		Log.d("OldSchoolSMS", "onPause updated SMS uri: " + dataUri
+			+ " getScheme: [" + dataUri.getScheme() + "]");
 		return;
 	    }
 	}
 
 	if (body != null && body.length() != 0) {
 	    // put to database the new draft sms
-	    Uri draftUri = NotificationService.putNewSmsToDatabase(getContentResolver(), toNumber, body, Sms.Type.MESSAGE_TYPE_DRAFT, Sms.Status.NONE);
-	    Log.d("OldSchoolSMS", "onPause new draft SMS uri: " + draftUri + " getScheme: [" + draftUri.getScheme() + "]");
+	    Uri draftUri = NotificationService.putNewSmsToDatabase(
+		    getContentResolver(), toNumber, body,
+		    Sms.Type.MESSAGE_TYPE_DRAFT, Sms.Status.NONE);
+	    Log.d("OldSchoolSMS", "onPause new draft SMS uri: " + draftUri
+		    + " getScheme: [" + draftUri.getScheme() + "]");
 
 	    // use new intent for this draft
 	    Intent draftIntent = new Intent(Intent.ACTION_SEND, draftUri);
@@ -357,7 +425,8 @@ public class SmsSendActivity extends AbstractSmsActivity {
 	Sms sms = getSms();
 	if (sms != null) {
 	    // enable it only if draft...
-	    deleteMenuItem.setVisible(Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type));
+	    deleteMenuItem.setVisible(Sms.Type.MESSAGE_TYPE_DRAFT
+		    .equals(sms.type));
 	}
 
 	return super.onPrepareOptionsMenu(menu);
@@ -376,14 +445,16 @@ public class SmsSendActivity extends AbstractSmsActivity {
 
 	case R.id.delete:
 	    Builder deletAlert = createDeletAlert();
-	    deletAlert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-		@Override
-		public void onClick(DialogInterface dialogInterface, int arg1) {
-		    smsProcessed = true;
-		    deleteIfDraft();
-		    finish();
-		}
-	    });
+	    deletAlert.setPositiveButton(android.R.string.yes,
+		    new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialogInterface,
+				int arg1) {
+			    smsProcessed = true;
+			    deleteIfDraft();
+			    finish();
+			}
+		    });
 	    deletAlert.show();
 
 	    return true;
@@ -432,10 +503,12 @@ public class SmsSendActivity extends AbstractSmsActivity {
     private void updateToNumber(final String address) {
 	final TextView toNumberView = (TextView) findViewById(R.id.toNumber);
 
-	AsyncQueryHandler asyncQueryHandler = new AsyncQueryHandler(getContentResolver()) {
+	AsyncQueryHandler asyncQueryHandler = new AsyncQueryHandler(
+		getContentResolver()) {
 
 	    @Override
-	    protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
+	    protected void onQueryComplete(int token, Object cookie,
+		    Cursor cursor) {
 		String personName = null;
 
 		if (cursor != null && cursor.moveToFirst())
