@@ -10,6 +10,8 @@
     <string name="replay">Odgovori</string>
     <string name="resend">Pošalji ponovo</string>
     <string name="copyText">Kopiraj tekst</string>
+    <string name="saveNumber">Novi broj</string>
+    <string name="call">Pozovi broj</string>
     <string name="cancel">Poništeni</string>
     <string name="close">Zatvari</string>
     <string name="send">Pošalji</string>
