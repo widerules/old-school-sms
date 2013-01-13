@@ -10,6 +10,8 @@
     <string name="replay">Replay</string>
     <string name="resend">Resend</string>
     <string name="copyText">Copy text</string>
+    <string name="saveNumber">Save number</string>
+    <string name="call">Call number</string>
     <string name="cancel">Cancel</string>
     <string name="close">Close</string>
     <string name="send">Send</string>

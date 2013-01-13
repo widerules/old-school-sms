@@ -4,11 +4,14 @@ import hu.anti.android.oldSchoolSms.observer.AbstractSmsObserver;
 import hu.anti.android.oldSchoolSms.observer.AllSmsObserver;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
+import android.content.ClipData;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
@@ -23,7 +26,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.text.ClipboardManager;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -44,6 +46,23 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 public class SmsListActivity extends AbstractSmsActivity {
+
+    private static final class SmsListHandler extends Handler {
+
+	private final SmsListActivity smsListActivity;
+
+	SmsListHandler(SmsListActivity smsListActivity) {
+	    this.smsListActivity = smsListActivity;
+	}
+
+	@Override
+	public void handleMessage(Message msg) {
+	    super.handleMessage(msg);
+
+	    // update list
+	    smsListActivity.updateSmsList();
+	}
+    }
 
     public static final String ACTION_UPDATE = "UPDATE";
     public static final String ACTION_UPDATE_FINISHED = "UPDATE_FINISHED";
@@ -107,61 +126,75 @@ public class SmsListActivity extends AbstractSmsActivity {
 	// SMS list
 	ListView smsListView = (ListView) findViewById(R.id.SMSList);
 	// sms list adapter
-	SmsArrayAdapter smsAdapter = new SmsArrayAdapter(this, new ArrayList<Sms>());
+	SmsArrayAdapter smsAdapter = new SmsArrayAdapter(this,
+		new ArrayList<Sms>());
 
 	// sms list
 	smsListView.setAdapter(smsAdapter);
 	registerForContextMenu(smsListView);
 
-	((ListView) this.findViewById(R.id.SMSList)).setOnItemClickListener(new OnItemClickListener() {
-	    @Override
-	    public void onItemClick(AdapterView<?> paramAdapterView, View view, int pos, long id) {
-		if (smsList.size() <= pos) {
-		    Log.w("OldSchoolSMS", "position [" + pos + "] too large for sms list (" + smsList.size() + ")");
-		    return;
-		}
-
-		Sms sms = smsList.get(pos);
-
-		if (debugModeSmsList) {
-		    String content = "";
-
-		    // Sms sms = Sms.getSms(getContentResolver(),
-		    // smsList
-		    // .get(pos)._id);
-		    // content = sms.toString();
-
-		    Cursor cursor = getContentResolver().query(Uri.parse("content://sms/" + sms._id), null, null, null, null);
-
-		    if (cursor.moveToFirst()) {
-			for (int i = 0; i < cursor.getColumnCount(); i++) {
-			    content += cursor.getColumnName(i) + "=" + cursor.getString(i) + "\n";
+	((ListView) this.findViewById(R.id.SMSList))
+		.setOnItemClickListener(new OnItemClickListener() {
+		    @Override
+		    public void onItemClick(AdapterView<?> paramAdapterView,
+			    View view, int pos, long id) {
+			if (smsList.size() <= pos) {
+			    Log.w("OldSchoolSMS",
+				    "position [" + pos
+					    + "] too large for sms list ("
+					    + smsList.size() + ")");
+			    return;
 			}
-		    } else {
-			for (int i = 0; i < cursor.getColumnCount(); i++) {
-			    content += cursor.getColumnName(i) + "\n";
+
+			Sms sms = smsList.get(pos);
+
+			if (debugModeSmsList) {
+			    String content = "";
+
+			    // Sms sms = Sms.getSms(getContentResolver(),
+			    // smsList
+			    // .get(pos)._id);
+			    // content = sms.toString();
+
+			    Cursor cursor = getContentResolver().query(
+				    Uri.parse("content://sms/" + sms._id),
+				    null, null, null, null);
+
+			    if (cursor.moveToFirst()) {
+				for (int i = 0; i < cursor.getColumnCount(); i++) {
+				    content += cursor.getColumnName(i) + "="
+					    + cursor.getString(i) + "\n";
+				}
+			    } else {
+				for (int i = 0; i < cursor.getColumnCount(); i++) {
+				    content += cursor.getColumnName(i) + "\n";
+				}
+			    }
+
+			    if (cursor != null)
+				cursor.close();
+
+			    Toast.makeText(SmsListActivity.this, content,
+				    Toast.LENGTH_LONG).show();
+
+			} else {
+			    Uri uri = ContentUris.withAppendedId(
+				    Uri.parse(Sms.Uris.SMS_URI_BASE), sms._id);
+
+			    openSms(uri, Sms.Type.MESSAGE_TYPE_DRAFT
+				    .equals(sms.type) ? Intent.ACTION_SEND
+				    : Intent.ACTION_VIEW);
 			}
 		    }
-
-		    if (cursor != null)
-			cursor.close();
-
-		    Toast.makeText(SmsListActivity.this, content, Toast.LENGTH_LONG).show();
-
-		} else {
-		    Uri uri = ContentUris.withAppendedId(Uri.parse(Sms.Uris.SMS_URI_BASE), sms._id);
-
-		    openSms(uri, Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type) ? Intent.ACTION_SEND : Intent.ACTION_VIEW);
-		}
-	    }
-	});
+		});
 
 	// box selector spinner
 	Spinner spinner = (Spinner) findViewById(R.id.boxSpinner);
 
 	spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 	    @Override
-	    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+	    public void onItemSelected(AdapterView<?> parent, View view,
+		    int pos, long id) {
 		// String selected = parent.getItemAtPosition(pos).toString();
 		// Toast.makeText(parent.getContext(), selected +
 		// " is selected.", Toast.LENGTH_SHORT).show();
@@ -170,7 +203,8 @@ public class SmsListActivity extends AbstractSmsActivity {
 
 		// ////////////////////////////////////////////////////////////
 		// store selection
-		SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+		SharedPreferences sharedPrefs = PreferenceManager
+			.getDefaultSharedPreferences(getBaseContext());
 		Editor editor = sharedPrefs.edit();
 
 		// SMS box
@@ -191,15 +225,8 @@ public class SmsListActivity extends AbstractSmsActivity {
 
 	// ////////////////////////////////////////////////////////////
 	// create SMS list observer
-	smsObserver = new AllSmsObserver(getContentResolver(), new Handler() {
-	    @Override
-	    public void handleMessage(Message msg) {
-		super.handleMessage(msg);
-
-		// update list
-		updateSmsList();
-	    }
-	});
+	smsObserver = new AllSmsObserver(getContentResolver(),
+		new SmsListHandler(this));
 
 	// ////////////////////////////////////////////////////////////
 	// SMS list updated receiver
@@ -219,7 +246,8 @@ public class SmsListActivity extends AbstractSmsActivity {
 
 		ListView smsListView = (ListView) findViewById(R.id.SMSList);
 		@SuppressWarnings("unchecked")
-		ArrayAdapter<Sms> arrayAdapter = ((ArrayAdapter<Sms>) smsListView.getAdapter());
+		ArrayAdapter<Sms> arrayAdapter = ((ArrayAdapter<Sms>) smsListView
+			.getAdapter());
 
 		arrayAdapter.clear();
 
@@ -249,9 +277,11 @@ public class SmsListActivity extends AbstractSmsActivity {
 	Preferences preferences = new Preferences(getBaseContext());
 
 	// update showMessageContentInList
-	boolean showMessageContentInList = preferences.getShowMessageContentInList();
+	boolean showMessageContentInList = preferences
+		.getShowMessageContentInList();
 	ListView smsListView = (ListView) findViewById(R.id.SMSList);
-	((SmsArrayAdapter) smsListView.getAdapter()).setShowMessageContentInList(showMessageContentInList);
+	((SmsArrayAdapter) smsListView.getAdapter())
+		.setShowMessageContentInList(showMessageContentInList);
 
 	// ////////////////////////////////////////////////////////////
 	// update preferences
@@ -270,8 +300,11 @@ public class SmsListActivity extends AbstractSmsActivity {
 	if (extendedBoxList) {
 	    // create adapter
 	    ArrayAdapter<CharSequence> boxAdapter;
-	    boxAdapter = ArrayAdapter.createFromResource(this, R.array.boxes_extended_array, android.R.layout.simple_spinner_item);
-	    boxAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+	    boxAdapter = ArrayAdapter.createFromResource(this,
+		    R.array.boxes_extended_array,
+		    android.R.layout.simple_spinner_item);
+	    boxAdapter
+		    .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
 	    // set to spinner
 	    spinner.setAdapter(boxAdapter);
@@ -304,9 +337,11 @@ public class SmsListActivity extends AbstractSmsActivity {
 	// ////////////////////////////////////////////////////////////
 	// register receivers
 	// SMS list updated
-	registerReceiver(listUpdatedReceiver, new IntentFilter(ACTION_UPDATE_FINISHED));
+	registerReceiver(listUpdatedReceiver, new IntentFilter(
+		ACTION_UPDATE_FINISHED));
 	// sms list observer
-	getContentResolver().registerContentObserver(smsObserver.getBaseUri(), true, smsObserver);
+	getContentResolver().registerContentObserver(smsObserver.getBaseUri(),
+		true, smsObserver);
     }
 
     @Override
@@ -346,7 +381,8 @@ public class SmsListActivity extends AbstractSmsActivity {
 	    return true;
 
 	case R.id.multiDelete:
-	    Toast.makeText(getApplicationContext(), "TODO", Toast.LENGTH_SHORT).show();
+	    Toast.makeText(getApplicationContext(), "TODO", Toast.LENGTH_SHORT)
+		    .show();
 	    return true;
 
 	case R.id.preferences:
@@ -363,7 +399,8 @@ public class SmsListActivity extends AbstractSmsActivity {
      ************************************************/
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+    public void onCreateContextMenu(ContextMenu menu, View v,
+	    ContextMenuInfo menuInfo) {
 	super.onCreateContextMenu(menu, v, menuInfo);
 	MenuInflater inflater = getMenuInflater();
 	inflater.inflate(R.menu.context_menu, menu);
@@ -371,9 +408,12 @@ public class SmsListActivity extends AbstractSmsActivity {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-	AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+	AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+		.getMenuInfo();
 
-	final Uri uri = ContentUris.withAppendedId(Uri.parse(Sms.Uris.SMS_URI_BASE), smsList.get(info.position)._id);
+	final Uri uri = ContentUris.withAppendedId(
+		Uri.parse(Sms.Uris.SMS_URI_BASE),
+		smsList.get(info.position)._id);
 
 	switch (item.getItemId()) {
 	case R.id.view: {
@@ -381,20 +421,24 @@ public class SmsListActivity extends AbstractSmsActivity {
 	    if (sms == null)
 		return false;
 
-	    openSms(uri, Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type) ? Intent.ACTION_SEND : Intent.ACTION_VIEW);
+	    openSms(uri,
+		    Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type) ? Intent.ACTION_SEND
+			    : Intent.ACTION_VIEW);
 
 	    return true;
 	}
 	case R.id.delete:
 	    Builder deletAlert = createDeletAlert();
-	    deletAlert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-		@Override
-		public void onClick(DialogInterface dialogInterface, int arg1) {
-		    // execute delete
-		    getContentResolver().delete(uri, null, null);
-		    dialogInterface.dismiss();
-		}
-	    });
+	    deletAlert.setPositiveButton(android.R.string.yes,
+		    new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialogInterface,
+				int arg1) {
+			    // execute delete
+			    getContentResolver().delete(uri, null, null);
+			    dialogInterface.dismiss();
+			}
+		    });
 	    deletAlert.show();
 
 	    return true;
@@ -421,18 +465,26 @@ public class SmsListActivity extends AbstractSmsActivity {
 	    // resend only if not a draft
 	    if (!Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type)) {
 		Builder resendAlert = createResendAlert();
-		resendAlert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-		    @Override
-		    public void onClick(DialogInterface dialogInterface, int arg1) {
-			Intent intent = new Intent(NotificationService.ACTION_SEND_SMS, null, SmsListActivity.this, NotificationService.class);
-			intent.putExtra(NotificationService.EXTRA_ADDRESS, sms.address);
-			intent.putExtra(NotificationService.EXTRA_BODY, sms.body);
+		resendAlert.setPositiveButton(android.R.string.yes,
+			new DialogInterface.OnClickListener() {
+			    @Override
+			    public void onClick(
+				    DialogInterface dialogInterface, int arg1) {
+				Intent intent = new Intent(
+					NotificationService.ACTION_SEND_SMS,
+					null, SmsListActivity.this,
+					NotificationService.class);
+				intent.putExtra(
+					NotificationService.EXTRA_ADDRESS,
+					sms.address);
+				intent.putExtra(NotificationService.EXTRA_BODY,
+					sms.body);
 
-			startService(intent);
+				startService(intent);
 
-			dialogInterface.dismiss();
-		    }
-		});
+				dialogInterface.dismiss();
+			    }
+			});
 		resendAlert.show();
 	    }
 
@@ -444,8 +496,22 @@ public class SmsListActivity extends AbstractSmsActivity {
 	    if (sms == null)
 		return false;
 
-	    ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-	    clipboardManager.setText(sms.body);
+	    if (android.os.Build.VERSION.SDK_INT < 11)
+		copyToClipboard(sms);
+	    else
+		copyToClipboardV11(sms);
+
+	    return true;
+	}
+
+	case R.id.call: {
+	    final Sms sms = Sms.getSms(getContentResolver(), uri);
+	    if (sms == null)
+		return false;
+
+	    Intent intent = new Intent(Intent.ACTION_VIEW);
+	    intent.setData(Uri.parse("tel:" + sms.address));
+	    startActivity(intent);
 
 	    return true;
 	}
@@ -453,6 +519,23 @@ public class SmsListActivity extends AbstractSmsActivity {
 	default:
 	    return super.onContextItemSelected(item);
 	}
+    }
+
+    @SuppressWarnings("deprecation")
+    private void copyToClipboard(final Sms sms) {
+	Log.d("OldSchoolSMS", "copyToClipboard - old version used");
+
+	android.text.ClipboardManager clipboardManager = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+	clipboardManager.setText(sms.body);
+    }
+
+    @TargetApi(11)
+    private void copyToClipboardV11(final Sms sms) {
+	Log.d("OldSchoolSMS", "copyToClipboard - API11 version used");
+
+	android.content.ClipboardManager clipboardManager = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+	ClipData clip = ClipData.newPlainText("sms", sms.body);
+	clipboardManager.setPrimaryClip(clip);
     }
 
     /************************************************
@@ -494,23 +577,26 @@ public class SmsListActivity extends AbstractSmsActivity {
 
 		Cursor cursor = null;
 		try {
-		    Log.d("OldSchoolSMS", "Thread started");
+		    Log.d("OldSchoolSMS", "updateSmsList - hread started");
 
 		    // remove existing data
 		    smsList.clear();
 
 		    // get shared preferences
 		    Preferences preferences = new Preferences(getBaseContext());
-		    String smsBox = preferences.getSmsBox().toLowerCase();
+		    String smsBox = preferences.getSmsBox().toLowerCase(
+			    Locale.getDefault());
 
 		    // get box uri
-		    Uri uri = Uri.parse(Sms.Uris.SMS_URI_BASE + ("all".equals(smsBox) ? "" : smsBox));
+		    Uri uri = Uri.parse(Sms.Uris.SMS_URI_BASE
+			    + ("all".equals(smsBox) ? "" : smsBox));
 
 		    Log.d("OldSchoolSMS", "Selected SMS box: " + uri);
 
 		    // create cursor
 		    ContentResolver contentResolver = getContentResolver();
-		    cursor = contentResolver.query(uri, null, null, null, Sms.Fields.DATE + " desc");
+		    cursor = contentResolver.query(uri, null, null, null,
+			    Sms.Fields.DATE + " desc");
 
 		    // set max size
 		    int count = cursor == null ? 0 : cursor.getCount();
@@ -526,7 +612,9 @@ public class SmsListActivity extends AbstractSmsActivity {
 		    // check result
 		    if (cursor != null && cursor.moveToFirst()) {
 			int startPosition = pageSize * pageIndexCurrent;
-			int maxPosition = count - startPosition < pageSize ? count - startPosition : pageSize;
+			int maxPosition = count - startPosition < pageSize ? count
+				- startPosition
+				: pageSize;
 
 			// move to page
 			cursor.moveToPosition(startPosition);
@@ -539,11 +627,13 @@ public class SmsListActivity extends AbstractSmsActivity {
 			    smsList.add(sms);
 
 			    try {
-				SmsListActivity.this.setProgress(smsList.size() * 10000 / (maxPosition + 1));
+				SmsListActivity.this.setProgress(smsList.size()
+					* 10000 / (maxPosition + 1));
 			    } catch (Exception e) {
 				Log.e("OldSchoolSMS", e.getLocalizedMessage());
 			    }
-			} while (smsList.size() < pageSize && cursor.moveToNext());
+			} while (smsList.size() < pageSize
+				&& cursor.moveToNext());
 		    }
 		} catch (Exception e) {
 		    showError(e);

@@ -10,6 +10,8 @@
     <string name="replay">Válasz</string>
     <string name="resend">Újraküld</string>
     <string name="copyText">Szöveg másolása</string>
+    <string name="saveNumber">Szám mentése</string>
+    <string name="call">Szám hívása</string>
     <string name="cancel">Elvet</string>
     <string name="close">Bezár</string>
     <string name="send">Elküld</string>
