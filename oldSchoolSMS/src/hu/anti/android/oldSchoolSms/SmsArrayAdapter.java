@@ -1,11 +1,11 @@
 package hu.anti.android.oldSchoolSms;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import android.content.AsyncQueryHandler;
 import android.content.Context;
 import android.database.Cursor;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -70,7 +70,7 @@ public class SmsArrayAdapter extends ArrayAdapter<Sms> {
 	}
 
 	// sms date
-	String text2 = DateFormat.getDateFormat(getContext()).format(sms.date);
+	String text2 = SimpleDateFormat.getDateTimeInstance().format(sms.date);
 
 	// message
 	if (showMessageContentInList) {

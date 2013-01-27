@@ -74,29 +74,36 @@ public class ReceivedSmsActivity extends Activity {
 		final Sms sms = receivedSms.element();
 
 		Builder deletAlert = createDeletAlert();
-		deletAlert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-		    @Override
-		    public void onClick(DialogInterface dialogInterface, int arg1) {
-			dialogInterface.dismiss();
+		deletAlert.setPositiveButton(android.R.string.yes,
+			new DialogInterface.OnClickListener() {
+			    @Override
+			    public void onClick(
+				    DialogInterface dialogInterface, int arg1) {
+				dialogInterface.dismiss();
 
-			// remove displayed
-			try {
-			    // get uri
-			    final Uri smsUri = sms.findSmsByContent(getContentResolver());
+				// remove displayed
+				try {
+				    // get uri
+				    final Uri smsUri = sms
+					    .findSmsByContent(getContentResolver());
 
-			    // delete
-			    if (smsUri != null)
-				getContentResolver().delete(smsUri, null, null);
+				    // delete
+				    if (smsUri != null)
+					getContentResolver().delete(smsUri,
+						null, null);
 
-			    receivedSms.remove(sms);
+				    receivedSms.remove(sms);
 
-			    // update data
-			    updateView();
-			} catch (NoSuchElementException e) {
-			    Log.w("OldSchoolSMS", "SMS " + sms.toString() + " removed: " + e.getLocalizedMessage());
-			}
-		    }
-		});
+				    // update data
+				    updateView();
+				} catch (NoSuchElementException e) {
+				    Log.w("OldSchoolSMS",
+					    "SMS " + sms.toString()
+						    + " removed: "
+						    + e.getLocalizedMessage());
+				}
+			    }
+			});
 
 		deletAlert.show();
 	    }
@@ -119,7 +126,9 @@ public class ReceivedSmsActivity extends Activity {
 		// create intent
 		Intent intent = new Intent(Intent.ACTION_SENDTO);
 		intent.setData(smsToUri);
-		intent.setClass(ReceivedSmsActivity.this.getApplicationContext(), SmsSendActivity.class);
+		intent.setClass(
+			ReceivedSmsActivity.this.getApplicationContext(),
+			SmsSendActivity.class);
 
 		startActivity(intent);
 		finish();
@@ -155,7 +164,8 @@ public class ReceivedSmsActivity extends Activity {
 		Sms sms = new Sms();
 		sms.address = intent.getStringExtra(INTENT_SMS_ADDRESS);
 		sms.body = intent.getStringExtra(INTENT_SMS_BODY);
-		sms.date = new Date(intent.getLongExtra(INTENT_SMS_TIMESTAMP, 0));
+		sms.date = new Date(
+			intent.getLongExtra(INTENT_SMS_TIMESTAMP, 0));
 
 		receivedSms.add(sms);
 
@@ -176,15 +186,18 @@ public class ReceivedSmsActivity extends Activity {
 
 	// set timestamp
 	TextView timestampView = (TextView) findViewById(R.id.newSmsDialogDateTime);
-	timestampView.setText(new SimpleDateFormat("yyyy.MM.dd. HH.mm").format(sms.date));
+	timestampView.setText(SimpleDateFormat.getDateTimeInstance().format(
+		sms.date));
 
 	// set sender
 	final TextView senderView = (TextView) findViewById(R.id.newSmsDialogSenderView);
 
-	AsyncQueryHandler asyncQueryHandler = new AsyncQueryHandler(getContentResolver()) {
+	AsyncQueryHandler asyncQueryHandler = new AsyncQueryHandler(
+		getContentResolver()) {
 
 	    @Override
-	    protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
+	    protected void onQueryComplete(int token, Object cookie,
+		    Cursor cursor) {
 		String personName = null;
 
 		if (cursor != null && cursor.moveToFirst())
@@ -209,7 +222,9 @@ public class ReceivedSmsActivity extends Activity {
 	boolean markAsRead = markAsReadView.isChecked();
 
 	if (markAsRead) {
-	    Intent intent = new Intent(NotificationService.ACTION_MARK_AS_READ_SMS, null, getApplicationContext(), NotificationService.class);
+	    Intent intent = new Intent(
+		    NotificationService.ACTION_MARK_AS_READ_SMS, null,
+		    getApplicationContext(), NotificationService.class);
 
 	    Sms sms = receivedSms.element();
 	    intent.putExtra(NotificationService.EXTRA_ADDRESS, sms.address);
@@ -225,12 +240,14 @@ public class ReceivedSmsActivity extends Activity {
 	builder.setIcon(android.R.drawable.ic_dialog_alert);
 	builder.setTitle(R.string.questionDelete);
 	builder.setCancelable(true);
-	builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-	    @Override
-	    public void onClick(DialogInterface dialogInterface, int arg1) {
-		dialogInterface.dismiss();
-	    }
-	});
+	builder.setNegativeButton(android.R.string.no,
+		new DialogInterface.OnClickListener() {
+		    @Override
+		    public void onClick(DialogInterface dialogInterface,
+			    int arg1) {
+			dialogInterface.dismiss();
+		    }
+		});
 
 	return builder;
     }
