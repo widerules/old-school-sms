@@ -31,11 +31,13 @@ public class NewSmsReceiver extends AbstractSmsBroadcastReceiver {
 
     @Override
     public void onReceive(final Context context, Intent intent) {
-	Log.d("OldSchoolSMS", "NewSmsReceiver: Received new SMS broadcast: " + intent);
+	Log.d("OldSchoolSMS", "NewSmsReceiver: Received new SMS broadcast: "
+		+ intent);
 	logIntent("NewSmsReceiver", intent);
 
 	// get preferences
-	Preferences preferences = new Preferences(context.getApplicationContext());
+	Preferences preferences = new Preferences(
+		context.getApplicationContext());
 
 	boolean notifyOnNewSms = preferences.getNotifyOnNewSms();
 	if (!notifyOnNewSms) {
@@ -44,7 +46,8 @@ public class NewSmsReceiver extends AbstractSmsBroadcastReceiver {
 
 	    // unregister observer
 	    if (smsObserver != null)
-		context.getContentResolver().unregisterContentObserver(smsObserver);
+		context.getContentResolver().unregisterContentObserver(
+			smsObserver);
 
 	    // finish...
 	    return;
@@ -69,14 +72,16 @@ public class NewSmsReceiver extends AbstractSmsBroadcastReceiver {
 	    notification.defaults |= Notification.DEFAULT_LIGHTS;
 
 	    // fire it
-	    NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+	    NotificationManager mNotificationManager = (NotificationManager) context
+		    .getSystemService(Context.NOTIFICATION_SERVICE);
 	    mNotificationManager.notify(1, notification);
 
 	    // vibrate
 	    long[] pattern = preferences.getVibratorPattern();
 
 	    // Start the vibration
-	    Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+	    Vibrator vibrator = (Vibrator) context
+		    .getSystemService(Context.VIBRATOR_SERVICE);
 	    vibrator.vibrate(pattern, -1);
 
 	    boolean popupOnNewSms = preferences.getPopupOnNewSms();
@@ -94,23 +99,28 @@ public class NewSmsReceiver extends AbstractSmsBroadcastReceiver {
 		    Map<String, Pair<String, Long>> receivedSms = new HashMap<String, Pair<String, Long>>();
 
 		    for (int i = 0; i < smsExtra.length; ++i) {
-			SmsMessage sms = SmsMessage.createFromPdu((byte[]) smsExtra[i]);
+			SmsMessage sms = SmsMessage
+				.createFromPdu((byte[]) smsExtra[i]);
 
 			String address = sms.getOriginatingAddress();
 			String body = sms.getMessageBody().toString();
 			long timestamp = sms.getTimestampMillis();
 
-			Log.d("OldSchoolSMS", "Received new SMS part at " + timestamp + " from (" + address + ") content: " + body);
+			Log.d("OldSchoolSMS", "Received new SMS part at "
+				+ timestamp + " from (" + address
+				+ ") content: " + body);
 
 			// store sms text
 			if (receivedSms.containsKey(address))
 			    body = receivedSms.get(address).first + body;
 
 			// store sms
-			receivedSms.put(address, new Pair<String, Long>(body, timestamp));
+			receivedSms.put(address, new Pair<String, Long>(body,
+				timestamp));
 		    }
 
-		    for (Entry<String, Pair<String, Long>> entry : receivedSms.entrySet()) {
+		    for (Entry<String, Pair<String, Long>> entry : receivedSms
+			    .entrySet()) {
 			String address = entry.getKey();
 			String body = entry.getValue().first;
 			Long timestamp = entry.getValue().second;
@@ -121,17 +131,22 @@ public class NewSmsReceiver extends AbstractSmsBroadcastReceiver {
 	    }
 	} else if (Intent.ACTION_BOOT_COMPLETED.equals(action)) {
 	    // update notification count
-	    context.startService(new Intent(NotificationService.ACTION_UPDATE_SMS_NOTIFICATIONS, null, context, NotificationService.class));
+	    context.startService(new Intent(
+		    NotificationService.ACTION_UPDATE_SMS_NOTIFICATIONS, null,
+		    context, NotificationService.class));
 	}
     }
 
-    protected void popupSms(final Context context, String address, String body, Long timestamp) {
+    protected void popupSms(final Context context, String address, String body,
+	    Long timestamp) {
 	Intent popupIntent = new Intent(ReceivedSmsActivity.NEW_SMS_ACTION);
-	popupIntent.setClassName(context, ReceivedSmsActivity.class.getCanonicalName());
+	popupIntent.setClassName(context,
+		ReceivedSmsActivity.class.getCanonicalName());
 
 	// set data
 	popupIntent.putExtra(ReceivedSmsActivity.INTENT_SMS_BODY, body);
-	popupIntent.putExtra(ReceivedSmsActivity.INTENT_SMS_TIMESTAMP, timestamp);
+	popupIntent.putExtra(ReceivedSmsActivity.INTENT_SMS_TIMESTAMP,
+		timestamp);
 	popupIntent.putExtra(ReceivedSmsActivity.INTENT_SMS_ADDRESS, address);
 
 	popupIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -145,28 +160,36 @@ public class NewSmsReceiver extends AbstractSmsBroadcastReceiver {
 	Log.d("OldSchoolSMS", "NewSmsReceiver: Created new sms observer");
 
 	// create observer
-	smsObserver = new AllSmsObserver(context.getContentResolver(), new Handler() {
-	    @Override
-	    public void handleMessage(Message msg) {
-		super.handleMessage(msg);
+	smsObserver = new AllSmsObserver(context.getContentResolver(),
+		new Handler() {
+		    @Override
+		    public void handleMessage(Message msg) {
+			super.handleMessage(msg);
 
-		Log.d("OldSchoolSMS", "NewSmsReceiver: NewSmsReceiver/AllSmsObserver received Message: " + msg);
+			Log.d("OldSchoolSMS",
+				"NewSmsReceiver: NewSmsReceiver/AllSmsObserver received Message: "
+					+ msg);
 
-		// update notification count
-		context.startService(new Intent(NotificationService.ACTION_UPDATE_SMS_NOTIFICATIONS, null, context, NotificationService.class));
-	    }
-	});
+			// update notification count
+			context.startService(new Intent(
+				NotificationService.ACTION_UPDATE_SMS_NOTIFICATIONS,
+				null, context, NotificationService.class));
+		    }
+		});
 
 	// register observer
-	context.getContentResolver().registerContentObserver(smsObserver.getBaseUri(), true, smsObserver);
+	context.getContentResolver().registerContentObserver(
+		smsObserver.getBaseUri(), true, smsObserver);
     }
 
     private void logExtras(Bundle extras) {
 	// log
-	Log.d("OldSchoolSMS", "NewSmsReceiver: Received new SMS broadcast/extras: " + extras);
+	Log.d("OldSchoolSMS",
+		"NewSmsReceiver: Received new SMS broadcast/extras: " + extras);
 	if (extras != null) {
 	    for (String key : extras.keySet()) {
-		Log.d("OldSchoolSMS", "NewSmsPopupReceiver/Bundle extras/" + key + ": " + extras.get(key));
+		Log.d("OldSchoolSMS", "NewSmsPopupReceiver/Bundle extras/"
+			+ key + ": " + extras.get(key));
 	    }
 	}
     }

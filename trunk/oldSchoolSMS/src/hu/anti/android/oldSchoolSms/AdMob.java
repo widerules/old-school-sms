@@ -16,7 +16,8 @@ public class AdMob {
 	    return;
 
 	// Create the adView
-	final AdView adView = new AdView(activity, AdSize.SMART_BANNER, MY_BANNER_UNIT_ID);
+	final AdView adView = new AdView(activity, AdSize.SMART_BANNER,
+		MY_BANNER_UNIT_ID);
 
 	// Add the adView to it
 	layout.addView(adView);

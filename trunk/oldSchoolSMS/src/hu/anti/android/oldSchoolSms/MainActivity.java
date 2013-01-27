@@ -94,7 +94,8 @@ public class MainActivity extends Activity {
 	mainPreferences.setOnClickListener(new OnClickListener() {
 	    @Override
 	    public void onClick(View paramView) {
-		startActivity(new Intent(MainActivity.this, SmsPreferenceActivity.class));
+		startActivity(new Intent(MainActivity.this,
+			SmsPreferenceActivity.class));
 	    }
 	});
 
@@ -121,10 +122,13 @@ public class MainActivity extends Activity {
 
 	// ////////////////////////////////////////////////////////////
 	// updateNotifications
-	startService(new Intent(NotificationService.ACTION_UPDATE_SMS_NOTIFICATIONS, null, this, NotificationService.class));
+	startService(new Intent(
+		NotificationService.ACTION_UPDATE_SMS_NOTIFICATIONS, null,
+		this, NotificationService.class));
 
 	// sms list observer
-	getContentResolver().registerContentObserver(smsObserver.getBaseUri(), true, smsObserver);
+	getContentResolver().registerContentObserver(smsObserver.getBaseUri(),
+		true, smsObserver);
 
 	updateButtons();
     }
@@ -152,19 +156,24 @@ public class MainActivity extends Activity {
 
 	TextView mainAll = (TextView) this.findViewById(R.id.mainAll);
 	count = getCount(this, "");
-	mainAll.setText(getString(R.string.BoxAll) + (count == 0 ? "" : " (" + count + ")"));
+	mainAll.setText(getString(R.string.BoxAll)
+		+ (count == 0 ? "" : " (" + count + ")"));
 
 	TextView mainInbox = (TextView) this.findViewById(R.id.mainInbox);
 	count = getCount(this, "inbox");
-	mainInbox.setText(getString(R.string.BoxInbox) + (count == 0 ? "" : " (" + count + "/" + NotificationService.getUnreadCount(this) + ")"));
+	mainInbox.setText(getString(R.string.BoxInbox)
+		+ (count == 0 ? "" : " (" + count + "/"
+			+ NotificationService.getUnreadCount(this) + ")"));
 
 	TextView mainSent = (TextView) this.findViewById(R.id.mainSent);
 	count = getCount(this, "sent");
-	mainSent.setText(getString(R.string.BoxSent) + (count == 0 ? "" : " (" + count + ")"));
+	mainSent.setText(getString(R.string.BoxSent)
+		+ (count == 0 ? "" : " (" + count + ")"));
 
 	TextView mainDraft = (TextView) this.findViewById(R.id.mainDraft);
 	count = getCount(this, "draft");
-	mainDraft.setText(getString(R.string.BoxDraft) + (count == 0 ? "" : " (" + count + ")"));
+	mainDraft.setText(getString(R.string.BoxDraft)
+		+ (count == 0 ? "" : " (" + count + ")"));
     }
 
     private int getCount(Context context, String box) {
@@ -186,7 +195,8 @@ public class MainActivity extends Activity {
     private void setSmsBox(String smsBox) {
 	// ////////////////////////////////////////////////////////////
 	// store preferences
-	SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+	SharedPreferences sharedPrefs = PreferenceManager
+		.getDefaultSharedPreferences(getBaseContext());
 	Editor editor = sharedPrefs.edit();
 
 	// SMS box

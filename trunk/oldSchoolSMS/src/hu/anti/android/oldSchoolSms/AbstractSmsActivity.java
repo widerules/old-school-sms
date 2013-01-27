@@ -17,7 +17,8 @@ public abstract class AbstractSmsActivity extends Activity {
 
     protected void showError(Exception e) {
 	try {
-	    final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+	    final AlertDialog alertDialog = new AlertDialog.Builder(this)
+		    .create();
 
 	    alertDialog.setTitle("Exception");
 	    alertDialog.setMessage(e.getLocalizedMessage());
@@ -40,7 +41,8 @@ public abstract class AbstractSmsActivity extends Activity {
 
 	// if existing SMS
 	if (uri != null && uri.toString().startsWith(Sms.Uris.SMS_URI_BASE)) {
-	    Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+	    Cursor cursor = getContentResolver().query(uri, null, null, null,
+		    null);
 
 	    if (cursor != null) {
 		if (cursor.moveToFirst())
@@ -53,7 +55,8 @@ public abstract class AbstractSmsActivity extends Activity {
 	intent.setData(uri);
 
 	// setClass
-	if (sms == null || Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type) || !action.equals(Intent.ACTION_VIEW)) {
+	if (sms == null || Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type)
+		|| !action.equals(Intent.ACTION_VIEW)) {
 	    intent.setClass(getApplicationContext(), SmsSendActivity.class);
 	} else {
 	    intent.setAction(Intent.ACTION_VIEW);
@@ -74,12 +77,14 @@ public abstract class AbstractSmsActivity extends Activity {
 	builder.setIcon(android.R.drawable.ic_dialog_alert);
 	builder.setTitle(R.string.questionDelete);
 	builder.setCancelable(true);
-	builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-	    @Override
-	    public void onClick(DialogInterface dialogInterface, int arg1) {
-		dialogInterface.dismiss();
-	    }
-	});
+	builder.setNegativeButton(android.R.string.no,
+		new DialogInterface.OnClickListener() {
+		    @Override
+		    public void onClick(DialogInterface dialogInterface,
+			    int arg1) {
+			dialogInterface.dismiss();
+		    }
+		});
 
 	return builder;
     }
@@ -90,12 +95,14 @@ public abstract class AbstractSmsActivity extends Activity {
 	builder.setIcon(android.R.drawable.ic_dialog_alert);
 	builder.setTitle(R.string.questionResend);
 	builder.setCancelable(true);
-	builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-	    @Override
-	    public void onClick(DialogInterface dialogInterface, int arg1) {
-		dialogInterface.dismiss();
-	    }
-	});
+	builder.setNegativeButton(android.R.string.no,
+		new DialogInterface.OnClickListener() {
+		    @Override
+		    public void onClick(DialogInterface dialogInterface,
+			    int arg1) {
+			dialogInterface.dismiss();
+		    }
+		});
 
 	return builder;
     }
@@ -106,12 +113,14 @@ public abstract class AbstractSmsActivity extends Activity {
 	builder.setIcon(android.R.drawable.ic_dialog_alert);
 	builder.setTitle(R.string.questionSend);
 	builder.setCancelable(true);
-	builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-	    @Override
-	    public void onClick(DialogInterface dialogInterface, int arg1) {
-		dialogInterface.dismiss();
-	    }
-	});
+	builder.setNegativeButton(android.R.string.no,
+		new DialogInterface.OnClickListener() {
+		    @Override
+		    public void onClick(DialogInterface dialogInterface,
+			    int arg1) {
+			dialogInterface.dismiss();
+		    }
+		});
 
 	return builder;
     }

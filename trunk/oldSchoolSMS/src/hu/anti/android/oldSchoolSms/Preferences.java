@@ -42,9 +42,11 @@ public class Preferences {
     public long[] getVibratorPattern() {
 	long[] pattern;
 	try {
-	    pattern = extractPattern(sharedPrefs.getString(VIBRATOR_PATTERN, DefaultVibratorPattern));
+	    pattern = extractPattern(sharedPrefs.getString(VIBRATOR_PATTERN,
+		    DefaultVibratorPattern));
 	} catch (Exception e) {
-	    Log.e("OldSchoolSMS", "Wrong vibration pattern: " + e.getLocalizedMessage());
+	    Log.e("OldSchoolSMS",
+		    "Wrong vibration pattern: " + e.getLocalizedMessage());
 
 	    pattern = extractPattern(Preferences.DefaultVibratorPattern);
 	}
@@ -71,9 +73,11 @@ public class Preferences {
     public long[] getDeliveryVibratorPattern() {
 	long[] pattern;
 	try {
-	    pattern = extractPattern(sharedPrefs.getString(DELIVERY_VIBRATOR_PATTERN, DefaultDeliveryVibratorPattern));
+	    pattern = extractPattern(sharedPrefs.getString(
+		    DELIVERY_VIBRATOR_PATTERN, DefaultDeliveryVibratorPattern));
 	} catch (Exception e) {
-	    Log.e("OldSchoolSMS", "Wrong vibration pattern: " + e.getLocalizedMessage());
+	    Log.e("OldSchoolSMS",
+		    "Wrong vibration pattern: " + e.getLocalizedMessage());
 
 	    pattern = extractPattern(Preferences.DefaultDeliveryVibratorPattern);
 	}
