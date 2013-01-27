@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- category -->
+    <string name="CategoryAboutTitle">About</string>
+    <string name="CategoryAboutSummary">Author: Antal Kocsis</string>
+    <string name="CategoryViewTitle">Izgled</string>
+    <string name="CategoryViewSummary">Izgled programa</string>
+    <string name="CategoryBehaviorReceivingTitle">Prijemni postupak</string>
+    <string name="CategoryBehaviorReceivingSummary">Funkcija programa kod prijema SMS-a</string>
+    <string name="CategoryBehaviorSendingTitle">Postupak kod slanja</string>
+    <string name="CategoryBehaviorSendingSummary">Funkcija programa kod slanja SMS-a</string>
+
+    <string name="aboutTitle">Autor</string>
+    <string name="aboutSummary">Antal Kočiš</string>
+
+    <!-- entry -->
+    <string name="showMessageContentInListTitle">Listanje teksta</string>
+    <string name="showMessageContentInListSummary">Prikaz teksta SMS-a u listi</string>
+    <string name="pageSizeTitle">Veličina stranice</string>
+    <string name="pageSizeSummary">Maksimalni broj SMS-a prikazanih u programskom prozoru</string>
+    <string name="notifyOnNewSmsTitle">Izveštaj o novom SMS-u</string>
+    <string name="notifyOnNewSmsSummary">Izveštaj o novom SMS-u</string>
+    <string name="popupOnNewSmsTitle">Prozor za SMS</string>
+    <string name="popupOnNewSmsSummary">Da se pojavi prozor kod dospeća SMS-a</string>
+    <string name="notifyOnSuccessfulSendTitle">Izveštaj o slanju</string>
+    <string name="notifyOnSuccessfulSendSummary">Izveštaj o uspešnom slanju SMS-a</string>
+    <string name="notifyOnDeliveryTitle">Izveštaj o isporuci</string>
+    <string name="notifyOnDeliverySummary">Izveštaj o uspešnoj isporuci SMS-a</string>
+    <string name="vibratorPatternTitle">Način vibriranja</string>
+    <string name="vibratorPatternSummary">Vibriranje telefona kod obaveštenje u ms (format: vibriranje, pauza, vibriranje…)</string>
+    <string name="notificationSoundTitle">Melodija</string>
+    <string name="notificationSoundSummary">Obaveštajni melodija</string>
+
+</resources>
