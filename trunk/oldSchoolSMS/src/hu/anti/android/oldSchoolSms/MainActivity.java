@@ -109,6 +109,11 @@ public class MainActivity extends Activity {
 		updateButtons();
 	    }
 	});
+
+	// ////////////////////////////////////////////////////////////
+	// version string
+	TextView mainVersion = (TextView) this.findViewById(R.id.mainVersion);
+	mainVersion.setText("(v " + this.getString(R.string.versionName) + ")");
     }
 
     @Override

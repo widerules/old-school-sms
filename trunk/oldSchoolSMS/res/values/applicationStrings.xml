@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">OldSchoolSMS</string>
+    <string name="versionName">1.5</string>
     <string name="previous"> &lt; </string>
     <string name="next"> > </string>
 
@@ -22,5 +23,6 @@
         <item>SENT</item>
         <item>DRAFT</item>
     </string-array>
+    
 
 </resources>
