@@ -35,7 +35,8 @@ public class DeliveredStatusReceiver extends AbstractSmsBroadcastReceiver {
 	    values.put(Sms.Fields.STATUS, Sms.Status.COMPLETE);
 	    values.put(Sms.Fields.TYPE, Sms.Type.MESSAGE_TYPE_SENT);
 
-	    message = context.getResources().getString(R.string.SMS_DELIVERED_RESULT_OK);
+	    message = context.getResources().getString(
+		    R.string.SMS_DELIVERED_RESULT_OK);
 	    break;
 	case Activity.RESULT_CANCELED:
 	    iconId = android.R.drawable.ic_dialog_alert;
@@ -43,7 +44,8 @@ public class DeliveredStatusReceiver extends AbstractSmsBroadcastReceiver {
 	    values.put(Sms.Fields.STATUS, Sms.Status.FAILED);
 	    values.put(Sms.Fields.TYPE, Sms.Type.MESSAGE_TYPE_FAILED);
 
-	    message = context.getResources().getString(R.string.SMS_DELIVERED_RESULT_FAILED);
+	    message = context.getResources().getString(
+		    R.string.SMS_DELIVERED_RESULT_FAILED);
 	    break;
 
 	default:
@@ -57,7 +59,8 @@ public class DeliveredStatusReceiver extends AbstractSmsBroadcastReceiver {
 
 	if (Activity.RESULT_OK == getResultCode()) {
 	    // get preferences
-	    Preferences preferences = new Preferences(context.getApplicationContext());
+	    Preferences preferences = new Preferences(
+		    context.getApplicationContext());
 
 	    if (!preferences.getNotifyOnDelivery())
 		return;

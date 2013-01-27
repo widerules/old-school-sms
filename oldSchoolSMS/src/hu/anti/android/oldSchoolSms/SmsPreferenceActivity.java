@@ -17,19 +17,26 @@ public class SmsPreferenceActivity extends PreferenceActivity {
 	OnPreferenceChangeListener onPatternChangeListener = new OnPreferenceChangeListener() {
 
 	    @Override
-	    public boolean onPreferenceChange(Preference preference, Object newValue) {
-		Log.d("OldSchoolSMS", "onPreferenceChange " + preference + " - " + newValue);
+	    public boolean onPreferenceChange(Preference preference,
+		    Object newValue) {
+		Log.d("OldSchoolSMS", "onPreferenceChange " + preference
+			+ " - " + newValue);
 
-		if (!newValue.toString().matches("^ *[0-9]+( *[,.;/\\- ] *[0-9]+)* *$")) {
+		if (!newValue.toString().matches(
+			"^ *[0-9]+( *[,.;/\\- ] *[0-9]+)* *$")) {
 
-		    Toast.makeText(getApplicationContext(), R.string.alertVibrationPattern, Toast.LENGTH_LONG).show();
+		    Toast.makeText(getApplicationContext(),
+			    R.string.alertVibrationPattern, Toast.LENGTH_LONG)
+			    .show();
 		    return false;
 		}
 		return true;
 	    }
 	};
 
-	findPreference(Preferences.VIBRATOR_PATTERN).setOnPreferenceChangeListener(onPatternChangeListener);
-	findPreference(Preferences.DELIVERY_VIBRATOR_PATTERN).setOnPreferenceChangeListener(onPatternChangeListener);
+	findPreference(Preferences.VIBRATOR_PATTERN)
+		.setOnPreferenceChangeListener(onPatternChangeListener);
+	findPreference(Preferences.DELIVERY_VIBRATOR_PATTERN)
+		.setOnPreferenceChangeListener(onPatternChangeListener);
     }
 }

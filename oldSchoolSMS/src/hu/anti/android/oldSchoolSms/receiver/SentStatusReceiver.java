@@ -44,8 +44,10 @@ public class SentStatusReceiver extends AbstractSmsBroadcastReceiver {
 
 	if (Activity.RESULT_OK == getResultCode()) {
 	    // get preferences
-	    Preferences preferences = new Preferences(context.getApplicationContext());
-	    boolean notifyOnSuccessfulSend = preferences.getNotifyOnSuccessfulSend();
+	    Preferences preferences = new Preferences(
+		    context.getApplicationContext());
+	    boolean notifyOnSuccessfulSend = preferences
+		    .getNotifyOnSuccessfulSend();
 
 	    if (!notifyOnSuccessfulSend)
 		return;

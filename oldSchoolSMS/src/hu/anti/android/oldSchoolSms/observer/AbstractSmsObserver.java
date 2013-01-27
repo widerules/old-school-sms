@@ -12,7 +12,8 @@ public abstract class AbstractSmsObserver extends ContentObserver {
     private final Handler smsHandler;
     private final ContentResolver contentResolver;
 
-    public AbstractSmsObserver(ContentResolver contentResolver, final Handler smsHandler) {
+    public AbstractSmsObserver(ContentResolver contentResolver,
+	    final Handler smsHandler) {
 	super(smsHandler);
 
 	this.contentResolver = contentResolver;
@@ -35,7 +36,8 @@ public abstract class AbstractSmsObserver extends ContentObserver {
 	    public void run() {
 		Cursor cur = null;
 		try {
-		    cur = contentResolver.query(getUri(), null, null, null, Sms.Fields.ID);
+		    cur = contentResolver.query(getUri(), null, null, null,
+			    Sms.Fields.ID);
 
 		    if (cur.getCount() != smsCount) {
 			smsCount = cur.getCount();
