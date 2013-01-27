@@ -17,7 +17,6 @@ import android.telephony.SmsManager;
 import android.util.Log;
 
 public class Sms {
-
     public static class Uris {
 
 	public static final String SMS_URI_BASE = "content://sms/";
@@ -113,7 +112,8 @@ public class Sms {
     }
 
     public static Sms getSms(ContentResolver contentResolver, long id) {
-	Uri uri = ContentUris.withAppendedId(Uri.parse(Sms.Uris.SMS_URI_BASE), id);
+	Uri uri = ContentUris.withAppendedId(Uri.parse(Sms.Uris.SMS_URI_BASE),
+		id);
 
 	return getSms(contentResolver, uri);
     }
@@ -124,7 +124,8 @@ public class Sms {
 	if (cursor == null)
 	    return null;
 
-	Log.d("OldSchoolSMS", "For [" + uri + "] found [" + cursor.getCount() + "] element(s)");
+	Log.d("OldSchoolSMS", "For [" + uri + "] found [" + cursor.getCount()
+		+ "] element(s)");
 
 	if (!cursor.moveToFirst())
 	    return null;
@@ -153,7 +154,8 @@ public class Sms {
 	sms.body = getColumnString(cursor, Sms.Fields.BODY);
 	sms.seen = getColumnBoolean(cursor, Sms.Fields.SEEN);
 	sms.protocol = getColumnString(cursor, Sms.Fields.PROTOCOL);
-	sms.reply_path_present = getColumnBoolean(cursor, Sms.Fields.REPLY_PATH_PRESENT);
+	sms.reply_path_present = getColumnBoolean(cursor,
+		Sms.Fields.REPLY_PATH_PRESENT);
 	sms.subject = getColumnString(cursor, Sms.Fields.SUBJECT);
 	sms.service_center = getColumnString(cursor, Sms.Fields.SERVICE_CENTER);
 	sms.locked = getColumnBoolean(cursor, Sms.Fields.LOCKED);
@@ -199,10 +201,14 @@ public class Sms {
 	return findSmsByContent(contentResolver, address, body);
     }
 
-    public static Uri findSmsByContent(ContentResolver contentResolver, String address, String body) {
+    public static Uri findSmsByContent(ContentResolver contentResolver,
+	    String address, String body) {
 	// find in db
-	Cursor cursor = contentResolver.query(Uri.parse(Sms.Uris.SMS_URI_BASE), new String[] { Sms.Fields.ID }, //
-		Sms.Fields.ADDRESS + " = ? and " + Sms.Fields.BODY + " = ? and " + Sms.Fields.READ + " = " + Sms.Other.MESSAGE_IS_NOT_READ, new String[] {
+	Cursor cursor = contentResolver.query(Uri.parse(Sms.Uris.SMS_URI_BASE),
+		new String[] { Sms.Fields.ID }, //
+		Sms.Fields.ADDRESS + " = ? and " + Sms.Fields.BODY
+			+ " = ? and " + Sms.Fields.READ + " = "
+			+ Sms.Other.MESSAGE_IS_NOT_READ, new String[] {
 			address, body },//
 		Sms.Fields.DATE + " desc");
 
@@ -223,7 +229,8 @@ public class Sms {
 
     public static Uri findLastUnread(ContentResolver contentResolver) {
 	// find in db
-	Cursor cursor = contentResolver.query(Uri.parse(Sms.Uris.SMS_URI_BASE), new String[] { Sms.Fields.ID }, //
+	Cursor cursor = contentResolver.query(Uri.parse(Sms.Uris.SMS_URI_BASE),
+		new String[] { Sms.Fields.ID }, //
 		Sms.Fields.READ + " = " + Sms.Other.MESSAGE_IS_NOT_READ, null,//
 		Sms.Fields.DATE + " desc");
 
@@ -242,19 +249,25 @@ public class Sms {
 	return smsUri;
     }
 
-    public static void getDisplayName(AsyncQueryHandler asyncQueryHandler, String phoneNumber) {
+    public static void getDisplayName(AsyncQueryHandler asyncQueryHandler,
+	    String phoneNumber) {
 	if (phoneNumber == null)
 	    return;
 
 	if (phoneNumber == null || phoneNumber.length() == 0)
 	    return;
 
-	asyncQueryHandler.startQuery(0, null, Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber)),
+	asyncQueryHandler.startQuery(
+		0,
+		null,
+		Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI,
+			Uri.encode(phoneNumber)),
 		new String[] { PhoneLookup.DISPLAY_NAME }, //
 		null, null, null);
     }
 
-    public static String decodeSmsDeliveryStatus(Resources resources, String status) {
+    public static String decodeSmsDeliveryStatus(Resources resources,
+	    String status) {
 	if (status == null)
 	    return "";
 
@@ -276,16 +289,20 @@ public class Sms {
 	    return resources.getString(R.string.SMS_SENT_RESULT_OK);
 
 	case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-	    return resources.getString(R.string.SMS_SENT_RESULT_ERROR_GENERIC_FAILUREK);
+	    return resources
+		    .getString(R.string.SMS_SENT_RESULT_ERROR_GENERIC_FAILUREK);
 
 	case SmsManager.RESULT_ERROR_NO_SERVICE:
-	    return resources.getString(R.string.SMS_SENT_RESULT_ERROR_NO_SERVICE);
+	    return resources
+		    .getString(R.string.SMS_SENT_RESULT_ERROR_NO_SERVICE);
 
 	case SmsManager.RESULT_ERROR_NULL_PDU:
-	    return resources.getString(R.string.SMS_SENT_RESULT_ERROR_NO_SERVICE);
+	    return resources
+		    .getString(R.string.SMS_SENT_RESULT_ERROR_NO_SERVICE);
 
 	case SmsManager.RESULT_ERROR_RADIO_OFF:
-	    return resources.getString(R.string.SMS_SENT_RESULT_ERROR_RADIO_OFF);
+	    return resources
+		    .getString(R.string.SMS_SENT_RESULT_ERROR_RADIO_OFF);
 	}
 
 	return "resultCode: [" + resultCode + "]";
