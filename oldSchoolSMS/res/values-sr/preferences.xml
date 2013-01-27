@@ -2,12 +2,17 @@
 <resources>
 
     <!-- category -->
+    <string name="CategoryAboutTitle">About</string>
+    <string name="CategoryAboutSummary">Author: Antal Kocsis</string>
     <string name="CategoryViewTitle">Izgled</string>
     <string name="CategoryViewSummary">Izgled programa</string>
     <string name="CategoryBehaviorReceivingTitle">Prijemni postupak</string>
     <string name="CategoryBehaviorReceivingSummary">Funkcija programa kod prijema SMS-a</string>
     <string name="CategoryBehaviorSendingTitle">Postupak kod slanja</string>
     <string name="CategoryBehaviorSendingSummary">Funkcija programa kod slanja SMS-a</string>
+
+    <string name="aboutTitle">Autor</string>
+    <string name="aboutSummary">Antal Kočiš</string>
 
     <!-- entry -->
     <string name="showMessageContentInListTitle">Listanje teksta</string>
