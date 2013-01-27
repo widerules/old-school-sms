@@ -7,77 +7,84 @@
     android:layout_margin="10dp"
     android:baselineAligned="false"
     android:gravity="center"
-    android:orientation="horizontal" >
+    android:orientation="vertical" >
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical" >
+        android:layout_weight="1" >
 
-        <Button
-            android:id="@+id/mainNewSms"
+        <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_weight="1"
-            android:text="@string/newSms" >
-        </Button>
+            android:gravity="center"
+            android:orientation="vertical" >
 
-        <Button
-            android:id="@+id/mainAll"
+            <Button
+                android:id="@+id/mainNewSms"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:text="@string/newSms" />
+
+            <Button
+                android:id="@+id/mainAll"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:text="@string/BoxAll" />
+
+            <Button
+                android:id="@+id/mainPreferences"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:text="@string/preferences" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_weight="1"
-            android:text="@string/BoxAll" >
-        </Button>
+            android:orientation="vertical" >
 
-        <Button
-            android:id="@+id/mainPreferences"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:text="@string/preferences" >
-        </Button>
+            <Button
+                android:id="@+id/mainInbox"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:text="@string/BoxInbox" />
+
+            <Button
+                android:id="@+id/mainSent"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:text="@string/BoxSent" />
+
+            <Button
+                android:id="@+id/mainDraft"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:text="@string/BoxDraft" />
+        </LinearLayout>
+
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="fill_parent"
+    <TextView
+        android:id="@+id/mainVersion"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:orientation="vertical" >
-
-        <Button
-            android:id="@+id/mainInbox"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:text="@string/BoxInbox" >
-        </Button>
-
-        <Button
-            android:id="@+id/mainSent"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:text="@string/BoxSent" >
-        </Button>
-
-        <Button
-            android:id="@+id/mainDraft"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:text="@string/BoxDraft" >
-        </Button>
-    </LinearLayout>
+        android:text="TextView" />
 
 </LinearLayout>
