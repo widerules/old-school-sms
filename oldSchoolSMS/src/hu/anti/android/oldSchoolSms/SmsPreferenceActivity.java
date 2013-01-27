@@ -76,8 +76,8 @@ public class SmsPreferenceActivity extends PreferenceActivity {
 						+ " v"
 						+ SmsPreferenceActivity.this
 							.getString(R.string.versionName));
-			emailIntent.putExtra(android.content.Intent.EXTRA_TEXT,
-				"Text");
+			// emailIntent.putExtra(android.content.Intent.EXTRA_TEXT,
+			// "Text");
 
 			/* Send it off to the Activity-Chooser */
 			startActivity(Intent.createChooser(emailIntent,
