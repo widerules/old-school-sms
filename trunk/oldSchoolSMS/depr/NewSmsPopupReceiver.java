@@ -1,5 +1,6 @@
 package hu.anti.android.oldSchoolSms.receiver;
 
+import hu.anti.android.oldSchoolSms.AbstractSmsActivity;
 import hu.anti.android.oldSchoolSms.Sms;
 import hu.anti.android.oldSchoolSms.popup.ReceivedSmsActivity;
 
@@ -23,7 +24,7 @@ public class NewSmsPopupReceiver extends AbstractSmsBroadcastReceiver {
 
     @Override
     public void onReceive(final Context context, Intent intent) {
-	Log.d("OldSchoolSMS", "Received new SMS broadcast: " + intent);
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, "Received new SMS broadcast: " + intent);
 	logIntent("NewSmsPopupReceiver", intent);
 
 	// get preferences
@@ -51,10 +52,10 @@ public class NewSmsPopupReceiver extends AbstractSmsBroadcastReceiver {
 	    Bundle extras = intent.getExtras();
 
 	    if (extras != null) {
-		Log.d("OldSchoolSMS", "Received new SMS broadcast/extras: " + extras);
+		Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, "Received new SMS broadcast/extras: " + extras);
 		if (extras != null) {
 		    for (String key : extras.keySet()) {
-			Log.d("OldSchoolSMS", "NewSmsPopupReceiver/Bundle extras/" + key + ": " + extras.get(key));
+			Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, "NewSmsPopupReceiver/Bundle extras/" + key + ": " + extras.get(key));
 		    }
 		}
 
@@ -70,7 +71,7 @@ public class NewSmsPopupReceiver extends AbstractSmsBroadcastReceiver {
 		    String body = sms.getMessageBody().toString();
 		    long timestamp = sms.getTimestampMillis();
 
-		    Log.d("OldSchoolSMS", "Received new SMS part at " + timestamp + " from (" + address + ") content: " + body);
+		    Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, "Received new SMS part at " + timestamp + " from (" + address + ") content: " + body);
 
 		    // store sms text
 		    if (receivedSms.containsKey(address))
@@ -86,7 +87,7 @@ public class NewSmsPopupReceiver extends AbstractSmsBroadcastReceiver {
 		    String body = entry.getValue().first;
 		    Long timestamp = entry.getValue().second;
 
-		    Log.d("OldSchoolSMS", "Received new SMS at [" + timestamp + "/" + Sms.SIMPLE_DATE_FORMAT.format(timestamp) + "] from ("
+		    Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, "Received new SMS at [" + timestamp + "/" + Sms.SIMPLE_DATE_FORMAT.format(timestamp) + "] from ("
 			    + address + ") content: " + body);
 
 		    Intent popupIntent = new Intent(ReceivedSmsActivity.NEW_SMS_ACTION, null, context, ReceivedSmsActivity.class);
@@ -100,7 +101,7 @@ public class NewSmsPopupReceiver extends AbstractSmsBroadcastReceiver {
 
 		    context.startActivity(popupIntent);
 
-		    Log.d("OldSchoolSMS", "Started new popup: " + popupIntent);
+		    Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, "Started new popup: " + popupIntent);
 		}
 	    }
 	}
@@ -109,14 +110,14 @@ public class NewSmsPopupReceiver extends AbstractSmsBroadcastReceiver {
     public static void logIntent(String object, Intent intent) {
 	Bundle extras = intent.getExtras();
 
-	Log.d("OldSchoolSMS", object + "/intent: " + intent);
-	Log.d("OldSchoolSMS", object + "/intent getAction: " + intent.getAction());
-	Log.d("OldSchoolSMS", object + "/intent getData: " + intent.getData());
-	Log.d("OldSchoolSMS", object + "/intent getDataString: " + intent.getDataString());
-	Log.d("OldSchoolSMS", object + "/intent getExtras: " + (extras == null ? "<>" : extras.size()));
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, object + "/intent: " + intent);
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, object + "/intent getAction: " + intent.getAction());
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, object + "/intent getData: " + intent.getData());
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, object + "/intent getDataString: " + intent.getDataString());
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, object + "/intent getExtras: " + (extras == null ? "<>" : extras.size()));
 	if (extras != null) {
 	    for (String key : extras.keySet()) {
-		Log.d("OldSchoolSMS", object + "/intent extras/" + key + ": " + extras.get(key));
+		Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, object + "/intent extras/" + key + ": " + extras.get(key));
 	    }
 	}
     }

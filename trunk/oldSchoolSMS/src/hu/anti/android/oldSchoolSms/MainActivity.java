@@ -192,7 +192,8 @@ public class MainActivity extends Activity {
 	int count = cursor.getCount();
 	cursor.close();
 
-	Log.d("OldSchoolSMS", "Count of elements in " + box + " is: " + count);
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, "Count of elements in " + box
+		+ " is: " + count);
 
 	return count;
     }

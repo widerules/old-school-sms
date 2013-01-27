@@ -1,5 +1,6 @@
 package hu.anti.android.oldSchoolSms.receiver;
 
+import hu.anti.android.oldSchoolSms.AbstractSmsActivity;
 import hu.anti.android.oldSchoolSms.Preferences;
 import hu.anti.android.oldSchoolSms.R;
 import hu.anti.android.oldSchoolSms.Sms;
@@ -23,18 +24,20 @@ public abstract class AbstractSmsBroadcastReceiver extends BroadcastReceiver {
 
 	Bundle extras = intent.getExtras();
 
-	Log.d("OldSchoolSMS", object + "/intent: " + intent);
-	Log.d("OldSchoolSMS",
-		object + "/intent getAction: " + intent.getAction());
-	Log.d("OldSchoolSMS", object + "/intent getData: " + intent.getData());
-	Log.d("OldSchoolSMS",
-		object + "/intent getDataString: " + intent.getDataString());
-	Log.d("OldSchoolSMS", object + "/intent getExtras: "
-		+ (extras == null ? "<>" : extras.size()));
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, object + "/intent: " + intent);
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, object
+		+ "/intent getAction: " + intent.getAction());
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, object + "/intent getData: "
+		+ intent.getData());
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, object
+		+ "/intent getDataString: " + intent.getDataString());
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS,
+		object + "/intent getExtras: "
+			+ (extras == null ? "<>" : extras.size()));
 	if (extras != null) {
 	    for (String key : extras.keySet()) {
-		Log.d("OldSchoolSMS", object + "/intent extras/" + key + ": "
-			+ extras.get(key));
+		Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, object
+			+ "/intent extras/" + key + ": " + extras.get(key));
 	    }
 	}
     }
@@ -142,8 +145,8 @@ public abstract class AbstractSmsBroadcastReceiver extends BroadcastReceiver {
 		.getSystemService(Context.NOTIFICATION_SERVICE);
 	mNotificationManager.notify(notificationId, notification);
 
-	Log.d("OldSchoolSMS", "Notification [" + notificationId + "] changed: "
-		+ message);
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, "Notification ["
+		+ notificationId + "] changed: " + message);
     }
 
     private Sms findSms(Context context, Uri uri) {
@@ -152,14 +155,14 @@ public abstract class AbstractSmsBroadcastReceiver extends BroadcastReceiver {
 	Cursor cursor = context.getContentResolver().query(uri, null, null,
 		null, null);
 	if (cursor == null) {
-	    Log.e("OldSchoolSMS",
+	    Log.e(AbstractSmsActivity.OLD_SCHOOL_SMS,
 		    "Recived notification for non existing SMS object: [" + uri
 			    + "]");
 
 	    sms = null;
 	} else if (!cursor.moveToFirst()) {
-	    Log.e("OldSchoolSMS", "Recived notification for no SMS object: ["
-		    + uri + "]");
+	    Log.e(AbstractSmsActivity.OLD_SCHOOL_SMS,
+		    "Recived notification for no SMS object: [" + uri + "]");
 
 	    cursor.close();
 	    sms = null;

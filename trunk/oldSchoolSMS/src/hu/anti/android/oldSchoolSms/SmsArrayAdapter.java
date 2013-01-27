@@ -56,7 +56,8 @@ public class SmsArrayAdapter extends ArrayAdapter<Sms> {
 		    // default...
 		    personName = "(" + sms.address + ")";
 
-		Log.v("OldSchoolSMS", sms.address + " -> " + personName);
+		Log.v(AbstractSmsActivity.OLD_SCHOOL_SMS, sms.address + " -> "
+			+ personName);
 
 		listItem.getText1().setText(personName);
 	    }
@@ -66,7 +67,8 @@ public class SmsArrayAdapter extends ArrayAdapter<Sms> {
 	else {
 	    listItem.getText1().setText(sms.address);
 	    Sms.getDisplayName(asyncQueryHandler, sms.address);
-	    Log.v("OldSchoolSMS", "Looking for number: " + sms.address);
+	    Log.v(AbstractSmsActivity.OLD_SCHOOL_SMS, "Looking for number: "
+		    + sms.address);
 	}
 
 	// sms date

@@ -198,8 +198,9 @@ public class SmsSendActivity extends AbstractSmsActivity {
 			    .getString(contactsCursor
 				    .getColumnIndexOrThrow(ContactsContract.Contacts.HAS_PHONE_NUMBER));
 
-		    Log.d("OldSchoolSMS", "id " + id + " name: " + name
-			    + " hasPhoneNumber: " + hasPhoneNumber);
+		    Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, "id " + id
+			    + " name: " + name + " hasPhoneNumber: "
+			    + hasPhoneNumber);
 
 		    // If the contact has a phone number
 		    if (Integer.parseInt(hasPhoneNumber) > 0) {
@@ -227,9 +228,10 @@ public class SmsSendActivity extends AbstractSmsActivity {
 			    if (phoneNumber.contains("%"))
 				phoneNumber = URLDecoder.decode(phoneNumber);
 
-			    Log.d("OldSchoolSMS", "phoneType: " + phoneType
-				    + "(" + phoneLabel + ") phoneNumber: "
-				    + phoneNumber);
+			    Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS,
+				    "phoneType: " + phoneType + "("
+					    + phoneLabel + ") phoneNumber: "
+					    + phoneNumber);
 
 			    CharSequence typeLabel;
 			    if (ContactsContract.CommonDataKinds.Phone.TYPE_CUSTOM == phoneType)
@@ -300,7 +302,8 @@ public class SmsSendActivity extends AbstractSmsActivity {
 	String action = intent.getAction();
 	Uri data = intent.getData();
 
-	Log.d("OldSchoolSMS", "Received " + action + " with content: " + data);
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, "Received " + action
+		+ " with content: " + data);
 	AbstractSmsBroadcastReceiver.logIntent(this.getClass()
 		.getCanonicalName(), intent);
 
@@ -316,8 +319,9 @@ public class SmsSendActivity extends AbstractSmsActivity {
 		try {
 		    number = URLDecoder.decode(number, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-		    Log.w("OldSchoolSMS", "URLDecoder error decoding number ["
-			    + number + "]: " + e.getLocalizedMessage());
+		    Log.w(AbstractSmsActivity.OLD_SCHOOL_SMS,
+			    "URLDecoder error decoding number [" + number
+				    + "]: " + e.getLocalizedMessage());
 		}
 
 	    toNumber = number;
@@ -381,8 +385,9 @@ public class SmsSendActivity extends AbstractSmsActivity {
 
 		getContentResolver().update(dataUri, values, null, null);
 
-		Log.d("OldSchoolSMS", "onPause updated SMS uri: " + dataUri
-			+ " getScheme: [" + dataUri.getScheme() + "]");
+		Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS,
+			"onPause updated SMS uri: " + dataUri + " getScheme: ["
+				+ dataUri.getScheme() + "]");
 		return;
 	    }
 	}
@@ -392,8 +397,9 @@ public class SmsSendActivity extends AbstractSmsActivity {
 	    Uri draftUri = NotificationService.putNewSmsToDatabase(
 		    getContentResolver(), toNumber, body,
 		    Sms.Type.MESSAGE_TYPE_DRAFT, Sms.Status.NONE);
-	    Log.d("OldSchoolSMS", "onPause new draft SMS uri: " + draftUri
-		    + " getScheme: [" + draftUri.getScheme() + "]");
+	    Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS,
+		    "onPause new draft SMS uri: " + draftUri + " getScheme: ["
+			    + draftUri.getScheme() + "]");
 
 	    // use new intent for this draft
 	    Intent draftIntent = new Intent(Intent.ACTION_SEND, draftUri);

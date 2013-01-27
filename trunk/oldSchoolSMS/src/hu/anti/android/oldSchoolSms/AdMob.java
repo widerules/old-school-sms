@@ -39,7 +39,7 @@ public class AdMob {
 	request.addTestDevice(AdRequest.TEST_EMULATOR);
 	request.addTestDevice("CF95DC53F383F9A836FD749F3EF439CD");
 
-	Log.d("OldSchoolSMS", "New AdRequest: " + request);
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, "New AdRequest: " + request);
 
 	return request;
     }

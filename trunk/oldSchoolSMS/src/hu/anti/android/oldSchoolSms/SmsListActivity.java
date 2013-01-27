@@ -46,7 +46,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 public class SmsListActivity extends AbstractSmsActivity {
-
     private static final class SmsListHandler extends Handler {
 
 	private final SmsListActivity smsListActivity;
@@ -139,7 +138,7 @@ public class SmsListActivity extends AbstractSmsActivity {
 		    public void onItemClick(AdapterView<?> paramAdapterView,
 			    View view, int pos, long id) {
 			if (smsList.size() <= pos) {
-			    Log.w("OldSchoolSMS",
+			    Log.w(AbstractSmsActivity.OLD_SCHOOL_SMS,
 				    "position [" + pos
 					    + "] too large for sms list ("
 					    + smsList.size() + ")");
@@ -234,7 +233,8 @@ public class SmsListActivity extends AbstractSmsActivity {
 	    @Override
 	    public void onReceive(Context paramContext, Intent paramIntent) {
 		updateInProgress = true;
-		Log.d("OldSchoolSMS", "Received " + paramIntent);
+		Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, "Received "
+			+ paramIntent);
 
 		// move to end the progress bar
 		setProgress(10000);
@@ -411,9 +411,14 @@ public class SmsListActivity extends AbstractSmsActivity {
 	AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
 		.getMenuInfo();
 
-	final Uri uri = ContentUris.withAppendedId(
-		Uri.parse(Sms.Uris.SMS_URI_BASE),
-		smsList.get(info.position)._id);
+	final Uri uri;
+	try {
+	    uri = ContentUris.withAppendedId(Uri.parse(Sms.Uris.SMS_URI_BASE),
+		    smsList.get(info.position)._id);
+	} catch (IndexOutOfBoundsException e) {
+	    Log.w(AbstractSmsActivity.OLD_SCHOOL_SMS, e.getLocalizedMessage());
+	    return false;
+	}
 
 	switch (item.getItemId()) {
 	case R.id.view: {
@@ -523,7 +528,7 @@ public class SmsListActivity extends AbstractSmsActivity {
 
     @SuppressWarnings("deprecation")
     private void copyToClipboard(final Sms sms) {
-	Log.d("OldSchoolSMS", "copyToClipboard - old version used");
+	Log.d(OLD_SCHOOL_SMS, "copyToClipboard - old version used");
 
 	android.text.ClipboardManager clipboardManager = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
 	clipboardManager.setText(sms.body);
@@ -531,7 +536,7 @@ public class SmsListActivity extends AbstractSmsActivity {
 
     @TargetApi(11)
     private void copyToClipboardV11(final Sms sms) {
-	Log.d("OldSchoolSMS", "copyToClipboard - API11 version used");
+	Log.d(OLD_SCHOOL_SMS, "copyToClipboard - API11 version used");
 
 	android.content.ClipboardManager clipboardManager = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
 	ClipData clip = ClipData.newPlainText("sms", sms.body);
@@ -577,7 +582,7 @@ public class SmsListActivity extends AbstractSmsActivity {
 
 		Cursor cursor = null;
 		try {
-		    Log.d("OldSchoolSMS", "updateSmsList - hread started");
+		    Log.d(OLD_SCHOOL_SMS, "updateSmsList - hread started");
 
 		    // remove existing data
 		    smsList.clear();
@@ -591,7 +596,7 @@ public class SmsListActivity extends AbstractSmsActivity {
 		    Uri uri = Uri.parse(Sms.Uris.SMS_URI_BASE
 			    + ("all".equals(smsBox) ? "" : smsBox));
 
-		    Log.d("OldSchoolSMS", "Selected SMS box: " + uri);
+		    Log.d(OLD_SCHOOL_SMS, "Selected SMS box: " + uri);
 
 		    // create cursor
 		    ContentResolver contentResolver = getContentResolver();
@@ -607,7 +612,7 @@ public class SmsListActivity extends AbstractSmsActivity {
 		    if (pageIndexCurrent > pageIndexMax)
 			pageIndexCurrent = pageIndexMax;
 
-		    Log.d("OldSchoolSMS", "Updateing SMS list: " + count);
+		    Log.d(OLD_SCHOOL_SMS, "Updateing SMS list: " + count);
 
 		    // check result
 		    if (cursor != null && cursor.moveToFirst()) {
@@ -630,7 +635,7 @@ public class SmsListActivity extends AbstractSmsActivity {
 				SmsListActivity.this.setProgress(smsList.size()
 					* 10000 / (maxPosition + 1));
 			    } catch (Exception e) {
-				Log.e("OldSchoolSMS", e.getLocalizedMessage());
+				Log.e(OLD_SCHOOL_SMS, e.getLocalizedMessage());
 			    }
 			} while (smsList.size() < pageSize
 				&& cursor.moveToNext());
@@ -645,7 +650,7 @@ public class SmsListActivity extends AbstractSmsActivity {
 		Intent intent = new Intent(ACTION_UPDATE_FINISHED);
 		sendBroadcast(intent);
 
-		Log.d("OldSchoolSMS", "Thread finished");
+		Log.d(OLD_SCHOOL_SMS, "Thread finished");
 	    }
 	}.start();
     }

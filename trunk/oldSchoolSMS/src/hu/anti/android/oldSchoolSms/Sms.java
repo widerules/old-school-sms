@@ -124,8 +124,8 @@ public class Sms {
 	if (cursor == null)
 	    return null;
 
-	Log.d("OldSchoolSMS", "For [" + uri + "] found [" + cursor.getCount()
-		+ "] element(s)");
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, "For [" + uri + "] found ["
+		+ cursor.getCount() + "] element(s)");
 
 	if (!cursor.moveToFirst())
 	    return null;
@@ -316,7 +316,7 @@ public class Sms {
 	    try {
 		string += field.getName() + "= " + field.get(this) + "\n";
 	    } catch (Exception e) {
-		Log.w("OldSchoolSMS", field.getName(), e);
+		Log.w(AbstractSmsActivity.OLD_SCHOOL_SMS, field.getName(), e);
 	    }
 	}
 	return string;
