@@ -2,6 +2,8 @@
 <resources>
 
     <!-- category -->
+    <string name="CategoryAboutTitle">About</string>
+    <string name="CategoryAboutSummary">About</string>
     <string name="CategoryViewTitle">View</string>
     <string name="CategoryViewSummary">Main window view preferences</string>
     <string name="CategoryBehaviorReceivingTitle">Behavior - receiving</string>
@@ -9,6 +11,15 @@
     <string name="CategoryBehaviorSendingTitle">Behavior - sending</string>
     <string name="CategoryBehaviorSendingSummary">Behavior of application when sending an SMS</string>
 
+    <string name="aboutTitle">Author</string>
+    <string name="aboutSummary">Antal Kocsis</string>
+    <string name="emailTitle">eMail</string>
+    <string name="emailSummary">hu.anti.android@gmail.com</string>
+    <string name="webTitle">web</string>
+    <string name="webSummary">http://code.google.com/p/old-school-sms</string>
+    <string name="fbTitle">facebook</string>
+    <string name="fbSummary">http://www.facebook.com/OldSchoolSms</string>
+    
     <!-- entry -->
     <string name="showMessageContentInListTitle">Show message</string>
     <string name="showMessageContentInListSummary">Show message content in SMS list</string>

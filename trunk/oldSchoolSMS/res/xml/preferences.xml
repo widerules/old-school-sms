@@ -113,6 +113,12 @@
             android:key="extendedBoxList"
             android:summary="Show extended list of SMS boxes in SMS-list view"
             android:title="SMS box list" />
+    </PreferenceCategory><PreferenceCategory android:title="@string/CategoryAboutTitle" android:summary="@string/CategoryAboutSummary">
+        <Preference android:summary="@string/aboutSummary" android:title="@string/aboutTitle" android:enabled="true" android:selectable="false" />
+        <Preference android:key="web" android:summary="@string/webSummary" android:title="@string/webTitle" />
+        <Preference android:key="fb" android:summary="@string/fbSummary" android:title="@string/fbTitle"/>
+        <Preference android:key="email" android:summary="@string/emailSummary" android:title="@string/emailTitle"/>
     </PreferenceCategory>
+    
 
 </PreferenceScreen>

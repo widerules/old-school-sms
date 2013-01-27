@@ -2,12 +2,17 @@
 <resources>
 
     <!-- category -->
+    <string name="CategoryAboutTitle">Névjegy</string>
+    <string name="CategoryAboutSummary">Névjegy</string>
     <string name="CategoryViewTitle">Nézet</string>
     <string name="CategoryViewSummary">A főablak megjelenése</string>
     <string name="CategoryBehaviorReceivingTitle">Viselkedés - beérkezéskor</string>
     <string name="CategoryBehaviorReceivingSummary">Az alkalmazás működése SMS érkezésekor</string>
     <string name="CategoryBehaviorSendingTitle">Viselkedés - küldéskor</string>
     <string name="CategoryBehaviorSendingSummary">Az alkalmazás működése SMS küldésekor</string>
+
+    <string name="aboutTitle">Készítette</string>
+    <string name="aboutSummary">Kocsis Antal</string>
 
     <!-- entry -->
     <string name="showMessageContentInListTitle">Szöveg mutatása</string>
