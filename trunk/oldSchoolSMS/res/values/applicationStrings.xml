@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">OldSchoolSMS</string>
-    <string name="versionName">1.5</string>
+    <string name="versionName" translatable="false">1.5</string>
     <string name="previous"> &lt; </string>
     <string name="next"> > </string>
 

@@ -13,12 +13,12 @@
 
     <string name="aboutTitle">Author</string>
     <string name="aboutSummary">Antal Kocsis</string>
-    <string name="emailTitle">eMail</string>
-    <string name="emailSummary">hu.anti.android@gmail.com</string>
-    <string name="webTitle">web</string>
-    <string name="webSummary">http://code.google.com/p/old-school-sms</string>
-    <string name="fbTitle">facebook</string>
-    <string name="fbSummary">http://www.facebook.com/OldSchoolSms</string>
+    <string name="emailTitle" translatable="false">eMail</string>
+    <string name="emailSummary" translatable="false">hu.anti.android@gmail.com</string>
+    <string name="webTitle" translatable="false">web</string>
+    <string name="webSummary" translatable="false">http://code.google.com/p/old-school-sms</string>
+    <string name="fbTitle" translatable="false">facebook</string>
+    <string name="fbSummary" translatable="false">http://www.facebook.com/OldSchoolSms</string>
     
     <!-- entry -->
     <string name="showMessageContentInListTitle">Show message</string>
