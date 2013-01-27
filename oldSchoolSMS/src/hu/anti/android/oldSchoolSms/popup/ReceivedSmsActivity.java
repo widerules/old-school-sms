@@ -1,5 +1,6 @@
 package hu.anti.android.oldSchoolSms.popup;
 
+import hu.anti.android.oldSchoolSms.AbstractSmsActivity;
 import hu.anti.android.oldSchoolSms.NotificationService;
 import hu.anti.android.oldSchoolSms.R;
 import hu.anti.android.oldSchoolSms.Sms;
@@ -97,7 +98,7 @@ public class ReceivedSmsActivity extends Activity {
 				    // update data
 				    updateView();
 				} catch (NoSuchElementException e) {
-				    Log.w("OldSchoolSMS",
+				    Log.w(AbstractSmsActivity.OLD_SCHOOL_SMS,
 					    "SMS " + sms.toString()
 						    + " removed: "
 						    + e.getLocalizedMessage());
@@ -141,7 +142,8 @@ public class ReceivedSmsActivity extends Activity {
 	super.onResume();
 
 	Intent intent = getIntent();
-	Log.d("OldSchoolSMS", "ReceivedSmsActivity - onResume " + intent);
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS,
+		"ReceivedSmsActivity - onResume " + intent);
 
 	queueSms(intent);
 
@@ -151,7 +153,8 @@ public class ReceivedSmsActivity extends Activity {
     @Override
     protected void onNewIntent(Intent intent) {
 	super.onNewIntent(intent);
-	Log.d("OldSchoolSMS", "ReceivedSmsActivity - onNewIntent: " + intent);
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS,
+		"ReceivedSmsActivity - onNewIntent: " + intent);
 
 	queueSms(intent);
 

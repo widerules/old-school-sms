@@ -1,5 +1,6 @@
 package hu.anti.android.oldSchoolSms;
 
+import hu.anti.android.oldSchoolSms.AbstractSmsActivity;
 import hu.anti.android.oldSchoolSms.receiver.DeliveredStatusReceiver;
 import hu.anti.android.oldSchoolSms.receiver.SentStatusReceiver;
 import android.content.Intent;
@@ -22,7 +23,7 @@ public class NotificationActivity extends AbstractSmsActivity {
 	Intent intent = getIntent();
 	String action = intent.getAction();
 
-	Log.d("OldSchoolSMS", "NotificationActivity received " + intent);
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, "NotificationActivity received " + intent);
 
 	Cursor cursor = getApplicationContext().getContentResolver().query(intent.getData(), null, null, null, null);
 	Sms sms;

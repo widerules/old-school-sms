@@ -1,5 +1,6 @@
 package hu.anti.android.oldSchoolSms.receiver;
 
+import hu.anti.android.oldSchoolSms.AbstractSmsActivity;
 import hu.anti.android.oldSchoolSms.NotificationService;
 import hu.anti.android.oldSchoolSms.Preferences;
 import hu.anti.android.oldSchoolSms.observer.AbstractSmsObserver;
@@ -31,8 +32,8 @@ public class NewSmsReceiver extends AbstractSmsBroadcastReceiver {
 
     @Override
     public void onReceive(final Context context, Intent intent) {
-	Log.d("OldSchoolSMS", "NewSmsReceiver: Received new SMS broadcast: "
-		+ intent);
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS,
+		"NewSmsReceiver: Received new SMS broadcast: " + intent);
 	logIntent("NewSmsReceiver", intent);
 
 	// get preferences
@@ -106,9 +107,10 @@ public class NewSmsReceiver extends AbstractSmsBroadcastReceiver {
 			String body = sms.getMessageBody().toString();
 			long timestamp = sms.getTimestampMillis();
 
-			Log.d("OldSchoolSMS", "Received new SMS part at "
-				+ timestamp + " from (" + address
-				+ ") content: " + body);
+			Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS,
+				"Received new SMS part at " + timestamp
+					+ " from (" + address + ") content: "
+					+ body);
 
 			// store sms text
 			if (receivedSms.containsKey(address))
@@ -153,11 +155,13 @@ public class NewSmsReceiver extends AbstractSmsBroadcastReceiver {
 
 	context.startActivity(popupIntent);
 
-	Log.d("OldSchoolSMS", "Started new popup: " + popupIntent);
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, "Started new popup: "
+		+ popupIntent);
     }
 
     public static void startSmSObserver(final Context context) {
-	Log.d("OldSchoolSMS", "NewSmsReceiver: Created new sms observer");
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS,
+		"NewSmsReceiver: Created new sms observer");
 
 	// create observer
 	smsObserver = new AllSmsObserver(context.getContentResolver(),
@@ -166,7 +170,7 @@ public class NewSmsReceiver extends AbstractSmsBroadcastReceiver {
 		    public void handleMessage(Message msg) {
 			super.handleMessage(msg);
 
-			Log.d("OldSchoolSMS",
+			Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS,
 				"NewSmsReceiver: NewSmsReceiver/AllSmsObserver received Message: "
 					+ msg);
 
@@ -184,12 +188,13 @@ public class NewSmsReceiver extends AbstractSmsBroadcastReceiver {
 
     private void logExtras(Bundle extras) {
 	// log
-	Log.d("OldSchoolSMS",
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS,
 		"NewSmsReceiver: Received new SMS broadcast/extras: " + extras);
 	if (extras != null) {
 	    for (String key : extras.keySet()) {
-		Log.d("OldSchoolSMS", "NewSmsPopupReceiver/Bundle extras/"
-			+ key + ": " + extras.get(key));
+		Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS,
+			"NewSmsPopupReceiver/Bundle extras/" + key + ": "
+				+ extras.get(key));
 	    }
 	}
     }

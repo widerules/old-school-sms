@@ -57,7 +57,8 @@ public class SmsViewActivity extends AbstractSmsActivity {
 	String action = intent.getAction();
 	Uri uri = intent.getData();
 
-	Log.d("OldSchoolSMS", "Received " + action + " with content: " + uri);
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, "Received " + action
+		+ " with content: " + uri);
 
 	if (Intent.ACTION_VIEW.equals(action)) {
 	    // display SMS
@@ -69,8 +70,9 @@ public class SmsViewActivity extends AbstractSmsActivity {
 		    NotificationService.removeNotification(this,
 			    Integer.parseInt(uri.getLastPathSegment()));
 		} catch (NumberFormatException e) {
-		    Log.e("OldSchoolSMS", "SMS id parse error from: " + uri
-			    + " message: " + e.getLocalizedMessage());
+		    Log.e(AbstractSmsActivity.OLD_SCHOOL_SMS,
+			    "SMS id parse error from: " + uri + " message: "
+				    + e.getLocalizedMessage());
 		}
 
 		return;
@@ -277,7 +279,8 @@ public class SmsViewActivity extends AbstractSmsActivity {
 
     @SuppressWarnings("deprecation")
     private void copyToClipboard(final Sms sms) {
-	Log.d("OldSchoolSMS", "copyToClipboard - old version used");
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS,
+		"copyToClipboard - old version used");
 
 	android.text.ClipboardManager clipboardManager = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
 	clipboardManager.setText(sms.body);
@@ -285,7 +288,8 @@ public class SmsViewActivity extends AbstractSmsActivity {
 
     @TargetApi(11)
     private void copyToClipboardV11(final Sms sms) {
-	Log.d("OldSchoolSMS", "copyToClipboard - API11 version used");
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS,
+		"copyToClipboard - API11 version used");
 
 	android.content.ClipboardManager clipboardManager = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
 	ClipData clip = ClipData.newPlainText("sms", sms.body);

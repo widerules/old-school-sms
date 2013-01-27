@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 public abstract class AbstractSmsActivity extends Activity {
 
+    public static final String OLD_SCHOOL_SMS = "OldSchoolSMS";
+
     public AbstractSmsActivity() {
 	super();
     }
@@ -23,6 +25,7 @@ public abstract class AbstractSmsActivity extends Activity {
 	    alertDialog.setTitle("Exception");
 	    alertDialog.setMessage(e.getLocalizedMessage());
 	    alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+		@Override
 		public void onClick(DialogInterface dialog, int which) {
 		    alertDialog.dismiss();
 		    return;
@@ -31,8 +34,8 @@ public abstract class AbstractSmsActivity extends Activity {
 
 	    alertDialog.show();
 	} catch (Exception e1) {
-	    Log.e("OldSchoolSMS", e.getLocalizedMessage());
-	    Log.e("OldSchoolSMS", "Error", e);
+	    Log.e(OLD_SCHOOL_SMS, e.getLocalizedMessage());
+	    Log.e(OLD_SCHOOL_SMS, "Error", e);
 	}
     }
 

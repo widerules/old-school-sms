@@ -34,7 +34,8 @@ public class NotificationService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-	Log.d("OldSchoolSMS", "onHandleIntent: [" + intent + "]");
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, "onHandleIntent: [" + intent
+		+ "]");
 
 	String action = intent.getAction();
 	Bundle extras = intent.getExtras();
@@ -63,9 +64,8 @@ public class NotificationService extends IntentService {
 	Uri uri = putNewSmsToDatabase(getContentResolver(), address, body,
 		Sms.Type.MESSAGE_TYPE_OUTBOX, Sms.Status.NONE);
 
-	Log.d("OldSchoolSMS",
-		"doSend SMS uri: " + uri + " getScheme: [" + uri.getScheme()
-			+ "]");
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, "doSend SMS uri: " + uri
+		+ " getScheme: [" + uri.getScheme() + "]");
 
 	// create sent listener
 	PendingIntent sentPI = PendingIntent.getBroadcast(
@@ -117,7 +117,8 @@ public class NotificationService extends IntentService {
 	Cursor cursor = contentResolver.query(uri, null, null, null, null);
 	if (cursor != null && cursor.moveToFirst()) {
 	    Sms sms = Sms.parseSms(cursor);
-	    Log.d("OldSchoolSMS", "Inserted new SMS objet: [" + sms + "]");
+	    Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS,
+		    "Inserted new SMS objet: [" + sms + "]");
 
 	    cursor.close();
 	}
@@ -137,7 +138,7 @@ public class NotificationService extends IntentService {
 	    // remove notification
 	    removeNotification(context, 1);
 
-	    Log.d("OldSchoolSMS",
+	    Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS,
 		    "Removed SMS notification becasu no unread SMS");
 	    return;
 	}
@@ -173,7 +174,8 @@ public class NotificationService extends IntentService {
 		.getSystemService(Context.NOTIFICATION_SERVICE);
 	mNotificationManager.notify(1, notification);
 
-	Log.d("OldSchoolSMS", "New SMS notification changed: " + message);
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS,
+		"New SMS notification changed: " + message);
     }
 
     public static void removeNotification(final Context context, int id) {

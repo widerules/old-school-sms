@@ -24,8 +24,8 @@ public class SmsPreferenceActivity extends PreferenceActivity {
 	    @Override
 	    public boolean onPreferenceChange(Preference preference,
 		    Object newValue) {
-		Log.d("OldSchoolSMS", "onPreferenceChange " + preference
-			+ " - " + newValue);
+		Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, "onPreferenceChange "
+			+ preference + " - " + newValue);
 
 		if (!newValue.toString().matches(
 			"^ *[0-9]+( *[,.;/\\- ] *[0-9]+)* *$")) {

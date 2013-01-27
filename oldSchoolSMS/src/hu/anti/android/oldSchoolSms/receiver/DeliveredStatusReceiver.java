@@ -1,5 +1,6 @@
 package hu.anti.android.oldSchoolSms.receiver;
 
+import hu.anti.android.oldSchoolSms.AbstractSmsActivity;
 import hu.anti.android.oldSchoolSms.Preferences;
 import hu.anti.android.oldSchoolSms.R;
 import hu.anti.android.oldSchoolSms.Sms;
@@ -20,7 +21,8 @@ public class DeliveredStatusReceiver extends AbstractSmsBroadcastReceiver {
 	Uri uri = intent.getData();
 
 	if (uri == null) {
-	    Log.d("OldSchoolSMS", "Received empty intent, skipping");
+	    Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS,
+		    "Received empty intent, skipping");
 	    return;
 	}
 

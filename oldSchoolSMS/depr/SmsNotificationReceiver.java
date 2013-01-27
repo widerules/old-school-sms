@@ -1,5 +1,6 @@
 package hu.anti.android.oldSchoolSms.receiver;
 
+import hu.anti.android.oldSchoolSms.AbstractSmsActivity;
 import hu.anti.android.oldSchoolSms.OldSchoolSMSActivity;
 import hu.anti.android.oldSchoolSms.R;
 import hu.anti.android.oldSchoolSms.Sms;
@@ -32,7 +33,7 @@ public class SmsNotificationReceiver extends AbstractSmsBroadcastReceiver {
 
     @Override
     public void onReceive(final Context context, Intent intent) {
-	Log.d("OldSchoolSMS", "Received SMS count change: " + intent);
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, "Received SMS count change: " + intent);
 
 	// get preferences
 	SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
@@ -54,7 +55,7 @@ public class SmsNotificationReceiver extends AbstractSmsBroadcastReceiver {
 	    // remove notification
 	    removeNotification(context);
 
-	    Log.d("OldSchoolSMS", "Removed SMS notification becasu no unread SMS");
+	    Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, "Removed SMS notification becasu no unread SMS");
 	    return;
 	}
 
@@ -90,7 +91,7 @@ public class SmsNotificationReceiver extends AbstractSmsBroadcastReceiver {
 	NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 	mNotificationManager.notify(1, notification);
 
-	Log.d("OldSchoolSMS", "New SMS notification changed: " + message);
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, "New SMS notification changed: " + message);
     }
 
     private void removeNotification(final Context context) {
@@ -112,7 +113,7 @@ public class SmsNotificationReceiver extends AbstractSmsBroadcastReceiver {
     }
 
     public static void startSmSObserver(final Context context) {
-	Log.d("OldSchoolSMS", "Created new sms observer");
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, "Created new sms observer");
 
 	// create observer
 	smsObserver = new AllSmsObserver(context.getContentResolver(), new Handler() {
@@ -120,7 +121,7 @@ public class SmsNotificationReceiver extends AbstractSmsBroadcastReceiver {
 	    public void handleMessage(Message msg) {
 		super.handleMessage(msg);
 
-		Log.d("OldSchoolSMS", "SmsNotificationReceiver/AllSmsObserver received Message: " + msg);
+		Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, "SmsNotificationReceiver/AllSmsObserver received Message: " + msg);
 
 		Intent intent = new Intent();
 		intent.setClassName(context, SmsNotificationReceiver.class.getCanonicalName());
