@@ -1,5 +1,6 @@
 package hu.anti.android.oldSchoolSms.receiver;
 
+import hu.anti.android.oldSchoolSms.Sms;
 import hu.anti.android.oldSchoolSms.popup.ReceivedSmsActivity;
 
 import java.text.SimpleDateFormat;
@@ -85,7 +86,7 @@ public class NewSmsPopupReceiver extends AbstractSmsBroadcastReceiver {
 		    String body = entry.getValue().first;
 		    Long timestamp = entry.getValue().second;
 
-		    Log.d("OldSchoolSMS", "Received new SMS at [" + timestamp + "/" + new SimpleDateFormat("yyyy.MM.dd. HH.mm").format(timestamp) + "] from ("
+		    Log.d("OldSchoolSMS", "Received new SMS at [" + timestamp + "/" + Sms.SIMPLE_DATE_FORMAT.format(timestamp) + "] from ("
 			    + address + ") content: " + body);
 
 		    Intent popupIntent = new Intent(ReceivedSmsActivity.NEW_SMS_ACTION, null, context, ReceivedSmsActivity.class);
