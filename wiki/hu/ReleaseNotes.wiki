@@ -3,6 +3,11 @@
 
 = ReleaseNotes =
 Minden új kiadás tartalmaz hibajavítást, ez nem kerül külön kiemelésre... az új funkciók, képességek a következők:
+== 2013.01.27. - Release 1.5  ==
+  * dátum+idő megjelenítés telefon beállítás szerint formáz
+  * verzió a főképernyőn
+  * névjegy a beállítások alatt
+  * horvát nyelv
 == 2013.01.13. - Release 1.4  ==
   * SMS lista és SMS nézetből felhívható a szám
   * SMS nézetből a még ismeretlen szám hozzáadható a telefonkönyvhöz
