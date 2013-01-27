@@ -1,5 +1,7 @@
 package hu.anti.android.oldSchoolSms;
 
+import java.text.SimpleDateFormat;
+
 import android.annotation.TargetApi;
 import android.app.AlertDialog.Builder;
 import android.content.AsyncQueryHandler;
@@ -12,7 +14,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -100,8 +101,8 @@ public class SmsViewActivity extends AbstractSmsActivity {
 		toNumberView.setText(sms.address);
 	    Sms.getDisplayName(asyncQueryHandler, sms.address);
 
-	    setText(R.id.textViewDate,
-		    DateFormat.getDateFormat(this).format(sms.date));
+	    setText(R.id.textViewDate, SimpleDateFormat.getDateTimeInstance()
+		    .format(sms.date));
 	    setText(R.id.textViewSms, sms.body);
 
 	    if (Sms.Type.MESSAGE_TYPE_SENT.equals(sms.type)
