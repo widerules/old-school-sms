@@ -6,14 +6,11 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,6 +18,21 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
+    private final static class AllSmsObserverHandler extends Handler {
+	MainActivity activity = null;
+
+	public AllSmsObserverHandler(MainActivity activity) {
+	    this.activity = activity;
+	}
+
+	@Override
+	public void handleMessage(Message msg) {
+	    super.handleMessage(msg);
+
+	    activity.updateButtons();
+	}
+    }
+
     private AbstractSmsObserver smsObserver;
 
     /************************************************
@@ -50,8 +62,7 @@ public class MainActivity extends Activity {
 	mainAll.setOnClickListener(new OnClickListener() {
 	    @Override
 	    public void onClick(View paramView) {
-		setSmsBox("ALL");
-		openSmsList();
+		openSmsList("ALL");
 	    }
 	});
 
@@ -61,8 +72,7 @@ public class MainActivity extends Activity {
 	mainInbox.setOnClickListener(new OnClickListener() {
 	    @Override
 	    public void onClick(View paramView) {
-		setSmsBox("INBOX");
-		openSmsList();
+		openSmsList("INBOX");
 	    }
 	});
 
@@ -72,8 +82,7 @@ public class MainActivity extends Activity {
 	mainSent.setOnClickListener(new OnClickListener() {
 	    @Override
 	    public void onClick(View paramView) {
-		setSmsBox("SENT");
-		openSmsList();
+		openSmsList("SENT");
 	    }
 	});
 
@@ -83,8 +92,7 @@ public class MainActivity extends Activity {
 	mainDraft.setOnClickListener(new OnClickListener() {
 	    @Override
 	    public void onClick(View paramView) {
-		setSmsBox("DRAFT");
-		openSmsList();
+		openSmsList("DRAFT");
 	    }
 	});
 
@@ -101,29 +109,32 @@ public class MainActivity extends Activity {
 
 	// ////////////////////////////////////////////////////////////
 	// create SMS list observer
-	smsObserver = new AllSmsObserver(getContentResolver(), new Handler() {
-	    @Override
-	    public void handleMessage(Message msg) {
-		super.handleMessage(msg);
-
-		updateButtons();
-	    }
-	});
+	smsObserver = new AllSmsObserver(getContentResolver(),
+		new AllSmsObserverHandler(this));
 
 	// ////////////////////////////////////////////////////////////
 	// version string
 	TextView mainVersion = (TextView) this.findViewById(R.id.mainVersion);
 	mainVersion.setText("(v " + this.getString(R.string.versionName) + ")");
-    }
-
-    @Override
-    protected void onResume() {
-	super.onResume();
 
 	// ////////////////////////////////////////////////////////////
 	// add ad mob
 	LinearLayout layout = (LinearLayout) findViewById(R.id.AdMob);
 	AdMob.addView(this, layout);
+    }
+
+    @Override
+    protected void onStart() {
+	super.onStart();
+
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, this.getClass()
+		.getSimpleName() + " starting");
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, "onStart Intent: ["
+		+ getIntent() + "]");
+
+	// @Override
+	// protected void onResume() {
+	// super.onResume();
 
 	// ////////////////////////////////////////////////////////////
 	// updateNotifications
@@ -136,19 +147,53 @@ public class MainActivity extends Activity {
 		true, smsObserver);
 
 	updateButtons();
+
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, this.getClass()
+		.getSimpleName() + " started");
     }
 
     @Override
-    protected void onPause() {
-	super.onPause();
+    protected void onRestart() {
+	super.onRestart();
+
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, "onRestart Intent: ["
+		+ getIntent() + "]");
+    }
+
+    @Override
+    protected void onResume() {
+	super.onResume();
+
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, "onResume Intent: ["
+		+ getIntent() + "]");
+    }
+
+    @Override
+    protected void onStop() {
+	super.onStop();
+
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, this.getClass()
+		.getSimpleName() + " stopping");
+
+	// @Override
+	// protected void onPause() {
+	// super.onPause();
+
+	// SMS list observer
+	getContentResolver().unregisterContentObserver(smsObserver);
+
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, this.getClass()
+		.getSimpleName() + " stoped");
+    }
+
+    @Override
+    protected void onDestroy() {
+	super.onDestroy();
 
 	// ////////////////////////////////////////////////////////////
 	// remove ad mob
 	LinearLayout layout = (LinearLayout) findViewById(R.id.AdMob);
 	AdMob.removeView(this, layout);
-
-	// SMS list observer
-	getContentResolver().unregisterContentObserver(smsObserver);
     }
 
     /************************************************
@@ -198,24 +243,12 @@ public class MainActivity extends Activity {
 	return count;
     }
 
-    private void setSmsBox(String smsBox) {
-	// ////////////////////////////////////////////////////////////
-	// store preferences
-	SharedPreferences sharedPrefs = PreferenceManager
-		.getDefaultSharedPreferences(getBaseContext());
-	Editor editor = sharedPrefs.edit();
-
-	// SMS box
-	editor.putString("smsBox", smsBox);
-
-	// commit
-	editor.commit();
-
-    }
-
-    private void openSmsList() {
+    private void openSmsList(String smsBox) {
 	Intent intent = new Intent();
+
 	intent.setClass(MainActivity.this, SmsListActivity.class);
+	intent.putExtra(SmsListActivity.SMS_BOX, smsBox);
+
 	startActivity(intent);
     }
 }

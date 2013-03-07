@@ -46,6 +46,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 public class SmsListActivity extends AbstractSmsActivity {
+    public static final String SMS_BOX = "smsBox";
+
     private static final class SmsListHandler extends Handler {
 
 	private final SmsListActivity smsListActivity;
@@ -208,7 +210,7 @@ public class SmsListActivity extends AbstractSmsActivity {
 
 		// SMS box
 		Spinner spinner = (Spinner) findViewById(R.id.boxSpinner);
-		editor.putString("smsBox", spinner.getSelectedItem().toString());
+		editor.putString(SMS_BOX, spinner.getSelectedItem().toString());
 
 		// commit
 		editor.commit();
@@ -233,8 +235,8 @@ public class SmsListActivity extends AbstractSmsActivity {
 	    @Override
 	    public void onReceive(Context paramContext, Intent paramIntent) {
 		updateInProgress = true;
-		Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, "Received "
-			+ paramIntent);
+		Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS,
+			"Received BroadcastReceiver" + paramIntent);
 
 		// move to end the progress bar
 		setProgress(10000);
@@ -262,16 +264,49 @@ public class SmsListActivity extends AbstractSmsActivity {
 		updateInProgress = false;
 	    }
 	};
-    }
-
-    @Override
-    protected void onResume() {
-	super.onResume();
 
 	// ////////////////////////////////////////////////////////////
 	// add ad mob
 	LinearLayout layout = (LinearLayout) findViewById(R.id.AdMob);
 	AdMob.addView(this, layout);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+	super.onNewIntent(intent);
+
+	setIntent(intent);
+
+	// check the box request
+	Bundle extras = intent.getExtras();
+	if (extras != null) {
+	    String smsBox = extras.getString(SMS_BOX);
+	    if (smsBox != null)
+		setSmsBoxProperty(smsBox);
+	}
+
+	updateSmsList();
+    }
+
+    @Override
+    protected void onStart() {
+	super.onStart();
+
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, this.getClass()
+		.getSimpleName() + " starting");
+
+	// @Override
+	// protected void onResume() {
+	// super.onResume();
+
+	// check the box request
+	Intent intent = getIntent();
+	Bundle extras = intent.getExtras();
+	if (extras != null) {
+	    String smsBox = extras.getString(SMS_BOX);
+	    if (smsBox != null)
+		setSmsBoxProperty(smsBox);
+	}
 
 	// get shared preferences
 	Preferences preferences = new Preferences(getBaseContext());
@@ -342,16 +377,21 @@ public class SmsListActivity extends AbstractSmsActivity {
 	// sms list observer
 	getContentResolver().registerContentObserver(smsObserver.getBaseUri(),
 		true, smsObserver);
+
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, this.getClass()
+		.getSimpleName() + " started");
     }
 
     @Override
-    protected void onPause() {
-	super.onPause();
+    protected void onStop() {
+	super.onStop();
 
-	// ////////////////////////////////////////////////////////////
-	// remove ad mob
-	LinearLayout layout = (LinearLayout) findViewById(R.id.AdMob);
-	AdMob.removeView(this, layout);
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, this.getClass()
+		.getSimpleName() + " stopping");
+
+	// @Override
+	// protected void onPause() {
+	// super.onPause();
 
 	// ////////////////////////////////////////////////////////////
 	// unregister receivers
@@ -359,6 +399,19 @@ public class SmsListActivity extends AbstractSmsActivity {
 	unregisterReceiver(listUpdatedReceiver);
 	// SMS list observer
 	getContentResolver().unregisterContentObserver(smsObserver);
+
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, this.getClass()
+		.getSimpleName() + " stoped");
+    }
+
+    @Override
+    protected void onDestroy() {
+	super.onDestroy();
+
+	// ////////////////////////////////////////////////////////////
+	// remove ad mob
+	LinearLayout layout = (LinearLayout) findViewById(R.id.AdMob);
+	AdMob.removeView(this, layout);
     }
 
     /************************************************
@@ -653,5 +706,21 @@ public class SmsListActivity extends AbstractSmsActivity {
 		Log.d(OLD_SCHOOL_SMS, "Thread finished");
 	    }
 	}.start();
+    }
+
+    private void setSmsBoxProperty(String smsBox) {
+	// ////////////////////////////////////////////////////////////
+	// store preferences
+	SharedPreferences sharedPrefs = PreferenceManager
+		.getDefaultSharedPreferences(getBaseContext());
+	Editor editor = sharedPrefs.edit();
+
+	// SMS box
+	editor.putString(SMS_BOX, smsBox);
+
+	// commit
+	editor.commit();
+
+	Log.d(OLD_SCHOOL_SMS, "Selecting new SMS box: " + smsBox);
     }
 }
