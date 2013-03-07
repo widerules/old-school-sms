@@ -51,8 +51,15 @@ public class SmsViewActivity extends AbstractSmsActivity {
     }
 
     @Override
-    protected void onResume() {
-	super.onResume();
+    protected void onStart() {
+	super.onStart();
+
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, this.getClass()
+		.getSimpleName() + " starting");
+
+	// @Override
+	// protected void onResume() {
+	// super.onResume();
 	Intent intent = getIntent();
 	String action = intent.getAction();
 	Uri uri = intent.getData();
@@ -137,6 +144,19 @@ public class SmsViewActivity extends AbstractSmsActivity {
 		    "Received not supported action: " + action,
 		    Toast.LENGTH_LONG).show();
 	}
+
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, this.getClass()
+		.getSimpleName() + " started");
+    }
+
+    @Override
+    protected void onDestroy() {
+	super.onDestroy();
+
+	// ////////////////////////////////////////////////////////////
+	// remove ad mob
+	LinearLayout layout = (LinearLayout) findViewById(R.id.AdMob);
+	AdMob.removeView(this, layout);
     }
 
     /************************************************

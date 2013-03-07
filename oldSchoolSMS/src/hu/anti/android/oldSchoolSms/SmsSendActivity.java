@@ -33,10 +33,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class SmsSendActivity extends AbstractSmsActivity {
-
     private static final int PERSON_SELECTION = 1;
 
-    private boolean dataFilled = false;
+    // private boolean dataFilled = false;
     private boolean smsProcessed = false;
 
     private String toNumber = null;
@@ -166,6 +165,11 @@ public class SmsSendActivity extends AbstractSmsActivity {
 		dialog.show();
 	    }
 	});
+
+	// ////////////////////////////////////////////////////////////
+	// ad mob
+	LinearLayout layout = (LinearLayout) findViewById(R.id.AdMob);
+	AdMob.addView(this, layout);
     }
 
     @Override
@@ -285,18 +289,20 @@ public class SmsSendActivity extends AbstractSmsActivity {
     }
 
     @Override
-    protected void onResume() {
-	super.onResume();
+    protected void onStart() {
+	super.onStart();
 
-	// ////////////////////////////////////////////////////////////
-	// ad mob
-	LinearLayout layout = (LinearLayout) findViewById(R.id.AdMob);
-	AdMob.addView(this, layout);
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, this.getClass()
+		.getSimpleName() + " starting");
 
-	if (dataFilled)
-	    return;
+	// @Override
+	// protected void onResume() {
+	// super.onResume();
 
-	dataFilled = true;
+	// if (dataFilled)
+	// return;
+
+	// dataFilled = true;
 
 	Intent intent = getIntent();
 	String action = intent.getAction();
@@ -325,8 +331,13 @@ public class SmsSendActivity extends AbstractSmsActivity {
 		}
 
 	    toNumber = number;
-
 	    updateToNumber(number);
+
+	    // body
+	    if (intent.hasExtra(Sms.IntentType.SMS_BODY)) {
+		String bodyString = intent.getStringExtra(Sms.IntentType.SMS_BODY);
+		setText(R.id.messageText, bodyString);
+	    }
 
 	} else if (Intent.ACTION_SEND.equals(action)) {
 	    if (data != null) {
@@ -347,16 +358,21 @@ public class SmsSendActivity extends AbstractSmsActivity {
 		    "Received not supported action: " + action,
 		    Toast.LENGTH_LONG).show();
 	}
+
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, this.getClass()
+		.getSimpleName() + " started");
     }
 
     @Override
-    protected void onPause() {
-	super.onPause();
+    protected void onStop() {
+	super.onStop();
 
-	// ////////////////////////////////////////////////////////////
-	// ad mob
-	LinearLayout layout = (LinearLayout) findViewById(R.id.AdMob);
-	AdMob.removeView(this, layout);
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, this.getClass()
+		.getSimpleName() + " stopping");
+
+	// @Override
+	// protected void onPause() {
+	// super.onPause();
 
 	if (smsProcessed) {
 	    // remove if exist a draft of it
@@ -407,6 +423,19 @@ public class SmsSendActivity extends AbstractSmsActivity {
 	} else
 	    // remove if exist a draft of it
 	    deleteIfDraft();
+
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, this.getClass()
+		.getSimpleName() + " stoped");
+    }
+
+    @Override
+    protected void onDestroy() {
+	super.onDestroy();
+
+	// ////////////////////////////////////////////////////////////
+	// remove ad mob
+	LinearLayout layout = (LinearLayout) findViewById(R.id.AdMob);
+	AdMob.removeView(this, layout);
     }
 
     /************************************************
