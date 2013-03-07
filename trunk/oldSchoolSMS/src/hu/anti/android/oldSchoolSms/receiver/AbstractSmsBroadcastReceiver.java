@@ -127,10 +127,15 @@ public abstract class AbstractSmsBroadcastReceiver extends BroadcastReceiver {
 	    String message, int notificationId, int count,
 	    long[] vibratorPattern, Uri soundUri, PendingIntent contentIntent) {
 	// initialize the Notification, using the configurations above
-	Notification notification = new Notification(iconId, title + ": "
-		+ message, System.currentTimeMillis());
+	Notification notification = new Notification();
+	notification.icon = iconId;
+	notification.tickerText = title + ": " + message;
+	notification.when = System.currentTimeMillis();
+
+	// FIXME
 	notification.setLatestEventInfo(context.getApplicationContext(), title,
 		message, contentIntent);
+	notification.contentIntent = contentIntent;
 
 	// number of information
 	notification.number = count;

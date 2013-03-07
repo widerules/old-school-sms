@@ -161,10 +161,16 @@ public class NotificationService extends IntentService {
 		notificationIntent, 0);
 
 	// initialize the Notification
-	Notification notification = new Notification(R.drawable.new_sms, title
-		+ ": " + message, System.currentTimeMillis());
+	Notification notification = new Notification();
+
+	notification.icon = R.drawable.new_sms;
+	notification.tickerText = title + ": " + message;
+	notification.when = System.currentTimeMillis();
+
+	// FIXME
 	notification.setLatestEventInfo(context.getApplicationContext(), title,
 		message, contentIntent);
+	notification.contentIntent = contentIntent;
 
 	// number of unread SMS
 	notification.number = count;
