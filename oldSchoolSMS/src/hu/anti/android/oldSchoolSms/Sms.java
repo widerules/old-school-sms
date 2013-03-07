@@ -83,6 +83,10 @@ public class Sms {
 	public static final String FAILED = "128";
     }
 
+    public class IntentType {
+	public static final String SMS_BODY = "sms_body";
+    }
+
     public class Other {
 	public static final String SMS_EXTRA_NAME = "pdus";
 
