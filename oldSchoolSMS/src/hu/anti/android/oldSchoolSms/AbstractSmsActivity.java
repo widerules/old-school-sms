@@ -24,13 +24,14 @@ public abstract class AbstractSmsActivity extends Activity {
 
 	    alertDialog.setTitle("Exception");
 	    alertDialog.setMessage(e.getLocalizedMessage());
-	    alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-		@Override
-		public void onClick(DialogInterface dialog, int which) {
-		    alertDialog.dismiss();
-		    return;
-		}
-	    });
+	    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+		    new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+			    alertDialog.dismiss();
+			    return;
+			}
+		    });
 
 	    alertDialog.show();
 	} catch (Exception e1) {
