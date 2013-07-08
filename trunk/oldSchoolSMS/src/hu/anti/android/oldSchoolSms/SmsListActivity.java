@@ -48,6 +48,10 @@ import android.widget.Toast;
 public class SmsListActivity extends AbstractSmsActivity {
     public static final String SMS_BOX = "smsBox";
 
+    public static enum SmsBoxType {
+	ALL, INBOX, SENT, DRAFT;
+    }
+
     private static final class SmsListHandler extends Handler {
 
 	private final SmsListActivity smsListActivity;
