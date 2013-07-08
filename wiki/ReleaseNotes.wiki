@@ -4,6 +4,8 @@
 = ReleaseNotes =
 
 Minden új kiadás tartalmaz hibajavítást, ez nem kerül külön kiemelésre... az új funkciók, képességek a következők:
+== 2013.07.08. - Release 1.6  ==
+  * homescreen widget
 == 2013.01.27. - Release 1.5  ==
   * datetime display format from phones local settings
   * display version number on main screen
