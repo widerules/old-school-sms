@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+        android:layout_margin="20dp"
+        android:gravity="center"
+        android:padding="5dp" >
+
+        <Button
+            android:id="@+id/mainAll"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/BoxAll" >
+        </Button>
+
+        <Button
+            android:id="@+id/mainInbox"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/BoxInbox" >
+        </Button>
+
+        <Button
+            android:id="@+id/mainSent"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/BoxSent" >
+        </Button>
+
+        <Button
+            android:id="@+id/mainDraft"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/BoxDraft" >
+        </Button>
+
+
+    </LinearLayout>
