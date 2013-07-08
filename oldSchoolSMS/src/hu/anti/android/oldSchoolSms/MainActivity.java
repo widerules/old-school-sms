@@ -1,5 +1,6 @@
 package hu.anti.android.oldSchoolSms;
 
+import hu.anti.android.oldSchoolSms.SmsListActivity.SmsBoxType;
 import hu.anti.android.oldSchoolSms.observer.AbstractSmsObserver;
 import hu.anti.android.oldSchoolSms.observer.AllSmsObserver;
 import android.app.Activity;
@@ -62,7 +63,7 @@ public class MainActivity extends Activity {
 	mainAll.setOnClickListener(new OnClickListener() {
 	    @Override
 	    public void onClick(View paramView) {
-		openSmsList("ALL");
+		openSmsList(SmsBoxType.ALL);
 	    }
 	});
 
@@ -72,7 +73,7 @@ public class MainActivity extends Activity {
 	mainInbox.setOnClickListener(new OnClickListener() {
 	    @Override
 	    public void onClick(View paramView) {
-		openSmsList("INBOX");
+		openSmsList(SmsBoxType.INBOX);
 	    }
 	});
 
@@ -82,7 +83,7 @@ public class MainActivity extends Activity {
 	mainSent.setOnClickListener(new OnClickListener() {
 	    @Override
 	    public void onClick(View paramView) {
-		openSmsList("SENT");
+		openSmsList(SmsBoxType.SENT);
 	    }
 	});
 
@@ -92,7 +93,7 @@ public class MainActivity extends Activity {
 	mainDraft.setOnClickListener(new OnClickListener() {
 	    @Override
 	    public void onClick(View paramView) {
-		openSmsList("DRAFT");
+		openSmsList(SmsBoxType.DRAFT);
 	    }
 	});
 
@@ -243,11 +244,13 @@ public class MainActivity extends Activity {
 	return count;
     }
 
-    private void openSmsList(String smsBox) {
+    private void openSmsList(SmsListActivity.SmsBoxType smsBox) {
 	Intent intent = new Intent();
 
 	intent.setClass(MainActivity.this, SmsListActivity.class);
-	intent.putExtra(SmsListActivity.SMS_BOX, smsBox);
+	// intent.setFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP
+	// & Intent.FLAG_ACTIVITY_CLEAR_TASK);
+	intent.putExtra(SmsListActivity.SMS_BOX, smsBox.name());
 
 	startActivity(intent);
     }
