@@ -43,6 +43,9 @@ public class SmsSendActivity extends AbstractSmsActivity {
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, this.getClass()
+		.getSimpleName() + " creating");
+
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.sms_send);
 
@@ -335,7 +338,8 @@ public class SmsSendActivity extends AbstractSmsActivity {
 
 	    // body
 	    if (intent.hasExtra(Sms.IntentType.SMS_BODY)) {
-		String bodyString = intent.getStringExtra(Sms.IntentType.SMS_BODY);
+		String bodyString = intent
+			.getStringExtra(Sms.IntentType.SMS_BODY);
 		setText(R.id.messageText, bodyString);
 	    }
 
@@ -364,6 +368,17 @@ public class SmsSendActivity extends AbstractSmsActivity {
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+	// TODO Auto-generated method stub
+	super.onNewIntent(intent);
+
+	Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS, this.getClass()
+		.getSimpleName() + " onNewIntent");
+	AbstractSmsBroadcastReceiver.logIntent(this.getClass()
+		.getCanonicalName(), intent);
+    }
+
+    @Override
     protected void onStop() {
 	super.onStop();
 
@@ -387,24 +402,27 @@ public class SmsSendActivity extends AbstractSmsActivity {
 
 	Intent intent = getIntent();
 	String action = intent.getAction();
-	Uri dataUri = intent.getData();
 
-	if (Intent.ACTION_SEND.equals(action) && dataUri != null) {
-	    Sms sms = Sms.getSms(getContentResolver(), dataUri);
+	if (Intent.ACTION_SEND.equals(action)) {
+	    Uri dataUri = intent.getData();
+	    if (dataUri != null) {
+		Sms sms = Sms.getSms(getContentResolver(), dataUri);
 
-	    // update existing draft
-	    if (sms != null && Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type)) {
+		// update existing draft
+		if (sms != null && Sms.Type.MESSAGE_TYPE_DRAFT.equals(sms.type)) {
 
-		ContentValues values = new ContentValues();
-		values.put(Sms.Fields.ADDRESS, toNumber);
-		values.put(Sms.Fields.BODY, body);
+		    ContentValues values = new ContentValues();
+		    values.put(Sms.Fields.ADDRESS, toNumber);
+		    values.put(Sms.Fields.BODY, body);
 
-		getContentResolver().update(dataUri, values, null, null);
+		    getContentResolver().update(dataUri, values, null, null);
 
-		Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS,
-			"onPause updated SMS uri: " + dataUri + " getScheme: ["
-				+ dataUri.getScheme() + "]");
-		return;
+		    Log.d(AbstractSmsActivity.OLD_SCHOOL_SMS,
+			    "onPause updated SMS uri: " + dataUri
+				    + " getScheme: [" + dataUri.getScheme()
+				    + "]");
+		    return;
+		}
 	    }
 	}
 
@@ -417,9 +435,9 @@ public class SmsSendActivity extends AbstractSmsActivity {
 		    "onPause new draft SMS uri: " + draftUri + " getScheme: ["
 			    + draftUri.getScheme() + "]");
 
-	    // use new intent for this draft
-	    Intent draftIntent = new Intent(Intent.ACTION_SEND, draftUri);
-	    setIntent(draftIntent);
+	    // use new data for this draft
+	    intent.setData(draftUri);
+	    intent.setAction(Intent.ACTION_SEND);
 	} else
 	    // remove if exist a draft of it
 	    deleteIfDraft();
